@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowJmwfVF.ui'
+## Form generated from reading UI file 'mainwindowaClpNK.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.0
 ##
@@ -16,18 +16,18 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QHeaderView,
+from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QHeaderView,
     QLabel, QMainWindow, QMenu, QMenuBar,
-    QProgressBar, QSizePolicy, QSpacerItem, QStatusBar,
-    QTextBrowser, QTreeWidget, QTreeWidgetItem, QVBoxLayout,
-    QWidget)
+    QSizePolicy, QSplitter, QStatusBar, QTabWidget,
+    QTextBrowser, QToolBar, QTreeWidget, QTreeWidgetItem,
+    QVBoxLayout, QWidget)
 import source.view.ui.resources_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1219, 820)
+        MainWindow.resize(1371, 766)
         icon = QIcon()
         icon.addFile(u":/icons/ico/taxation_tool.ico", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         MainWindow.setWindowIcon(icon)
@@ -35,110 +35,82 @@ class Ui_MainWindow(object):
         self.menu_database_species.setObjectName(u"menu_database_species")
         self.menu_database_densitys = QAction(MainWindow)
         self.menu_database_densitys.setObjectName(u"menu_database_densitys")
-        self.action_3 = QAction(MainWindow)
-        self.action_3.setObjectName(u"action_3")
+        self.menu_project_new = QAction(MainWindow)
+        self.menu_project_new.setObjectName(u"menu_project_new")
         self.menu_settings_paths = QAction(MainWindow)
         self.menu_settings_paths.setObjectName(u"menu_settings_paths")
         self.menu_database_volumes = QAction(MainWindow)
         self.menu_database_volumes.setObjectName(u"menu_database_volumes")
+        self.menu_processing = QAction(MainWindow)
+        self.menu_processing.setObjectName(u"menu_processing")
+        self.menu_processing.setMenuRole(QAction.MenuRole.NoRole)
+        self.menu_project_open = QAction(MainWindow)
+        self.menu_project_open.setObjectName(u"menu_project_open")
+        self.menu_project_import = QAction(MainWindow)
+        self.menu_project_import.setObjectName(u"menu_project_import")
+        self.menu_project_export = QAction(MainWindow)
+        self.menu_project_export.setObjectName(u"menu_project_export")
+        self.menu_processing_classification = QAction(MainWindow)
+        self.menu_processing_classification.setObjectName(u"menu_processing_classification")
+        self.menu_processing_design_objects = QAction(MainWindow)
+        self.menu_processing_design_objects.setObjectName(u"menu_processing_design_objects")
+        self.menu_processing_sorted_numeration = QAction(MainWindow)
+        self.menu_processing_sorted_numeration.setObjectName(u"menu_processing_sorted_numeration")
+        self.menu_processing_design_tables = QAction(MainWindow)
+        self.menu_processing_design_tables.setObjectName(u"menu_processing_design_tables")
+        self.menu_about = QAction(MainWindow)
+        self.menu_about.setObjectName(u"menu_about")
+        self.menu_manual = QAction(MainWindow)
+        self.menu_manual.setObjectName(u"menu_manual")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.widget = QWidget(self.centralwidget)
-        self.widget.setObjectName(u"widget")
-        self.widget.setGeometry(QRect(10, 0, 1201, 761))
-        self.hl1 = QHBoxLayout(self.widget)
-        self.hl1.setObjectName(u"hl1")
-        self.hl1.setContentsMargins(0, 0, 0, 0)
-        self.vl1 = QVBoxLayout()
-        self.vl1.setObjectName(u"vl1")
-        self.tree_file_manager = QTreeWidget(self.widget)
-        QTreeWidgetItem(self.tree_file_manager)
-        __qtreewidgetitem = QTreeWidgetItem(self.tree_file_manager)
-        __qtreewidgetitem1 = QTreeWidgetItem(__qtreewidgetitem)
-        QTreeWidgetItem(__qtreewidgetitem1)
-        QTreeWidgetItem(self.tree_file_manager)
-        __qtreewidgetitem2 = QTreeWidgetItem(self.tree_file_manager)
-        QTreeWidgetItem(__qtreewidgetitem2)
-        __qtreewidgetitem3 = QTreeWidgetItem(self.tree_file_manager)
-        QTreeWidgetItem(__qtreewidgetitem3)
-        QTreeWidgetItem(__qtreewidgetitem3)
-        QTreeWidgetItem(self.tree_file_manager)
-        QTreeWidgetItem(self.tree_file_manager)
-        self.tree_file_manager.setObjectName(u"tree_file_manager")
-
-        self.vl1.addWidget(self.tree_file_manager)
-
-        self.tree_file_manager_temp = QTreeWidget(self.widget)
-        QTreeWidgetItem(self.tree_file_manager_temp)
-        QTreeWidgetItem(self.tree_file_manager_temp)
-        __qtreewidgetitem4 = QTreeWidgetItem(self.tree_file_manager_temp)
-        QTreeWidgetItem(__qtreewidgetitem4)
-        QTreeWidgetItem(__qtreewidgetitem4)
-        QTreeWidgetItem(self.tree_file_manager_temp)
-        __qtreewidgetitem5 = QTreeWidgetItem(self.tree_file_manager_temp)
-        QTreeWidgetItem(__qtreewidgetitem5)
-        QTreeWidgetItem(self.tree_file_manager_temp)
-        self.tree_file_manager_temp.setObjectName(u"tree_file_manager_temp")
-        self.tree_file_manager_temp.setColumnCount(1)
-
-        self.vl1.addWidget(self.tree_file_manager_temp)
-
-
-        self.hl1.addLayout(self.vl1)
-
-        self.line_v = QFrame(self.widget)
-        self.line_v.setObjectName(u"line_v")
-        self.line_v.setWindowModality(Qt.WindowModality.NonModal)
-        self.line_v.setCursor(QCursor(Qt.CursorShape.SizeHorCursor))
-        self.line_v.setMouseTracking(False)
-        self.line_v.setAcceptDrops(False)
-        self.line_v.setFrameShadow(QFrame.Shadow.Sunken)
-        self.line_v.setFrameShape(QFrame.Shape.VLine)
-
-        self.hl1.addWidget(self.line_v)
-
-        self.vl2 = QVBoxLayout()
-        self.vl2.setObjectName(u"vl2")
-        self.frame_work = QFrame(self.widget)
-        self.frame_work.setObjectName(u"frame_work")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
+        self.gridLayout = QGridLayout(self.centralwidget)
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.splitter = QSplitter(self.centralwidget)
+        self.splitter.setObjectName(u"splitter")
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(100)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.frame_work.sizePolicy().hasHeightForWidth())
-        self.frame_work.setSizePolicy(sizePolicy)
-        self.frame_work.setFrameShape(QFrame.Shape.StyledPanel)
-        self.frame_work.setFrameShadow(QFrame.Shadow.Raised)
-        self.label_3 = QLabel(self.frame_work)
-        self.label_3.setObjectName(u"label_3")
-        self.label_3.setGeometry(QRect(250, 170, 81, 16))
-
-        self.vl2.addWidget(self.frame_work)
-
-        self.vl3 = QVBoxLayout()
+        sizePolicy.setHeightForWidth(self.splitter.sizePolicy().hasHeightForWidth())
+        self.splitter.setSizePolicy(sizePolicy)
+        self.splitter.setOrientation(Qt.Orientation.Horizontal)
+        self.tree_manager = QTreeWidget(self.splitter)
+        QTreeWidgetItem(self.tree_manager)
+        QTreeWidgetItem(self.tree_manager)
+        __qtreewidgetitem = QTreeWidgetItem(self.tree_manager)
+        QTreeWidgetItem(__qtreewidgetitem)
+        QTreeWidgetItem(__qtreewidgetitem)
+        self.tree_manager.setObjectName(u"tree_manager")
+        self.splitter.addWidget(self.tree_manager)
+        self.splitter_2 = QSplitter(self.splitter)
+        self.splitter_2.setObjectName(u"splitter_2")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.splitter_2.sizePolicy().hasHeightForWidth())
+        self.splitter_2.setSizePolicy(sizePolicy1)
+        self.splitter_2.setFrameShadow(QFrame.Shadow.Sunken)
+        self.splitter_2.setOrientation(Qt.Orientation.Vertical)
+        self.tabWidget = QTabWidget(self.splitter_2)
+        self.tabWidget.setObjectName(u"tabWidget")
+        self.tab_model = QWidget()
+        self.tab_model.setObjectName(u"tab_model")
+        self.tabWidget.addTab(self.tab_model, "")
+        self.tab_table = QWidget()
+        self.tab_table.setObjectName(u"tab_table")
+        self.tabWidget.addTab(self.tab_table, "")
+        self.splitter_2.addWidget(self.tabWidget)
+        self.layoutWidget = QWidget(self.splitter_2)
+        self.layoutWidget.setObjectName(u"layoutWidget")
+        self.vl3 = QVBoxLayout(self.layoutWidget)
         self.vl3.setObjectName(u"vl3")
-        self.hl2 = QHBoxLayout()
-        self.hl2.setObjectName(u"hl2")
-        self.label_5 = QLabel(self.widget)
-        self.label_5.setObjectName(u"label_5")
+        self.vl3.setContentsMargins(0, 0, 0, 0)
+        self.label = QLabel(self.layoutWidget)
+        self.label.setObjectName(u"label")
 
-        self.hl2.addWidget(self.label_5)
+        self.vl3.addWidget(self.label)
 
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
-
-        self.hl2.addItem(self.horizontalSpacer_2)
-
-        self.progressBar_3 = QProgressBar(self.widget)
-        self.progressBar_3.setObjectName(u"progressBar_3")
-        self.progressBar_3.setValue(0)
-        self.progressBar_3.setTextVisible(False)
-        self.progressBar_3.setInvertedAppearance(False)
-
-        self.hl2.addWidget(self.progressBar_3)
-
-
-        self.vl3.addLayout(self.hl2)
-
-        self.console_log = QTextBrowser(self.widget)
+        self.console_log = QTextBrowser(self.layoutWidget)
         self.console_log.setObjectName(u"console_log")
         font = QFont()
         font.setPointSize(8)
@@ -148,41 +120,74 @@ class Ui_MainWindow(object):
 
         self.vl3.addWidget(self.console_log)
 
+        self.splitter_2.addWidget(self.layoutWidget)
+        self.splitter.addWidget(self.splitter_2)
 
-        self.vl2.addLayout(self.vl3)
-
-
-        self.hl1.addLayout(self.vl2)
+        self.gridLayout.addWidget(self.splitter, 0, 2, 1, 1)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1219, 33))
-        self.menu_file = QMenu(self.menubar)
-        self.menu_file.setObjectName(u"menu_file")
+        self.menubar.setGeometry(QRect(0, 0, 1371, 33))
+        self.menu_project = QMenu(self.menubar)
+        self.menu_project.setObjectName(u"menu_project")
         self.menu_database = QMenu(self.menubar)
         self.menu_database.setObjectName(u"menu_database")
         self.menu_settings = QMenu(self.menubar)
         self.menu_settings.setObjectName(u"menu_settings")
         self.menu_help = QMenu(self.menubar)
         self.menu_help.setObjectName(u"menu_help")
+        self.menu_processing_2 = QMenu(self.menubar)
+        self.menu_processing_2.setObjectName(u"menu_processing_2")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        self.toolBar = QToolBar(MainWindow)
+        self.toolBar.setObjectName(u"toolBar")
+        MainWindow.addToolBar(Qt.ToolBarArea.TopToolBarArea, self.toolBar)
+        self.toolBar_2 = QToolBar(MainWindow)
+        self.toolBar_2.setObjectName(u"toolBar_2")
+        MainWindow.addToolBar(Qt.ToolBarArea.TopToolBarArea, self.toolBar_2)
+        self.toolBar_3 = QToolBar(MainWindow)
+        self.toolBar_3.setObjectName(u"toolBar_3")
+        MainWindow.addToolBar(Qt.ToolBarArea.TopToolBarArea, self.toolBar_3)
 
-        self.menubar.addAction(self.menu_file.menuAction())
+        self.menubar.addAction(self.menu_project.menuAction())
+        self.menubar.addAction(self.menu_processing_2.menuAction())
         self.menubar.addAction(self.menu_database.menuAction())
         self.menubar.addAction(self.menu_settings.menuAction())
         self.menubar.addAction(self.menu_help.menuAction())
-        self.menu_file.addAction(self.action_3)
+        self.menu_project.addAction(self.menu_project_new)
+        self.menu_project.addAction(self.menu_project_open)
+        self.menu_project.addSeparator()
+        self.menu_project.addAction(self.menu_project_import)
+        self.menu_project.addAction(self.menu_project_export)
         self.menu_database.addAction(self.menu_database_species)
         self.menu_database.addAction(self.menu_database_densitys)
-        self.menu_database.addSeparator()
         self.menu_database.addAction(self.menu_database_volumes)
         self.menu_settings.addAction(self.menu_settings_paths)
+        self.menu_help.addAction(self.menu_about)
+        self.menu_help.addAction(self.menu_manual)
+        self.menu_processing_2.addAction(self.menu_processing_classification)
+        self.menu_processing_2.addAction(self.menu_processing_sorted_numeration)
+        self.menu_processing_2.addAction(self.menu_processing_design_objects)
+        self.menu_processing_2.addAction(self.menu_processing_design_tables)
+        self.toolBar.addAction(self.menu_project_new)
+        self.toolBar.addAction(self.menu_project_open)
+        self.toolBar_2.addAction(self.menu_processing_classification)
+        self.toolBar_2.addAction(self.menu_processing_sorted_numeration)
+        self.toolBar_2.addAction(self.menu_processing_design_objects)
+        self.toolBar_2.addAction(self.menu_processing_design_tables)
+        self.toolBar_2.addSeparator()
+        self.toolBar_3.addAction(self.menu_database_species)
+        self.toolBar_3.addAction(self.menu_database_densitys)
+        self.toolBar_3.addAction(self.menu_database_volumes)
 
         self.retranslateUi(MainWindow)
+
+        self.tabWidget.setCurrentIndex(1)
+
 
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
@@ -191,71 +196,46 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Taxation Tool", None))
         self.menu_database_species.setText(QCoreApplication.translate("MainWindow", u"\u041f\u043e\u0440\u043e\u0434\u044b", None))
         self.menu_database_densitys.setText(QCoreApplication.translate("MainWindow", u"\u041f\u043b\u043e\u0442\u043d\u043e\u0441\u0442\u0438", None))
-        self.action_3.setText(QCoreApplication.translate("MainWindow", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c \u0444\u0430\u0439\u043b\u044b", None))
+        self.menu_project_new.setText(QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439", None))
         self.menu_settings_paths.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0443\u0442\u0438", None))
         self.menu_database_volumes.setText(QCoreApplication.translate("MainWindow", u"\u0422\u0430\u0431\u043b\u0438\u0446\u0430 \u043e\u0431\u044a\u0435\u043c\u043e\u0432 \u0441\u0442\u0432\u043e\u043b\u043e\u0432", None))
-        ___qtreewidgetitem = self.tree_file_manager.headerItem()
-        ___qtreewidgetitem.setText(0, QCoreApplication.translate("MainWindow", u"\u041c\u0435\u043d\u0435\u0434\u0436\u0435\u0440 \u0444\u0430\u0439\u043b\u043e\u0432", None));
+        self.menu_processing.setText(QCoreApplication.translate("MainWindow", u"\u043e\u0431\u0440\u0430\u0431\u043e\u0442\u043a\u0430", None))
+        self.menu_project_open.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0442\u043a\u0440\u044b\u0442\u044c", None))
+        self.menu_project_import.setText(QCoreApplication.translate("MainWindow", u"\u0418\u043c\u043f\u043e\u0440\u0442...", None))
+        self.menu_project_export.setText(QCoreApplication.translate("MainWindow", u"\u042d\u043a\u0441\u043f\u043e\u0440\u0442...", None))
+        self.menu_processing_classification.setText(QCoreApplication.translate("MainWindow", u"\u041a\u043b\u0430\u0441\u0441\u0438\u0444\u0438\u043a\u0430\u0446\u0438\u044f \u043f\u043e \u0437\u043e\u043d\u0430\u043c", None))
+        self.menu_processing_design_objects.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0444\u043e\u0440\u043c\u0438\u0442\u044c \u043e\u0431\u044a\u0435\u043a\u0442\u044b \u0432 \u0447\u0435\u0440\u0442\u0435\u0436", None))
+        self.menu_processing_sorted_numeration.setText(QCoreApplication.translate("MainWindow", u"\u0423\u043f\u043e\u0440\u044f\u0434\u043e\u0447\u0438\u0442\u044c \u043d\u0443\u043c\u0435\u0440\u0430\u0446\u0438\u044e", None))
+        self.menu_processing_design_tables.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0444\u043e\u0440\u043c\u0438\u0442\u044c \u0442\u0430\u0431\u043b\u0438\u0446\u044b \u0432 \u0447\u0435\u0440\u0442\u0435\u0436", None))
+        self.menu_about.setText(QCoreApplication.translate("MainWindow", u"\u041e \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u0435", None))
+        self.menu_manual.setText(QCoreApplication.translate("MainWindow", u"\u0420\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e", None))
+        ___qtreewidgetitem = self.tree_manager.headerItem()
+        ___qtreewidgetitem.setText(0, QCoreApplication.translate("MainWindow", u"\u041c\u0435\u043d\u0435\u0434\u0436\u0435\u0440 \u043f\u0440\u043e\u0435\u043a\u0442\u0430", None));
 
-        __sortingEnabled = self.tree_file_manager.isSortingEnabled()
-        self.tree_file_manager.setSortingEnabled(False)
-        ___qtreewidgetitem1 = self.tree_file_manager.topLevelItem(0)
-        ___qtreewidgetitem1.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
-        ___qtreewidgetitem2 = self.tree_file_manager.topLevelItem(1)
-        ___qtreewidgetitem2.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
-        ___qtreewidgetitem3 = ___qtreewidgetitem2.child(0)
-        ___qtreewidgetitem3.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u0434\u043e\u0447\u0435\u0440\u043d\u0438\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
+        __sortingEnabled = self.tree_manager.isSortingEnabled()
+        self.tree_manager.setSortingEnabled(False)
+        ___qtreewidgetitem1 = self.tree_manager.topLevelItem(0)
+        ___qtreewidgetitem1.setText(0, QCoreApplication.translate("MainWindow", u"\u0427\u0435\u0440\u0442\u0435\u0436 \u0442\u0430\u043a\u0441\u0430\u0446\u0438\u0438 (dxf)", None));
+        ___qtreewidgetitem2 = self.tree_manager.topLevelItem(1)
+        ___qtreewidgetitem2.setText(0, QCoreApplication.translate("MainWindow", u"\u0412\u0435\u0434\u043e\u043c\u043e\u0441\u0442\u044c \u0442\u0430\u043a\u0441\u0430\u0446\u0438\u0438 (xslx)", None));
+        ___qtreewidgetitem3 = self.tree_manager.topLevelItem(2)
+        ___qtreewidgetitem3.setText(0, QCoreApplication.translate("MainWindow", u"\u0422\u0430\u0431\u043b\u0438\u0446\u044b \u043e\u0431\u044a\u0435\u043a\u0442\u043e\u0432 \u0442\u0430\u043a\u0441\u0430\u0446\u0438\u0438", None));
         ___qtreewidgetitem4 = ___qtreewidgetitem3.child(0)
-        ___qtreewidgetitem4.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u0434\u043e\u0447\u0435\u0440\u043d\u0438\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
-        ___qtreewidgetitem5 = self.tree_file_manager.topLevelItem(2)
-        ___qtreewidgetitem5.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
-        ___qtreewidgetitem6 = self.tree_file_manager.topLevelItem(3)
-        ___qtreewidgetitem6.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
-        ___qtreewidgetitem7 = ___qtreewidgetitem6.child(0)
-        ___qtreewidgetitem7.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u0434\u043e\u0447\u0435\u0440\u043d\u0438\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
-        ___qtreewidgetitem8 = self.tree_file_manager.topLevelItem(4)
-        ___qtreewidgetitem8.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
-        ___qtreewidgetitem9 = ___qtreewidgetitem8.child(0)
-        ___qtreewidgetitem9.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u0434\u043e\u0447\u0435\u0440\u043d\u0438\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
-        ___qtreewidgetitem10 = ___qtreewidgetitem8.child(1)
-        ___qtreewidgetitem10.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u0434\u043e\u0447\u0435\u0440\u043d\u0438\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
-        ___qtreewidgetitem11 = self.tree_file_manager.topLevelItem(5)
-        ___qtreewidgetitem11.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
-        ___qtreewidgetitem12 = self.tree_file_manager.topLevelItem(6)
-        ___qtreewidgetitem12.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
-        self.tree_file_manager.setSortingEnabled(__sortingEnabled)
+        ___qtreewidgetitem4.setText(0, QCoreApplication.translate("MainWindow", u"\u0417\u043e\u043d\u0430 \u0431\u043b\u0430\u0433\u043e\u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u0430", None));
+        ___qtreewidgetitem5 = ___qtreewidgetitem3.child(1)
+        ___qtreewidgetitem5.setText(0, QCoreApplication.translate("MainWindow", u"\u0417\u043e\u043d\u0430 \u0443\u043b. \u041c\u043e\u043b\u043e\u0434\u0435\u0436\u043d\u0430\u044f", None));
+        self.tree_manager.setSortingEnabled(__sortingEnabled)
 
-        ___qtreewidgetitem13 = self.tree_file_manager_temp.headerItem()
-        ___qtreewidgetitem13.setText(0, QCoreApplication.translate("MainWindow", u"\u0412\u0440\u0435\u043c\u0435\u043d\u043d\u044b\u0435 \u0444\u0430\u0439\u043b\u044b", None));
-
-        __sortingEnabled1 = self.tree_file_manager_temp.isSortingEnabled()
-        self.tree_file_manager_temp.setSortingEnabled(False)
-        ___qtreewidgetitem14 = self.tree_file_manager_temp.topLevelItem(0)
-        ___qtreewidgetitem14.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
-        ___qtreewidgetitem15 = self.tree_file_manager_temp.topLevelItem(1)
-        ___qtreewidgetitem15.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
-        ___qtreewidgetitem16 = self.tree_file_manager_temp.topLevelItem(2)
-        ___qtreewidgetitem16.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
-        ___qtreewidgetitem17 = ___qtreewidgetitem16.child(0)
-        ___qtreewidgetitem17.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u0434\u043e\u0447\u0435\u0440\u043d\u0438\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
-        ___qtreewidgetitem18 = ___qtreewidgetitem16.child(1)
-        ___qtreewidgetitem18.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u0434\u043e\u0447\u0435\u0440\u043d\u0438\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
-        ___qtreewidgetitem19 = self.tree_file_manager_temp.topLevelItem(3)
-        ___qtreewidgetitem19.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
-        ___qtreewidgetitem20 = self.tree_file_manager_temp.topLevelItem(4)
-        ___qtreewidgetitem20.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
-        ___qtreewidgetitem21 = ___qtreewidgetitem20.child(0)
-        ___qtreewidgetitem21.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u0434\u043e\u0447\u0435\u0440\u043d\u0438\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
-        ___qtreewidgetitem22 = self.tree_file_manager_temp.topLevelItem(5)
-        ___qtreewidgetitem22.setText(0, QCoreApplication.translate("MainWindow", u"\u041d\u043e\u0432\u044b\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442", None));
-        self.tree_file_manager_temp.setSortingEnabled(__sortingEnabled1)
-
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"\u0420\u0430\u0431\u043e\u0447\u0430\u044f \u0437\u043e\u043d\u0430", None))
-        self.label_5.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u043e\u0446\u0435\u0441\u0441 \u0432\u044b\u043f\u043e\u043b\u043d\u0435\u043d\u0438\u044f", None))
-        self.progressBar_3.setFormat(QCoreApplication.translate("MainWindow", u"%p%", None))
-        self.menu_file.setTitle(QCoreApplication.translate("MainWindow", u"\u0424\u0430\u0439\u043b", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_model), QCoreApplication.translate("MainWindow", u"\u041c\u043e\u0434\u0435\u043b\u044c", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_table), QCoreApplication.translate("MainWindow", u"\u0422\u0430\u0431\u043b\u0438\u0446\u0430", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u043e\u0433\u0440\u0435\u0441\u0441", None))
+        self.menu_project.setTitle(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u043e\u0435\u043a\u0442", None))
         self.menu_database.setTitle(QCoreApplication.translate("MainWindow", u"\u0411\u0430\u0437\u044b \u0434\u0430\u043d\u043d\u044b\u0445", None))
         self.menu_settings.setTitle(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438", None))
         self.menu_help.setTitle(QCoreApplication.translate("MainWindow", u"\u0421\u043f\u0440\u0430\u0432\u043a\u0430", None))
+        self.menu_processing_2.setTitle(QCoreApplication.translate("MainWindow", u"\u041e\u0431\u0440\u0430\u0431\u043e\u0442\u043a\u0430", None))
+        self.toolBar.setWindowTitle(QCoreApplication.translate("MainWindow", u"toolBar", None))
+        self.toolBar_2.setWindowTitle(QCoreApplication.translate("MainWindow", u"toolBar_2", None))
+        self.toolBar_3.setWindowTitle(QCoreApplication.translate("MainWindow", u"toolBar_3", None))
     # retranslateUi
 
