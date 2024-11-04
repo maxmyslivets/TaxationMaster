@@ -31,6 +31,12 @@
        <enum>Qt::Orientation::Horizontal</enum>
       </property>
       <widget class="QTreeWidget" name="tree_manager">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <column>
         <property name="text">
          <string>Менеджер проекта</string>
@@ -64,8 +70,8 @@
       </widget>
       <widget class="QSplitter" name="splitter_2">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-         <horstretch>0</horstretch>
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>1</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
@@ -75,7 +81,16 @@
        <property name="orientation">
         <enum>Qt::Orientation::Vertical</enum>
        </property>
+       <property name="opaqueResize">
+        <bool>true</bool>
+       </property>
        <widget class="QTabWidget" name="tabWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>1</verstretch>
+         </sizepolicy>
+        </property>
         <property name="currentIndex">
          <number>1</number>
         </property>
@@ -92,8 +107,17 @@
        </widget>
        <widget class="QWidget" name="layoutWidget">
         <layout class="QVBoxLayout" name="vl3">
+         <property name="sizeConstraint">
+          <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+         </property>
          <item>
           <widget class="QLabel" name="label">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Прогресс</string>
            </property>
@@ -101,6 +125,12 @@
          </item>
          <item>
           <widget class="QTextBrowser" name="console_log">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>1</verstretch>
+            </sizepolicy>
+           </property>
            <property name="font">
             <font>
              <pointsize>8</pointsize>
@@ -136,6 +166,7 @@
     </property>
     <addaction name="menu_project_new"/>
     <addaction name="menu_project_open"/>
+    <addaction name="menu_project_save_as"/>
     <addaction name="separator"/>
     <addaction name="menu_project_import"/>
     <addaction name="menu_project_export"/>
@@ -189,6 +220,7 @@
    </attribute>
    <addaction name="menu_project_new"/>
    <addaction name="menu_project_open"/>
+   <addaction name="menu_project_save_as"/>
   </widget>
   <widget class="QToolBar" name="toolBar_2">
    <property name="windowTitle">
@@ -296,6 +328,14 @@
   <action name="menu_manual">
    <property name="text">
     <string>Руководство</string>
+   </property>
+  </action>
+  <action name="menu_project_save_as">
+   <property name="text">
+    <string>Сохранить как</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
  </widget>

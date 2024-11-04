@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowaClpNK.ui'
+## Form generated from reading UI file 'mainwindowkzPGzR.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.0
 ##
@@ -17,10 +17,10 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QHeaderView,
-    QLabel, QMainWindow, QMenu, QMenuBar,
-    QSizePolicy, QSplitter, QStatusBar, QTabWidget,
-    QTextBrowser, QToolBar, QTreeWidget, QTreeWidgetItem,
-    QVBoxLayout, QWidget)
+    QLabel, QLayout, QMainWindow, QMenu,
+    QMenuBar, QSizePolicy, QSplitter, QStatusBar,
+    QTabWidget, QTextBrowser, QToolBar, QTreeWidget,
+    QTreeWidgetItem, QVBoxLayout, QWidget)
 import source.view.ui.resources_rc
 
 class Ui_MainWindow(object):
@@ -62,6 +62,9 @@ class Ui_MainWindow(object):
         self.menu_about.setObjectName(u"menu_about")
         self.menu_manual = QAction(MainWindow)
         self.menu_manual.setObjectName(u"menu_manual")
+        self.menu_project_save_as = QAction(MainWindow)
+        self.menu_project_save_as.setObjectName(u"menu_project_save_as")
+        self.menu_project_save_as.setMenuRole(QAction.MenuRole.NoRole)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout = QGridLayout(self.centralwidget)
@@ -81,18 +84,29 @@ class Ui_MainWindow(object):
         QTreeWidgetItem(__qtreewidgetitem)
         QTreeWidgetItem(__qtreewidgetitem)
         self.tree_manager.setObjectName(u"tree_manager")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.tree_manager.sizePolicy().hasHeightForWidth())
+        self.tree_manager.setSizePolicy(sizePolicy1)
         self.splitter.addWidget(self.tree_manager)
         self.splitter_2 = QSplitter(self.splitter)
         self.splitter_2.setObjectName(u"splitter_2")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.splitter_2.sizePolicy().hasHeightForWidth())
-        self.splitter_2.setSizePolicy(sizePolicy1)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        sizePolicy2.setHorizontalStretch(1)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.splitter_2.sizePolicy().hasHeightForWidth())
+        self.splitter_2.setSizePolicy(sizePolicy2)
         self.splitter_2.setFrameShadow(QFrame.Shadow.Sunken)
         self.splitter_2.setOrientation(Qt.Orientation.Vertical)
+        self.splitter_2.setOpaqueResize(True)
         self.tabWidget = QTabWidget(self.splitter_2)
         self.tabWidget.setObjectName(u"tabWidget")
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(1)
+        sizePolicy3.setHeightForWidth(self.tabWidget.sizePolicy().hasHeightForWidth())
+        self.tabWidget.setSizePolicy(sizePolicy3)
         self.tab_model = QWidget()
         self.tab_model.setObjectName(u"tab_model")
         self.tabWidget.addTab(self.tab_model, "")
@@ -104,14 +118,25 @@ class Ui_MainWindow(object):
         self.layoutWidget.setObjectName(u"layoutWidget")
         self.vl3 = QVBoxLayout(self.layoutWidget)
         self.vl3.setObjectName(u"vl3")
+        self.vl3.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
         self.vl3.setContentsMargins(0, 0, 0, 0)
         self.label = QLabel(self.layoutWidget)
         self.label.setObjectName(u"label")
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
+        self.label.setSizePolicy(sizePolicy4)
 
         self.vl3.addWidget(self.label)
 
         self.console_log = QTextBrowser(self.layoutWidget)
         self.console_log.setObjectName(u"console_log")
+        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy5.setHorizontalStretch(0)
+        sizePolicy5.setVerticalStretch(1)
+        sizePolicy5.setHeightForWidth(self.console_log.sizePolicy().hasHeightForWidth())
+        self.console_log.setSizePolicy(sizePolicy5)
         font = QFont()
         font.setPointSize(8)
         self.console_log.setFont(font)
@@ -160,6 +185,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menu_help.menuAction())
         self.menu_project.addAction(self.menu_project_new)
         self.menu_project.addAction(self.menu_project_open)
+        self.menu_project.addAction(self.menu_project_save_as)
         self.menu_project.addSeparator()
         self.menu_project.addAction(self.menu_project_import)
         self.menu_project.addAction(self.menu_project_export)
@@ -175,6 +201,7 @@ class Ui_MainWindow(object):
         self.menu_processing_2.addAction(self.menu_processing_design_tables)
         self.toolBar.addAction(self.menu_project_new)
         self.toolBar.addAction(self.menu_project_open)
+        self.toolBar.addAction(self.menu_project_save_as)
         self.toolBar_2.addAction(self.menu_processing_classification)
         self.toolBar_2.addAction(self.menu_processing_sorted_numeration)
         self.toolBar_2.addAction(self.menu_processing_design_objects)
@@ -209,6 +236,7 @@ class Ui_MainWindow(object):
         self.menu_processing_design_tables.setText(QCoreApplication.translate("MainWindow", u"\u041e\u0444\u043e\u0440\u043c\u0438\u0442\u044c \u0442\u0430\u0431\u043b\u0438\u0446\u044b \u0432 \u0447\u0435\u0440\u0442\u0435\u0436", None))
         self.menu_about.setText(QCoreApplication.translate("MainWindow", u"\u041e \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u0435", None))
         self.menu_manual.setText(QCoreApplication.translate("MainWindow", u"\u0420\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e", None))
+        self.menu_project_save_as.setText(QCoreApplication.translate("MainWindow", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u043a\u0430\u043a", None))
         ___qtreewidgetitem = self.tree_manager.headerItem()
         ___qtreewidgetitem.setText(0, QCoreApplication.translate("MainWindow", u"\u041c\u0435\u043d\u0435\u0434\u0436\u0435\u0440 \u043f\u0440\u043e\u0435\u043a\u0442\u0430", None));
 
