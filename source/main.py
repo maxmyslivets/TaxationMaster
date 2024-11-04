@@ -4,15 +4,19 @@ import sys
 import tempfile
 from pathlib import Path
 
-from PySide6 import QtWidgets
+from PySide6 import QtWidgets, QtCore
+from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QFileDialog
 
+from utils.convert import oda_converter
 from .view.view import View
 from .model.model import Model
 
 
 class TaxationTool:
     project: Path
+    project_dir: Path
+    taxation_plan: Path
     def __init__(self, model, view, app):
         super(TaxationTool, self).__init__()
 
@@ -32,6 +36,7 @@ class TaxationTool:
         self.view.menu_project_save_as.triggered.connect(self.save_project)
         self.view.menu_project_new.triggered.connect(self.create_new_project)
         self.view.menu_project_open.triggered.connect(self.open_project)
+        self.view.menu_project_import.triggered.connect(self.import_dxf_taxation)
 
     def save_project(self) -> None:
         save_as = QFileDialog()
@@ -39,8 +44,11 @@ class TaxationTool:
         project_path, _ = save_as.getSaveFileName(parent=self.view, caption="Сохранить как...", dir='/',
                                                   filter="Taxation tool project (*.ttpr)")
         if project_path:
+            project_path = Path(project_path).parent / Path(project_path).name.replace(" ", "_")
             try:
-                os.makedirs(Path(project_path).parent / f"TaxationTool_{Path(project_path).name[:-4]}")
+                project_dir = Path(project_path).parent / f"TaxationTool_{Path(project_path).name[:-4]}"
+                os.makedirs(project_dir)
+                self.project_dir = project_dir
             except Exception as e:
                 self.view.log(f"[ERROR]\tОшибка создания временной директории ({self.temp_path}).\n{str(e)}")
                 return
@@ -61,12 +69,14 @@ class TaxationTool:
 
         try:
             os.makedirs(self.temp_path)
-            os.makedirs(self.temp_path / "TaxationTool_Новый проект")
+            project_dir = self.temp_path / "TaxationTool_Новый_проект"
+            os.makedirs(project_dir)
+            self.project_dir = project_dir
         except Exception as e:
             self.view.log(f"[ERROR]\tОшибка создания временной директории ({self.temp_path}).\n{str(e)}")
             return
 
-        project_path = self.temp_path / "Новый проект.ttpr"
+        project_path = self.temp_path / "Новый_проект.ttpr"
         with open(project_path, 'w', encoding='utf-8') as f:
             pass
 
@@ -102,6 +112,51 @@ class TaxationTool:
         # self.view.console_log.clear()
         self.view.setWindowTitle("Taxation Tool - " + self.project.name)
         self.view.log("[DEBUG]\tОбновление интерфейса.")
+
+    def import_dxf_taxation(self) -> None:
+
+        input_dir = self.project_dir / "taxation_plan_dwg"
+        if input_dir.exists():
+            shutil.rmtree(input_dir)
+        os.makedirs(input_dir, exist_ok=True)
+
+        output_dir = self.project_dir / "taxation_plan_dxf"
+        if output_dir.exists():
+            shutil.rmtree(output_dir)
+        os.makedirs(output_dir, exist_ok=True)
+
+        import_dialog = QFileDialog()
+        import_dialog.setDefaultSuffix('.dwg')
+        dwg_path, _ = import_dialog.getOpenFileName(parent=self.view, caption="Импорт чертежа...", dir='/',
+                                                      filter="Чертежи (*.dwg)")
+        if not dwg_path:
+            return
+
+        shutil.copyfile(dwg_path, input_dir / Path(dwg_path).name.replace(" ", "_"))
+
+        converter_path = Path("utils/ODAFileConverter.exe").absolute()
+
+        invalid_path = []
+        for path in [input_dir, output_dir, converter_path]:
+            if isinstance(path, Path) and ' ' in str(path):
+                invalid_path.append(str(path))
+        if invalid_path:
+            self.view.log(
+                f"[ERROR]\tПереместите папку с программой ({invalid_path}) в директорию без пробелов в именах папок.")
+            return
+
+        try:
+            oda_converter(converter_path, input_dir, output_dir)
+        except Exception as e:
+            self.view.log(f"[ERROR]\tОшибка конвертации файлов из ({input_dir}) в ({output_dir}).")
+            return
+        self.view.log(f"[DEBUG]\tФайлы успешно конвертированы из ({input_dir}) в ({output_dir}).")
+
+        self.view.tree_manager.findItems("Чертеж таксации", QtCore.Qt.MatchContains)[0].setText(
+            0, f"Чертеж таксации ({Path(dwg_path).name[:-3]})")
+        self.taxation_plan = Path([path for path in os.listdir(output_dir) if path.endswith(".dxf")][0])
+        self.view.log(f"Файл чертежа таксации ({dwg_path}) успешно импортирован.")
+        print(self.taxation_plan)
 
 
 def main():
