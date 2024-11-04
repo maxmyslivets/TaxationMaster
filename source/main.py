@@ -37,7 +37,10 @@ class TaxationTool:
         self.view.menu_project_save_as.triggered.connect(self.save_project)
         self.view.menu_project_new.triggered.connect(self.create_new_project)
         self.view.menu_project_open.triggered.connect(self.open_project)
+
         self.view.menu_project_import.triggered.connect(self.import_dxf_taxation)
+
+        self.view.menu_processing_classification.triggered.connect(self.process_classification)
 
     def save_project(self) -> None:
         save_as = QFileDialog()
@@ -152,13 +155,17 @@ class TaxationTool:
             return
         self.view.log(f"[DEBUG]\tФайлы успешно конвертированы из ({input_dir}) в ({output_dir}).")
 
-        self.taxation_plan = input_dir / Path(dwg_path).name.replace(" ", "_").replace(".dwg", ".dxf")
+        self.taxation_plan = output_dir / Path(dwg_path).name.replace(" ", "_").replace(".dwg", ".dxf")
 
         item = self.view.tree_manager.findItems("Чертеж таксации", QtCore.Qt.MatchContains)[0]
         children_item = QTreeWidgetItem(item)
         children_item.setText(0, self.taxation_plan.name)
 
         self.view.log(f"Файл чертежа таксации ({dwg_path}) успешно импортирован.")
+
+    def process_classification(self) -> None:
+        data = self.model.extract_taxation_plan(self.taxation_plan)
+        self.view.log(f"Номеров: {len(data[0])}, Линий: {len(data[1])}, Контуров: {len(data[2])}, Зон: {len(data[3])}")
 
 
 def main():
