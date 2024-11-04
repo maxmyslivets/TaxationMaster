@@ -6,7 +6,7 @@ from pathlib import Path
 
 from PySide6 import QtWidgets, QtCore
 from PySide6.QtGui import QAction
-from PySide6.QtWidgets import QFileDialog
+from PySide6.QtWidgets import QFileDialog, QTreeWidgetItem
 
 from utils.convert import oda_converter
 from .view.view import View
@@ -14,9 +14,11 @@ from .model.model import Model
 
 
 class TaxationTool:
+
     project: Path
     project_dir: Path
     taxation_plan: Path
+
     def __init__(self, model, view, app):
         super(TaxationTool, self).__init__()
 
@@ -30,7 +32,6 @@ class TaxationTool:
         self.connect_signals()
 
         self.view.show()
-
 
     def connect_signals(self) -> None:
         self.view.menu_project_save_as.triggered.connect(self.save_project)
@@ -102,7 +103,6 @@ class TaxationTool:
             else:
                 self.view.log(f"[ERROR]\tНе удалось открыть проект ({project_path}).")
 
-
     def clear_temp_project(self) -> None:
         self.view.log("[DEBUG]\tУдаление временных файлов.")
         if self.temp_path.exists():
@@ -152,11 +152,13 @@ class TaxationTool:
             return
         self.view.log(f"[DEBUG]\tФайлы успешно конвертированы из ({input_dir}) в ({output_dir}).")
 
-        self.view.tree_manager.findItems("Чертеж таксации", QtCore.Qt.MatchContains)[0].setText(
-            0, f"Чертеж таксации ({Path(dwg_path).name[:-3]})")
-        self.taxation_plan = Path([path for path in os.listdir(output_dir) if path.endswith(".dxf")][0])
+        self.taxation_plan = input_dir / Path(dwg_path).name.replace(" ", "_").replace(".dwg", ".dxf")
+
+        item = self.view.tree_manager.findItems("Чертеж таксации", QtCore.Qt.MatchContains)[0]
+        children_item = QTreeWidgetItem(item)
+        children_item.setText(0, self.taxation_plan.name)
+
         self.view.log(f"Файл чертежа таксации ({dwg_path}) успешно импортирован.")
-        print(self.taxation_plan)
 
 
 def main():
