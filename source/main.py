@@ -164,8 +164,8 @@ class TaxationTool:
         self.view.log(f"Файл чертежа таксации ({dwg_path}) успешно импортирован.")
 
     def process_classification(self) -> None:
-        data = self.model.extract_taxation_plan(self.taxation_plan)
-        self.view.log(f"Номеров: {len(data[0])}, Линий: {len(data[1])}, Контуров: {len(data[2])}, Зон: {len(data[3])}")
+        data = self.model.process_classification(self.taxation_plan)
+        self.view.log(str(data))
 
 
 def main():
