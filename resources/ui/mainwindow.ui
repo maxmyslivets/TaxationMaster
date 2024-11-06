@@ -14,7 +14,7 @@
    <string>Taxation Tool</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../resources.qrc">
+   <iconset>
     <normaloff>:/icons/ico/taxation_tool.ico</normaloff>:/icons/ico/taxation_tool.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -183,7 +183,7 @@
     <property name="title">
      <string>Настройки</string>
     </property>
-    <addaction name="menu_settings_paths"/>
+    <addaction name="Setting"/>
    </widget>
    <widget class="QMenu" name="menu_help">
     <property name="title">
@@ -221,6 +221,8 @@
    <addaction name="menu_project_new"/>
    <addaction name="menu_project_open"/>
    <addaction name="menu_project_save_as"/>
+   <addaction name="menu_project_import"/>
+   <addaction name="menu_project_export"/>
   </widget>
   <widget class="QToolBar" name="toolBar_2">
    <property name="windowTitle">
@@ -234,6 +236,7 @@
    </attribute>
    <addaction name="menu_processing_classification"/>
    <addaction name="menu_processing_sorted_numeration"/>
+   <addaction name="separator"/>
    <addaction name="menu_processing_design_objects"/>
    <addaction name="menu_processing_design_tables"/>
    <addaction name="separator"/>
@@ -251,71 +254,104 @@
    <addaction name="menu_database_species"/>
    <addaction name="menu_database_densitys"/>
    <addaction name="menu_database_volumes"/>
+   <addaction name="separator"/>
+   <addaction name="Setting"/>
   </widget>
   <action name="menu_database_species">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/database/article.svg</normaloff>:/database/article.svg</iconset>
+   </property>
    <property name="text">
     <string>Породы</string>
    </property>
   </action>
   <action name="menu_database_densitys">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/database/file-text.svg</normaloff>:/database/file-text.svg</iconset>
+   </property>
    <property name="text">
     <string>Плотности</string>
    </property>
   </action>
   <action name="menu_project_new">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/project/file.svg</normaloff>:/project/file.svg</iconset>
+   </property>
    <property name="text">
     <string>Новый</string>
    </property>
   </action>
-  <action name="menu_settings_paths">
-   <property name="text">
-    <string>Пути</string>
-   </property>
-  </action>
   <action name="menu_database_volumes">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/database/book.svg</normaloff>:/database/book.svg</iconset>
+   </property>
    <property name="text">
     <string>Таблица объемов стволов</string>
    </property>
   </action>
-  <action name="menu_processing">
-   <property name="text">
-    <string>обработка</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
   <action name="menu_project_open">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/project/folder.svg</normaloff>:/project/folder.svg</iconset>
+   </property>
    <property name="text">
     <string>Открыть</string>
    </property>
   </action>
   <action name="menu_project_import">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/project/file-receive.svg</normaloff>:/project/file-receive.svg</iconset>
+   </property>
    <property name="text">
     <string>Импорт...</string>
    </property>
   </action>
   <action name="menu_project_export">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/project/file-send.svg</normaloff>:/project/file-send.svg</iconset>
+   </property>
    <property name="text">
     <string>Экспорт...</string>
    </property>
   </action>
   <action name="menu_processing_classification">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/processing/off-grid.svg</normaloff>:/processing/off-grid.svg</iconset>
+   </property>
    <property name="text">
     <string>Классификация по зонам</string>
    </property>
   </action>
   <action name="menu_processing_design_objects">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/processing/inkpen.svg</normaloff>:/processing/inkpen.svg</iconset>
+   </property>
    <property name="text">
     <string>Оформить объекты в чертеж</string>
    </property>
   </action>
   <action name="menu_processing_sorted_numeration">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/processing/stats-pipes.svg</normaloff>:/processing/stats-pipes.svg</iconset>
+   </property>
    <property name="text">
     <string>Упорядочить нумерацию</string>
    </property>
   </action>
   <action name="menu_processing_design_tables">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/processing/paper-ruler.svg</normaloff>:/processing/paper-ruler.svg</iconset>
+   </property>
    <property name="text">
     <string>Оформить таблицы в чертеж</string>
    </property>
@@ -331,11 +367,24 @@
    </property>
   </action>
   <action name="menu_project_save_as">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/project/file-upload.svg</normaloff>:/project/file-upload.svg</iconset>
+   </property>
    <property name="text">
     <string>Сохранить как</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="Setting">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/setting/settings-complex.svg</normaloff>:/setting/settings-complex.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Настройки</string>
    </property>
   </action>
  </widget>

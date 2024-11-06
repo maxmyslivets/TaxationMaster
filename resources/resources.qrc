@@ -1,5 +1,27 @@
 <RCC>
-  <qresource prefix="icons">
+  <qresource prefix="app">
     <file>ico/taxation_tool.ico</file>
+  </qresource>
+  <qresource prefix="setting">
+    <file>settings-complex.svg</file>
+  </qresource>
+  <qresource prefix="database">
+    <file>article.svg</file>
+    <file>book.svg</file>
+    <file>file-text.svg</file>
+  </qresource>
+  <qresource prefix="project">
+    <file>file-receive.svg</file>
+    <file>file-send.svg</file>
+    <file>folder.svg</file>
+    <file>file.svg</file>
+    <file>file-upload.svg</file>
+    <file>file-download.svg</file>
+  </qresource>
+  <qresource prefix="processing">
+    <file>off-grid.svg</file>
+    <file>stats-pipes.svg</file>
+    <file>paper-ruler.svg</file>
+    <file>inkpen.svg</file>
   </qresource>
 </RCC>
