@@ -164,13 +164,17 @@ class TaxationTool:
         self.view.log(f"Файл чертежа таксации ({dwg_path}) успешно импортирован.")
 
     def process_classification(self) -> None:
-        data = self.model.process_classification(self.taxation_plan)
-        self.view.log(str(data))
+        self.model.read_taxation_plan(self.taxation_plan)
+        self.model.autocad_data_structuring()
+        self.view.log("Файл чертежа таксации успешно обработан.")
+        self.view.log(f"[DEBUG]\tКоличество точечных растений: {len(self.model.numbers)}")
+        self.view.log(f"[DEBUG]\tКоличество полос и контуров растительности: {len(self.model.shapes)}")
+        self.view.log(f"[DEBUG]\tЗоны: {[name for _, name in self.model.zone_names.items()]}")
 
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
-    model = Model()
     view = View()
+    model = Model(view.log)
     taxation_tool = TaxationTool(model, view, app)
     sys.exit(app.exec_())
