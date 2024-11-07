@@ -14,14 +14,19 @@ def init_model():
     return model
 
 
-def test_len_numbers(init_model):
+def test_numbers(init_model):
 
     # Количество номеров в чертеже
-    COUNT_NUMBERS = 29
+    NUMBERS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "16", "17",
+               "18", "19а-г", "20", "21", "22", "23", "24-25", "26-27", "28", "28", "28"]
+    NUMBERS.sort()
 
     model = init_model
 
-    assert len(model.numbers) == COUNT_NUMBERS, "Количество номеров не совпадает с чертежом"
+    numbers = [number for _, number in model.numbers.items()]
+    numbers.sort()
+
+    assert numbers == NUMBERS, "Номера не совпадают с чертежом"
 
 
 def test_len_numbers_position(init_model):
