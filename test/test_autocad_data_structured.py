@@ -92,6 +92,7 @@ def test_zones_from_zone_names(init_model):
     for _, zone_name in model.zone_names.items():
         zone_names_from_model.append(zone_name)
     zone_names_from_model.sort()
+
     assert zone_names_from_model == ZONE_NAMES, "Названия зон не совпадают с чертежом"
 
 
@@ -109,6 +110,7 @@ def test_tree_from_numbers(init_model):
     for _, k_number in model.numbers_from_tree.items():
         tree_numbers_from_model.append(model.numbers[k_number])
     tree_numbers_from_model.sort()
+
     assert tree_numbers_from_model == TREE_NUMBERS, "Номера деревьев не совпадают с чертежом"
 
 
@@ -128,6 +130,7 @@ def test_numbers_from_shape(init_model):
     for k_number in idx_numbers_from_shape_from_model:
         numbers_from_shape_from_model.append(model.numbers[k_number])
     numbers_from_shape_from_model.sort()
+
     assert numbers_from_shape_from_model == NUMBERS_FROM_SHAPE, "Номера фигур не совпадают с чертежом"
 
 
@@ -143,6 +146,7 @@ def test_count_shape_is_line(init_model):
     for _, shape in model.shapes.items():
         if isinstance(shape, LineString):
             line_count += 1
+
     assert line_count == COUNT_LINE, "Количество полученных линий не совпадает с чертежом"
 
 
@@ -158,4 +162,5 @@ def test_count_shape_is_contour(init_model):
     for _, shape in model.shapes.items():
         if isinstance(shape, Polygon):
             contour_count += 1
+
     assert contour_count == COUNT_CONTOUR, "Количество полученных контуров не совпадает с чертежом"
