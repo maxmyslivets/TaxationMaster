@@ -14,8 +14,6 @@ from .model.model import Model
 
 class TaxationTool:
 
-    # FIXME: При новом импорте чертежа таксации создается новая строка в менеджере проектов вместо её замены
-
     project: Path
     project_dir: Path
     taxation_plan: Path
@@ -158,9 +156,10 @@ class TaxationTool:
 
         self.taxation_plan = output_dir / Path(dwg_path).name.replace(" ", "_").replace(".dwg", ".dxf")
 
-        item = self.view.tree_manager.findItems("Чертеж таксации", QtCore.Qt.MatchContains)[0]
-        children_item = QTreeWidgetItem(item)
-        children_item.setText(0, self.taxation_plan.name)
+        root_item_taxation_plan = self.view.tree_manager.findItems("Чертеж таксации", QtCore.Qt.MatchContains)[0]
+        root_item_taxation_plan.takeChild(0)
+        children_item_taxation_plan = QTreeWidgetItem(root_item_taxation_plan)
+        children_item_taxation_plan.setText(0, self.taxation_plan.name)
 
         self.model.clear_data()
         self.model.valid = True
