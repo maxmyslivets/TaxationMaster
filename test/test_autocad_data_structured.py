@@ -4,21 +4,12 @@ import pytest
 from shapely.geometry import LineString, Polygon
 
 from source.model.model import Model
-
-
-def log_function(s: str):
-
-    PRINT_LOG = True
-
-    if PRINT_LOG:
-        print("\n\033[33m" + s + "\033[0m")
-    else:
-        pass
+from test import log
 
 
 @pytest.fixture(scope='module')
 def init_model():
-    model = Model(log=log_function)
+    model = Model(log=log)
     model.read_taxation_plan(Path("test.dxf"))
     model.autocad_data_structuring()
     return model
