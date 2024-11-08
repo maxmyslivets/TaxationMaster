@@ -230,37 +230,58 @@ class Model(QtCore.QObject):
 
         k_split_number = -1
         split_numbers_temp_list = []
-        for k_number, number in self.numbers.items():
-            if number in split_numbers_temp_list:
-                exist_k_split_number = next(k for k, v in self.split_numbers.items() if v == number)
-                self.number_from_split_number[exist_k_split_number].append(k_number)
-                continue
-            # Извлечение простых чисел
-            if re.match('^[0-9]*$', number) is not None:
-                k_split_number += 1
-                self.split_numbers[k_split_number] = number
-                self.number_from_split_number[k_split_number] = [k_number]
-                split_numbers_temp_list.append(number)
-            # Извлечение диапазона чисел с разделителем "-"
-            elif re.match(r'\d+-\d+', number):
-                start, end = map(int, number.split('-'))
-                result = [str(i) for i in range(start, end + 1)]
-                for new_number in result:
+        for k_number, source_number in self.numbers.items():
+            items = [item.strip() for item in source_number.split(",")]
+            for number in items:
+
+                if number in split_numbers_temp_list:
+                    exist_k_split_number = next(k for k, v in self.split_numbers.items() if v == number)
+                    self.number_from_split_number[exist_k_split_number].append(k_number)
+                    continue
+
+                # Извлечение простых чисел
+                if re.match(r'^\d+$', number):
                     k_split_number += 1
-                    self.split_numbers[k_split_number] = new_number
-                    if k_split_number not in self.number_from_split_number:
-                        self.number_from_split_number[k_split_number] = list()
-                    self.number_from_split_number[k_split_number].append(k_number)
-                split_numbers_temp_list.append(number)
-            # Извлечение диапазона чисел с буквенным окончанием
-            elif re.match(r'\d+[а-я]', number):
-                num = re.match(r'\d+', number).group()
-                start_letter, end_letter = re.findall(r'[а-я]', number)
-                result = [f"{num}{chr(i)}" for i in range(ord(start_letter), ord(end_letter) + 1)]
-                for new_number in result:
+                    self.split_numbers[k_split_number] = number
+                    self.number_from_split_number[k_split_number] = [k_number]
+                    split_numbers_temp_list.append(number)
+
+                # Обработка отдельных элементов с буквенным окончанием (например, "8г")
+                elif re.match(r'^\d+[а-я]$', number):
                     k_split_number += 1
-                    self.split_numbers[k_split_number] = new_number
-                    if k_split_number not in self.number_from_split_number:
-                        self.number_from_split_number[k_split_number] = list()
-                    self.number_from_split_number[k_split_number].append(k_number)
-                split_numbers_temp_list.append(number)
+                    self.split_numbers[k_split_number] = number
+                    self.number_from_split_number[k_split_number] = [k_number]
+                    # split_numbers_temp_list.append(item)
+
+                # Извлечение диапазона чисел с разделителем "-"
+                elif re.match(r'^\d+-\d+$', number):
+                    start, end = map(int, number.split('-'))
+                    result = [str(i) for i in range(start, end + 1)]
+                    for new_number in result:
+                        k_split_number += 1
+                        self.split_numbers[k_split_number] = new_number
+                        if k_split_number not in self.number_from_split_number:
+                            self.number_from_split_number[k_split_number] = []
+                        self.number_from_split_number[k_split_number].append(k_number)
+                    split_numbers_temp_list.append(number)
+
+                # Извлечение диапазона чисел с буквенным окончанием
+                elif re.match(r'^\d+[а-я]-[а-я]$', number):
+                    num = re.match(r'\d+', number).group()
+                    start_letter, end_letter = re.findall(r'[а-я]', number)
+                    result = [f"{num}{chr(i)}" for i in range(ord(start_letter), ord(end_letter) + 1)]
+                    for new_number in result:
+                        k_split_number += 1
+                        self.split_numbers[k_split_number] = new_number
+                        if k_split_number not in self.number_from_split_number:
+                            self.number_from_split_number[k_split_number] = []
+                        self.number_from_split_number[k_split_number].append(k_number)
+                    split_numbers_temp_list.append(number)
+
+                # Все остальные непредусмотренные случаи
+                else:
+                    self.log(f"[WARNING]\tНе удалось подобрать регулярное выражения для номера `{number}`."
+                             f"Предлагается ввести значения вручную через табличную форму.")    # TODO: Предусмотреть изменение через графический интерфейс
+
+        for k_split_number,  k_number_list in self.number_from_split_number.items():
+            print(self.split_numbers[k_split_number], ":", [self.numbers[k_number] for k_number in k_number_list])
