@@ -5,29 +5,39 @@ import pytest
 from source.model.model import Model
 
 
+def log_function(s: str):
+
+    PRINT_LOG = True
+
+    if PRINT_LOG:
+        print("\n\033[33m" + s + "\033[0m")
+    else:
+        pass
+
+
 def init_model_fail_duplicate_numbers_of_tree() -> Model:
-    model = Model(log=print)
+    model = Model(log=log_function)
     model.read_taxation_plan(Path("test_fail_duplicate_numbers_of_tree.dxf"))
     model.autocad_data_structuring()
     return model
 
 
 def init_model_fail_duplicate_numbers_of_shapes() -> Model:
-    model = Model(log=print)
+    model = Model(log=log_function)
     model.read_taxation_plan(Path("test_fail_duplicate_numbers_of_shapes.dxf"))
     model.autocad_data_structuring()
     return model
 
 
 def init_model_fail_duplicate_numbers_tree_shapes() -> Model:
-    model = Model(log=print)
+    model = Model(log=log_function)
     model.read_taxation_plan(Path("test_fail_duplicate_numbers_tree-shapes.dxf"))
     model.autocad_data_structuring()
     return model
 
 
 def init_model_fail_intersection_zone() -> Model:
-    model = Model(log=print)
+    model = Model(log=log_function)
     model.read_taxation_plan(Path("test_fail_intersection_zone.dxf"))
     model.autocad_data_structuring()
     return model
