@@ -5,21 +5,55 @@ import pytest
 from source.model.model import Model
 
 
-@pytest.fixture(scope='module')
-def init_model():
+def init_model_fail_duplicate_numbers_of_tree() -> Model:
     model = Model(log=print)
-    model.read_taxation_plan(Path("test_fail.dxf"))
+    model.read_taxation_plan(Path("test_fail_duplicate_numbers_of_tree.dxf"))
     model.autocad_data_structuring()
     return model
 
 
+def init_model_fail_duplicate_numbers_of_shapes() -> Model:
+    model = Model(log=print)
+    model.read_taxation_plan(Path("test_fail_duplicate_numbers_of_shapes.dxf"))
+    model.autocad_data_structuring()
+    return model
+
+
+def init_model_fail_duplicate_numbers_tree_shapes() -> Model:
+    model = Model(log=print)
+    model.read_taxation_plan(Path("test_fail_duplicate_numbers_tree-shapes.dxf"))
+    model.autocad_data_structuring()
+    return model
+
+
+def init_model_fail_intersection_zone() -> Model:
+    model = Model(log=print)
+    model.read_taxation_plan(Path("test_fail_intersection_zone.dxf"))
+    model.autocad_data_structuring()
+    return model
+
+
+init_models = [
+    init_model_fail_duplicate_numbers_of_tree,
+    init_model_fail_duplicate_numbers_of_shapes,
+    init_model_fail_duplicate_numbers_tree_shapes,
+    init_model_fail_intersection_zone,
+]
+
+
+@pytest.mark.parametrize('init_model', init_models)
 def test_valid(init_model):
-    model = init_model
+
+    model = init_model()
+
     assert not model.valid
 
 
+@pytest.mark.parametrize('init_model', init_models)
 def test_exist_data(init_model):
-    model = init_model
+
+    model = init_model()
+
     assert len(model.taxation_plan_entity_objects["номера"]) == 0
     assert len(model.taxation_plan_entity_objects["полосы"]) == 0
     assert len(model.taxation_plan_entity_objects["контуры"]) == 0

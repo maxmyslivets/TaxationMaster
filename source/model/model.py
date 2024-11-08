@@ -1,9 +1,11 @@
 import re
 from collections import Counter
+from itertools import combinations
 from pathlib import Path
 
 from PySide6 import QtCore
 from ezdxf.entities import Text, MText, Line, LWPolyline
+from shapely import MultiPolygon
 from shapely.geometry import Point, LineString, Polygon
 
 from processing.autocad import extract_data_from_taxation_plan
@@ -26,6 +28,7 @@ class Model(QtCore.QObject):
         }
 
         self.MIN_DISTANCE = 0.01    # TODO: вынести в настройки
+        self.MIN_AREA = 0.01        # TODO: вынести в настройки
 
         self.numbers = dict()                   # key: k_number     value: number
         self.numbers_position = dict()          # key: k_number     value: position
@@ -162,13 +165,29 @@ class Model(QtCore.QObject):
                 zone_name_position = Point(entity.dxf.insert[0], entity.dxf.insert[1])
                 for k_zone, shape in self.zone_shapes.items():
                     if zone_name_position.distance(shape.exterior) < self.MIN_DISTANCE:
-                        if k_zone_name not in self.zones_from_zone_names:
-                            self.zones_from_zone_names[k_zone_name] = list()
-                        self.zones_from_zone_names[k_zone_name].append(k_zone)
+                        _k_zone_name = next(k for k, v in self.zone_names.items() if v == zone_name)
+                        if _k_zone_name not in self.zones_from_zone_names:
+                            self.zones_from_zone_names[_k_zone_name] = list()
+                        self.zones_from_zone_names[_k_zone_name].append(k_zone)
             elif isinstance(entity, LWPolyline):
                 continue
             else:
                 self.log(f"[WARNING]\tТип фигуры {type(entity)} не является LWPolyline, Text или MText.")
+
+        # Валидация перекрытия зон
+        pairs_k_zone_names_validation = list(combinations(self.zone_names.keys(), 2))
+        for k_zone_name_1, k_zone_name_2 in pairs_k_zone_names_validation:
+            k_zone_shape_list_1 = self.zones_from_zone_names[k_zone_name_1]
+            k_zone_shape_list_2 = self.zones_from_zone_names[k_zone_name_2]
+            zone_shapes_1_list = [self.zone_shapes[k] for k in [k for k in k_zone_shape_list_1]]
+            zone_shapes_2_list = [self.zone_shapes[k] for k in [k for k in k_zone_shape_list_2]]
+            zone_1 = MultiPolygon([polygon for polygon in zone_shapes_1_list])
+            zone_2 = MultiPolygon([polygon for polygon in zone_shapes_2_list])
+
+            if zone_1.intersection(zone_2).area > self.MIN_AREA:
+                self.valid = False
+                self.log(f"[ERROR]\tЗоны `{self.zone_names[k_zone_name_1]}` и `{self.zone_names[k_zone_name_2]}` "
+                         f"перекрываются на {round(zone_1.intersection(zone_2).area, 2)} м2.")
 
         # Собираем self.tree и self.numbers_from_tree
 
@@ -176,22 +195,28 @@ class Model(QtCore.QObject):
         for k_shape, k_number_list in self.numbers_from_shape.items():
             shape_numbers_temp_list.extend(k_number_list)
 
-        numbers_validation_list = []  # список номеров для валидации
+        numbers_from_tree_validation = []  # список номеров для валидации
         k_tree = 0
         for k_number, number_position in self.numbers_position.items():
             if k_number not in shape_numbers_temp_list:
                 self.tree[k_tree] = number_position
                 k_tree += 1
                 self.numbers_from_tree[k_tree] = k_number
-                numbers_validation_list.append(self.numbers[k_number])
+                numbers_from_tree_validation.append(self.numbers[k_number])
 
         # Валидация на наличие одинаковых номеров для точечных объектов растительности
-        counter_number_of_tree = Counter(numbers_validation_list)
+        counter_number_of_tree = Counter(numbers_from_tree_validation)
         for number, count in counter_number_of_tree.items():
             if count > 1:
                 self.valid = False
                 self.log(f"[ERROR]\tНомер точечного объекта растительности `{number}` встречается в чертеже "
                          f"{count} раз(а).")
+
+        # Валидация на наличие одинаковых номеров у объектов растительности относительно фигур
+        for number in list(set(shapes_validation_dict.keys()) & set(numbers_from_tree_validation)):
+            self.valid = False
+            self.log(f"[ERROR]\tНомер `{number}` встречается в чертеже и на точечном объекте растительности "
+                     f"и на фигуре")
 
         if not self.valid:
             self.log(f"[ERROR]\tЧертеж таксации содержит ошибки и не будет обработан. "
