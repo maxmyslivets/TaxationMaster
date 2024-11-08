@@ -245,12 +245,13 @@ class Model(QtCore.QObject):
         self.split_numbers = dict()
         self.number_from_split_number = dict()
 
-        self.valid = True
-
     def splitting_numbers(self) -> None:
         """
         Разделение составных номеров.
         """
+
+        if not self.valid:
+            return
 
         k_split_number = -1
         split_numbers_temp_list = []

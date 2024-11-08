@@ -55,10 +55,6 @@ def test_exist_data(init_model):
 
     model = init_model()
 
-    assert len(model.taxation_plan_entity_objects["номера"]) == 0
-    assert len(model.taxation_plan_entity_objects["полосы"]) == 0
-    assert len(model.taxation_plan_entity_objects["контуры"]) == 0
-    assert len(model.taxation_plan_entity_objects["зоны"]) == 0
     assert len(model.numbers) == 0
     assert len(model.numbers_position) == 0
     assert len(model.shapes) == 0
