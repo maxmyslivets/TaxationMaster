@@ -1,4 +1,5 @@
 import re
+from collections import Counter
 from pathlib import Path
 
 from PySide6 import QtCore
@@ -14,6 +15,8 @@ class Model(QtCore.QObject):
         super(Model, self).__init__()
 
         self.log = log
+
+        self.valid = True
 
         self.taxation_plan_entity_objects = {
             "номера": list(),
@@ -52,6 +55,28 @@ class Model(QtCore.QObject):
         self.taxation_plan_entity_objects["полосы"] = lines
         self.taxation_plan_entity_objects["контуры"] = contours
         self.taxation_plan_entity_objects["зоны"] = zones
+
+    def clear_data(self) -> None:
+        """Очистка данных о чертеже таксации"""
+
+        self.taxation_plan_entity_objects = {
+            "номера": list(),
+            "полосы": list(),
+            "контуры": list(),
+            "зоны": list()
+        }
+
+        self.numbers = dict()
+        self.numbers_position = dict()
+        self.shapes = dict()
+        self.numbers_from_shape = dict()
+        self.zone_shapes = dict()
+        self.zone_names = dict()
+        self.zones_from_zone_names = dict()
+        self.tree = dict()
+        self.numbers_from_tree = dict()
+        self.split_numbers = dict()
+        self.number_from_split_number = dict()
 
     def autocad_data_structuring(self) -> None:
         """
@@ -99,6 +124,18 @@ class Model(QtCore.QObject):
                         self.numbers_from_shape[k_shape] = list()
                     self.numbers_from_shape[k_shape].append(k_number)
 
+        # Валидация на наличие одинаковых номеров на разных фигурах
+        shapes_validation_dict = dict()
+        for k_shape, k_number_list in self.numbers_from_shape.items():
+            for k_number in k_number_list:
+                if self.numbers[k_number] not in shapes_validation_dict:
+                    shapes_validation_dict[self.numbers[k_number]] = list()
+                shapes_validation_dict[self.numbers[k_number]].append(k_shape)
+        for number, k_shape_list in shapes_validation_dict.items():
+            if len(set(k_shape_list)) > 1:
+                self.valid = False
+                self.log(f"[ERROR]\tНомер `{number}` встречается в чертеже на {len(k_shape_list)} фигурах.")
+
         # Собираем self.zone_shapes
 
         k_zone = 0
@@ -139,12 +176,27 @@ class Model(QtCore.QObject):
         for k_shape, k_number_list in self.numbers_from_shape.items():
             shape_numbers_temp_list.extend(k_number_list)
 
+        numbers_validation_list = []  # список номеров для валидации
         k_tree = 0
         for k_number, number_position in self.numbers_position.items():
             if k_number not in shape_numbers_temp_list:
                 self.tree[k_tree] = number_position
                 k_tree += 1
                 self.numbers_from_tree[k_tree] = k_number
+                numbers_validation_list.append(self.numbers[k_number])
+
+        # Валидация на наличие одинаковых номеров для точечных объектов растительности
+        counter_number_of_tree = Counter(numbers_validation_list)
+        for number, count in counter_number_of_tree.items():
+            if count > 1:
+                self.valid = False
+                self.log(f"[ERROR]\tНомер точечного объекта растительности `{number}` встречается в чертеже "
+                         f"{count} раз(а).")
+
+        if not self.valid:
+            self.log(f"[ERROR]\tЧертеж таксации содержит ошибки и не будет обработан. "
+                     f"Исправьте файл чертежа таксации и импортируйте его заново.")
+            self.clear_data()
 
     def splitting_numbers(self) -> None:
         """
