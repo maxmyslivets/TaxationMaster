@@ -117,6 +117,13 @@ class TaxationTool:
 
     def import_dxf_taxation(self) -> None:
 
+        import_dialog = QFileDialog()
+        import_dialog.setDefaultSuffix('.dwg')
+        dwg_path, _ = import_dialog.getOpenFileName(parent=self.view, caption="Импорт чертежа...", dir='/',
+                                                      filter="Чертежи (*.dwg)")
+        if dwg_path == "":
+            return
+
         input_dir = self.project_dir / "taxation_plan_dwg"
         if input_dir.exists():
             shutil.rmtree(input_dir)
@@ -126,13 +133,6 @@ class TaxationTool:
         if output_dir.exists():
             shutil.rmtree(output_dir)
         os.makedirs(output_dir, exist_ok=True)
-
-        import_dialog = QFileDialog()
-        import_dialog.setDefaultSuffix('.dwg')
-        dwg_path, _ = import_dialog.getOpenFileName(parent=self.view, caption="Импорт чертежа...", dir='/',
-                                                      filter="Чертежи (*.dwg)")
-        if not dwg_path:
-            return
 
         shutil.copyfile(dwg_path, input_dir / Path(dwg_path).name.replace(" ", "_"))
 
