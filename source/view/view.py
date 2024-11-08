@@ -11,8 +11,20 @@ class View(QMainWindow, Ui_MainWindow):
 
         self.setupUi(self)
 
-    def log(self, text) -> None:
+    def log(self, text: str) -> None:
+        if text.startswith("[DEBUG]"):
+            color = "green"
+        elif text.startswith("[WARNING]"):
+            color = "yellow"
+        elif text.startswith("[ERROR]"):
+            color = "red"
+        else:
+            color = None
+        if color is not None:
+            color_string = f"<p style='color:{color};'>{text}</p>"
+        else:
+            color_string = text
         try:
-            self.console_log.append(str(text))
+            self.console_log.append(color_string)
         except Exception:
-            self.console_log.append(traceback.format_exc())
+            self.console_log.append(f"[ERROR]\n{traceback.format_exc()}")
