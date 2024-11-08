@@ -5,7 +5,6 @@ import tempfile
 from pathlib import Path
 
 from PySide6 import QtWidgets, QtCore
-from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QFileDialog, QTreeWidgetItem
 
 from utils.convert import oda_converter
@@ -169,9 +168,24 @@ class TaxationTool:
         self.model.read_taxation_plan(self.taxation_plan)
         self.model.autocad_data_structuring()
         self.view.log("Файл чертежа таксации успешно обработан.")
-        self.view.log(f"[DEBUG]\tКоличество точечных растений: {len(self.model.numbers)}")
-        self.view.log(f"[DEBUG]\tКоличество полос и контуров растительности: {len(self.model.shapes)}")
-        self.view.log(f"[DEBUG]\tЗоны: {[name for _, name in self.model.zone_names.items()]}")
+        self.view.log(f"Количество точечных растений: {len(self.model.numbers)}")
+        self.view.log(f"Количество полос и контуров растительности: {len(self.model.shapes)}")
+        self.view.log(f"Зоны: {[name for _, name in self.model.zone_names.items()]}")
+        self.model.splitting_numbers()
+        self.model.calculate_intersects_shapes_in_zones()
+
+        split_numbers_in_zones_from_model = {zone_name: [] for _, zone_name in self.model.zone_names.items()}
+        for zone_name in split_numbers_in_zones_from_model.keys():
+            k_zone_name = next(k for k, v in self.model.zone_names.items() if v == zone_name)
+            k_zone_list = self.model.zones_from_zone_names[k_zone_name]
+            for k_zone in k_zone_list:
+                for k_split_number, _k_zone_list in self.model.intersects_shapes_in_zones.items():
+                    for _k_zone in _k_zone_list:
+                        if _k_zone == k_zone:
+                            split_numbers_in_zones_from_model[zone_name].append(self.model.split_numbers[k_split_number])
+        for zone_name in split_numbers_in_zones_from_model.keys():
+            self.view.log(f"Вхождения объектов в зону `{zone_name}`: "
+                          f"{split_numbers_in_zones_from_model[zone_name]}")
 
 
 def main():
