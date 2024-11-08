@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 from PySide6 import QtCore
@@ -33,7 +34,10 @@ class Model(QtCore.QObject):
         self.tree = dict()                      # key: k_tree       value: position
         self.numbers_from_tree = dict()         # key: k_tree       value: k_number
 
-    def read_taxation_plan(self, taxation_plan_path: Path):
+        self.split_numbers = dict()             # key: k_split_number     value: split_number
+        self.number_from_split_number = dict()  # key: k_split_number     value: list[k_number]
+
+    def read_taxation_plan(self, taxation_plan_path: Path) -> None:
         """
         Чтение данных из dxf чертежа таксации.
         :param taxation_plan_path: Путь до dxf чертежа
@@ -52,11 +56,6 @@ class Model(QtCore.QObject):
     def autocad_data_structuring(self) -> None:
         """
         Структурирование данных из объектов autocad в словари.
-        :param entity_numbers: Список текстовых объектов autocad со слоя "номера"
-        :param entity_lines: Список линейных объектов autocad со слоя "полосы"
-        :param entity_contours: Список линейных объектов autocad со слоя "контуры"
-        :param entity_zones: Список текстовых и линейных объектов autocad со слоя "зоны"
-        :return:
         """
 
         # Собираем self.numbers и self.number_positions
@@ -146,3 +145,45 @@ class Model(QtCore.QObject):
                 self.tree[k_tree] = number_position
                 k_tree += 1
                 self.numbers_from_tree[k_tree] = k_number
+
+    def splitting_numbers(self) -> None:
+        """
+        Разделение составных номеров.
+        """
+
+        k_split_number = -1
+        split_numbers_temp_list = []
+        for k_number, number in self.numbers.items():
+            if number in split_numbers_temp_list:
+                exist_k_split_number = next(k for k, v in self.split_numbers.items() if v == number)
+                self.number_from_split_number[exist_k_split_number].append(k_number)
+                continue
+            # Извлечение простых чисел
+            if re.match('^[0-9]*$', number) is not None:
+                k_split_number += 1
+                self.split_numbers[k_split_number] = number
+                self.number_from_split_number[k_split_number] = [k_number]
+                split_numbers_temp_list.append(number)
+            # Извлечение диапазона чисел с разделителем "-"
+            elif re.match(r'\d+-\d+', number):
+                start, end = map(int, number.split('-'))
+                result = [str(i) for i in range(start, end + 1)]
+                for new_number in result:
+                    k_split_number += 1
+                    self.split_numbers[k_split_number] = new_number
+                    if k_split_number not in self.number_from_split_number:
+                        self.number_from_split_number[k_split_number] = list()
+                    self.number_from_split_number[k_split_number].append(k_number)
+                split_numbers_temp_list.append(number)
+            # Извлечение диапазона чисел с буквенным окончанием
+            elif re.match(r'\d+[а-я]', number):
+                num = re.match(r'\d+', number).group()
+                start_letter, end_letter = re.findall(r'[а-я]', number)
+                result = [f"{num}{chr(i)}" for i in range(ord(start_letter), ord(end_letter) + 1)]
+                for new_number in result:
+                    k_split_number += 1
+                    self.split_numbers[k_split_number] = new_number
+                    if k_split_number not in self.number_from_split_number:
+                        self.number_from_split_number[k_split_number] = list()
+                    self.number_from_split_number[k_split_number].append(k_number)
+                split_numbers_temp_list.append(number)
