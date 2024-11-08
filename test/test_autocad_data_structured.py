@@ -96,7 +96,7 @@ def test_zones_from_zone_names(init_model):
     assert zone_names_from_model == ZONE_NAMES, "Названия зон не совпадают с чертежом"
 
 
-def test_tree_from_numbers(init_model):
+def test_numbers_from_tree(init_model):
     """Проверка совпадения номеров точечных объектов с названиями из чертежа"""
 
     # Список номеров точечных объектов чертеже
