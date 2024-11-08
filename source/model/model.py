@@ -43,6 +43,8 @@ class Model(QtCore.QObject):
         self.split_numbers = dict()             # key: k_split_number     value: split_number
         self.number_from_split_number = dict()  # key: k_split_number     value: list[k_number]
 
+        self.intersects_shapes_in_zones = dict()    # key: k_split_number   value: list[k_zone]
+
     def read_taxation_plan(self, taxation_plan_path: Path) -> None:
         """
         Чтение данных из dxf чертежа таксации.
@@ -200,9 +202,9 @@ class Model(QtCore.QObject):
         for k_number, number_position in self.numbers_position.items():
             if k_number not in shape_numbers_temp_list:
                 self.tree[k_tree] = number_position
-                k_tree += 1
                 self.numbers_from_tree[k_tree] = k_number
                 numbers_from_tree_validation.append(self.numbers[k_number])
+                k_tree += 1
 
         # Валидация на наличие одинаковых номеров для точечных объектов растительности
         counter_number_of_tree = Counter(numbers_from_tree_validation)
@@ -280,8 +282,34 @@ class Model(QtCore.QObject):
 
                 # Все остальные непредусмотренные случаи
                 else:
+                    # TODO: Предусмотреть изменение через графический интерфейс
                     self.log(f"[WARNING]\tНе удалось подобрать регулярное выражения для номера `{number}`."
-                             f"Предлагается ввести значения вручную через табличную форму.")    # TODO: Предусмотреть изменение через графический интерфейс
+                             f"Предлагается ввести значения вручную через табличную форму.")
 
-        for k_split_number,  k_number_list in self.number_from_split_number.items():
-            print(self.split_numbers[k_split_number], ":", [self.numbers[k_number] for k_number in k_number_list])
+    def calculate_intersects_shapes_in_zones(self) -> None:
+        """
+        Вычисление вхождений фигур и точечных объектов растительности в зоны
+        """
+
+        for k_zone, zone_shape in self.zone_shapes.items():
+            for k_split_number, _ in self.split_numbers.items():
+                k_number_list = self.number_from_split_number[k_split_number]
+                for k_number in k_number_list:
+                    try:
+                        k_tree = next(k for k, v in self.numbers_from_tree.items() if v == k_number)
+                    except StopIteration:
+                        k_tree = None
+                    if k_tree is not None and zone_shape.contains(self.tree[k_tree]):
+                        # Не добавление в список, а замена, т.к. точечный объект должен находиться только в одной зоне
+                        self.intersects_shapes_in_zones[k_split_number] = [k_zone]
+                    try:
+                        k_shape = next(k for k, v in self.numbers_from_shape.items() if k_number in v)
+                    except StopIteration:
+                        k_shape = None
+                    if k_shape is not None and zone_shape.intersects(self.shapes[k_shape]):
+                        if k_split_number not in self.intersects_shapes_in_zones:
+                            self.intersects_shapes_in_zones[k_split_number] = []
+                        self.intersects_shapes_in_zones[k_split_number].append(k_zone)
+
+        for k in self.intersects_shapes_in_zones.keys():
+            self.intersects_shapes_in_zones[k] = list(set(self.intersects_shapes_in_zones[k]))
