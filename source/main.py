@@ -161,9 +161,6 @@ class TaxationTool:
         children_item_taxation_plan = QTreeWidgetItem(root_item_taxation_plan)
         children_item_taxation_plan.setText(0, self.taxation_plan.name)
 
-        self.model.clear_data()
-        self.model.valid = True
-
         self.view.log(f"Файл чертежа таксации ({dwg_path}) успешно импортирован.")
 
     def process_classification(self) -> None:

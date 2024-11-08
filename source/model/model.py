@@ -51,6 +51,7 @@ class Model(QtCore.QObject):
         :param taxation_plan_path: Путь до dxf чертежа
         :return:
         """
+        self.clear_data_for_read_taxation_plan()
         try:
             numbers, lines, contours, zones = extract_data_from_taxation_plan(taxation_plan_path)
         except Exception as e:
@@ -61,8 +62,8 @@ class Model(QtCore.QObject):
         self.taxation_plan_entity_objects["контуры"] = contours
         self.taxation_plan_entity_objects["зоны"] = zones
 
-    def clear_data(self) -> None:
-        """Очистка данных о чертеже таксации"""
+    def clear_data_for_read_taxation_plan(self) -> None:
+        """Очистка данных при повторном вызове метода read_taxation_plan"""
 
         self.taxation_plan_entity_objects = {
             "номера": list(),
@@ -83,10 +84,14 @@ class Model(QtCore.QObject):
         self.split_numbers = dict()
         self.number_from_split_number = dict()
 
+        self.valid = True
+
     def autocad_data_structuring(self) -> None:
         """
         Структурирование данных из объектов autocad в словари.
         """
+
+        self.clear_data_for_autocad_data_structuring()
 
         # Собираем self.numbers и self.number_positions
 
@@ -223,7 +228,24 @@ class Model(QtCore.QObject):
         if not self.valid:
             self.log(f"[ERROR]\tЧертеж таксации содержит ошибки и не будет обработан. "
                      f"Исправьте файл чертежа таксации и импортируйте его заново.")
-            self.clear_data()
+            self.clear_data_for_autocad_data_structuring()
+
+    def clear_data_for_autocad_data_structuring(self) -> None:
+        """Очистка данных при повторном вызове метода autocad_data_structuring"""
+
+        self.numbers = dict()
+        self.numbers_position = dict()
+        self.shapes = dict()
+        self.numbers_from_shape = dict()
+        self.zone_shapes = dict()
+        self.zone_names = dict()
+        self.zones_from_zone_names = dict()
+        self.tree = dict()
+        self.numbers_from_tree = dict()
+        self.split_numbers = dict()
+        self.number_from_split_number = dict()
+
+        self.valid = True
 
     def splitting_numbers(self) -> None:
         """
@@ -286,6 +308,12 @@ class Model(QtCore.QObject):
                     self.log(f"[WARNING]\tНе удалось подобрать регулярное выражения для номера `{number}`."
                              f"Предлагается ввести значения вручную через табличную форму.")
 
+    def clear_data_for_splitting_numbers(self) -> None:
+        """Очистка данных при повторном вызове метода splitting_numbers"""
+
+        self.split_numbers = dict()
+        self.number_from_split_number = dict()
+
     def calculate_intersects_shapes_in_zones(self) -> None:
         """
         Вычисление вхождений фигур и точечных объектов растительности в зоны
@@ -313,3 +341,9 @@ class Model(QtCore.QObject):
 
         for k in self.intersects_shapes_in_zones.keys():
             self.intersects_shapes_in_zones[k] = list(set(self.intersects_shapes_in_zones[k]))
+
+    def clear_data_for_calculate_intersects_shapes_in_zones(self) -> None:
+        """Очистка данных при повторном вызове метода calculate_intersects_shapes_in_zones"""
+
+        self.split_numbers = dict()
+        self.number_from_split_number = dict()
