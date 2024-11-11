@@ -196,6 +196,8 @@
     <property name="title">
      <string>Обработка</string>
     </property>
+    <addaction name="menu_processing_converting_to_dxf"/>
+    <addaction name="menu_processing_load_dxf"/>
     <addaction name="menu_processing_classification"/>
     <addaction name="menu_processing_sorted_numeration"/>
     <addaction name="menu_processing_design_objects"/>
@@ -259,7 +261,7 @@
   </widget>
   <action name="menu_database_species">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset>
      <normaloff>:/database/article.svg</normaloff>:/database/article.svg</iconset>
    </property>
    <property name="text">
@@ -268,7 +270,7 @@
   </action>
   <action name="menu_database_densitys">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset>
      <normaloff>:/database/file-text.svg</normaloff>:/database/file-text.svg</iconset>
    </property>
    <property name="text">
@@ -277,7 +279,7 @@
   </action>
   <action name="menu_project_new">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset>
      <normaloff>:/project/file.svg</normaloff>:/project/file.svg</iconset>
    </property>
    <property name="text">
@@ -286,7 +288,7 @@
   </action>
   <action name="menu_database_volumes">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset>
      <normaloff>:/database/book.svg</normaloff>:/database/book.svg</iconset>
    </property>
    <property name="text">
@@ -295,7 +297,7 @@
   </action>
   <action name="menu_project_open">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset>
      <normaloff>:/project/folder.svg</normaloff>:/project/folder.svg</iconset>
    </property>
    <property name="text">
@@ -304,7 +306,7 @@
   </action>
   <action name="menu_project_import">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset>
      <normaloff>:/project/file-receive.svg</normaloff>:/project/file-receive.svg</iconset>
    </property>
    <property name="text">
@@ -313,7 +315,7 @@
   </action>
   <action name="menu_project_export">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset>
      <normaloff>:/project/file-send.svg</normaloff>:/project/file-send.svg</iconset>
    </property>
    <property name="text">
@@ -322,7 +324,7 @@
   </action>
   <action name="menu_processing_classification">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset>
      <normaloff>:/processing/off-grid.svg</normaloff>:/processing/off-grid.svg</iconset>
    </property>
    <property name="text">
@@ -331,7 +333,7 @@
   </action>
   <action name="menu_processing_design_objects">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset>
      <normaloff>:/processing/inkpen.svg</normaloff>:/processing/inkpen.svg</iconset>
    </property>
    <property name="text">
@@ -340,7 +342,7 @@
   </action>
   <action name="menu_processing_sorted_numeration">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset>
      <normaloff>:/processing/stats-pipes.svg</normaloff>:/processing/stats-pipes.svg</iconset>
    </property>
    <property name="text">
@@ -349,7 +351,7 @@
   </action>
   <action name="menu_processing_design_tables">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset>
      <normaloff>:/processing/paper-ruler.svg</normaloff>:/processing/paper-ruler.svg</iconset>
    </property>
    <property name="text">
@@ -368,7 +370,7 @@
   </action>
   <action name="menu_project_save_as">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset>
      <normaloff>:/project/file-upload.svg</normaloff>:/project/file-upload.svg</iconset>
    </property>
    <property name="text">
@@ -380,11 +382,33 @@
   </action>
   <action name="Setting">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset>
      <normaloff>:/setting/settings-complex.svg</normaloff>:/setting/settings-complex.svg</iconset>
    </property>
    <property name="text">
     <string>Настройки</string>
+   </property>
+  </action>
+  <action name="menu_processing_converting_to_dxf">
+   <property name="text">
+    <string>Конвертировать в DXF</string>
+   </property>
+   <property name="toolTip">
+    <string>Конвертировать в DXF</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="menu_processing_load_dxf">
+   <property name="text">
+    <string>Загрузить DXF</string>
+   </property>
+   <property name="toolTip">
+    <string>Загрузить DXF</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
  </widget>
