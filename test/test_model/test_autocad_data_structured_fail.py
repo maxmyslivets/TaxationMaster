@@ -8,28 +8,28 @@ from test import log
 
 def init_model_fail_duplicate_numbers_of_tree() -> Model:
     model = Model(log=log)
-    model.read_taxation_plan(Path("test_fail_duplicate_numbers_of_tree.dxf"))
+    model.read_taxation_plan(Path("test_model/data/test_fail_duplicate_numbers_of_tree.dxf"))
     model.autocad_data_structuring()
     return model
 
 
 def init_model_fail_duplicate_numbers_of_shapes() -> Model:
     model = Model(log=log)
-    model.read_taxation_plan(Path("test_fail_duplicate_numbers_of_shapes.dxf"))
+    model.read_taxation_plan(Path("test_model/data/test_fail_duplicate_numbers_of_shapes.dxf"))
     model.autocad_data_structuring()
     return model
 
 
 def init_model_fail_duplicate_numbers_tree_shapes() -> Model:
     model = Model(log=log)
-    model.read_taxation_plan(Path("test_fail_duplicate_numbers_tree-shapes.dxf"))
+    model.read_taxation_plan(Path("test_model/data/test_fail_duplicate_numbers_tree-shapes.dxf"))
     model.autocad_data_structuring()
     return model
 
 
 def init_model_fail_intersection_zone() -> Model:
     model = Model(log=log)
-    model.read_taxation_plan(Path("test_fail_intersection_zone.dxf"))
+    model.read_taxation_plan(Path("test_model/data/test_fail_intersection_zone.dxf"))
     model.autocad_data_structuring()
     return model
 

@@ -9,7 +9,7 @@ from test import log
 @pytest.fixture()
 def init_model():
     model = Model(log=log)
-    model.read_taxation_plan(Path("test.dxf"))
+    model.read_taxation_plan(Path("test_model/data/test.dxf"))
     model.autocad_data_structuring()
     model.splitting_numbers()
     model.calculate_intersects_shapes_in_zones()
