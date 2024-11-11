@@ -12,6 +12,7 @@ from processing.autocad import extract_data_from_taxation_plan
 
 
 class Model(QtCore.QObject):
+    # TODO: изменить процесс обработки в модели из-за изменения структуры проекта
 
     def __init__(self, log):
         super(Model, self).__init__()
