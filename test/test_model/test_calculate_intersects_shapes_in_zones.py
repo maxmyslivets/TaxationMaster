@@ -1,22 +1,23 @@
-from pathlib import Path
-
 import pytest
 
 from source.model.model import Model
+from source.model.project import Project
 from test import log
 
 
-@pytest.fixture()
-def init_model():
+@pytest.fixture(scope='module')
+def init_project():
     model = Model(log=log)
-    model.read_taxation_plan(Path("test_model/data/test.dxf"))
+    model.project = Project()
+    model.project.taxation_plan.path_dxf = "test_model/data/test.dxf"
+    model.read_taxation_plan()
     model.autocad_data_structuring()
     model.splitting_numbers()
     model.calculate_intersects_shapes_in_zones()
-    return model
+    return model.project
 
 
-def test_intersects_shapes_in_zones(init_model):
+def test_intersects_shapes_in_zones(init_project):
     """Проверка вхождений фигур и точечных объектов растительности в зоны"""
 
     # Названия зон в чертеже
@@ -28,17 +29,17 @@ def test_intersects_shapes_in_zones(init_model):
         SPLIT_NUMBERS_IN_ZONES[k].sort()
     split_numbers_in_zones = dict(sorted(SPLIT_NUMBERS_IN_ZONES.items()))
 
-    model = init_model
+    project = init_project
 
-    split_numbers_in_zones_from_model = {zone_name: [] for _, zone_name in model.zone_names.items()}
+    split_numbers_in_zones_from_model = {zone_name: [] for _, zone_name in project.zone_names.items()}
     for zone_name in split_numbers_in_zones_from_model.keys():
-        k_zone_name = next(k for k, v in model.zone_names.items() if v == zone_name)
-        k_zone_list = model.zones_from_zone_names[k_zone_name]
+        k_zone_name = next(k for k, v in project.zone_names.items() if v == zone_name)
+        k_zone_list = project.zones_from_zone_names[k_zone_name]
         for k_zone in k_zone_list:
-            for k_split_number, _k_zone_list in model.intersects_shapes_in_zones.items():
+            for k_split_number, _k_zone_list in project.intersects_shapes_in_zones.items():
                 for _k_zone in _k_zone_list:
                     if _k_zone == k_zone:
-                        split_numbers_in_zones_from_model[zone_name].append(model.split_numbers[k_split_number])
+                        split_numbers_in_zones_from_model[zone_name].append(project.split_numbers[k_split_number])
 
     for k in split_numbers_in_zones_from_model.keys():
         split_numbers_in_zones_from_model[k].sort()

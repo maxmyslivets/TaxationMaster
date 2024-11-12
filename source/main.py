@@ -28,6 +28,7 @@ class TaxationTool:
         self.temp_path_convert_output = self.temp_path / "convert" / "output"
 
         self.project = Project()
+        self.model.project = self.project
         self.create_new_project()
 
         self.connect_signals()
@@ -137,9 +138,9 @@ class TaxationTool:
                 self.clear_temp_project()
                 self.update_interface()
 
-                self.view.log(f"[DEBUG]\tПроект ({self.project.name}) успешно открыт.")
+                self.view.log(f"[DEBUG]\tПроект `{self.project.path}` успешно открыт.")
             except Exception:
-                self.view.log(f"[ERROR]\tНе удалось открыть проект ({project_path})."
+                self.view.log(f"[ERROR]\tНе удалось открыть проект `{_project_path}`."
                               f"\n{traceback.format_exc()}")
 
     def clear_temp_project(self) -> None:
