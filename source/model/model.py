@@ -14,7 +14,6 @@ from source.model.project import Project
 
 
 class Model(QtCore.QObject):
-    # TODO: изменить процесс обработки в модели из-за изменения структуры проекта
 
     def __init__(self, log):
         super(Model, self).__init__()
@@ -28,37 +27,25 @@ class Model(QtCore.QObject):
         self.MIN_DISTANCE = 0.01    # TODO: вынести в настройки
         self.MIN_AREA = 0.01        # TODO: вынести в настройки
 
-    def read_taxation_plan(self) -> None:
-        """
-        Чтение данных из dxf чертежа таксации.
-        """
-
-        self.clear_data_for_autocad_data_structuring()
-
-        self.valid = True
-
-        try:
-            print(self.project.taxation_plan.path_dxf)  # FIXME: path_dxf = None
-            numbers, lines, contours, zones = extract_data_from_taxation_plan(self.project.taxation_plan.path_dxf)
-        except Exception:
-            self.log(f"Ошибка чтения данных из чертежа."
-                     f"\n{traceback.format_exc()}")
-            return
-        self.project.taxation_plan.entity.numbers = numbers
-        self.project.taxation_plan.entity.lines = lines
-        self.project.taxation_plan.entity.contours = contours
-        self.project.taxation_plan.entity.zones = zones
-
     def autocad_data_structuring(self) -> None:
         """
         Структурирование данных из объектов autocad в словари.
         """
 
         self.clear_data_for_autocad_data_structuring()
+        self.valid = True
+
+        try:
+            entity_numbers, entity_lines, entity_contours, entity_zones = extract_data_from_taxation_plan(
+                self.project.taxation_plan.path_dxf)
+        except Exception:
+            self.log(f"Ошибка чтения данных из чертежа."
+                     f"\n{traceback.format_exc()}")
+            return
 
         # Собираем self.numbers и self.number_positions
 
-        for k_number, text in enumerate(self.project.taxation_plan.entity.numbers):
+        for k_number, text in enumerate(entity_numbers):
             number = text.plain_text().replace('\n', ' ') if isinstance(text, MText) else text.plain_text()
             self.project.numbers[k_number] = number
             position = Point(text.dxf.insert[0], text.dxf.insert[1])
@@ -67,7 +54,7 @@ class Model(QtCore.QObject):
         # Собираем self.shapes
 
         k_shape = 0
-        for line in self.project.taxation_plan.entity.lines:
+        for line in entity_lines:
             if isinstance(line, LWPolyline):
                 shape = LineString([(float(x), float(y)) for x, y in list(line.vertices())])
                 self.project.shapes[k_shape] = shape
@@ -76,7 +63,7 @@ class Model(QtCore.QObject):
                 shape = LineString([(line.dxf.start.x, line.dxf.start.y), (line.dxf.end.x, line.dxf.end.y)])
                 self.project.shapes[k_shape] = shape
                 k_shape += 1
-        for contour in self.project.taxation_plan.entity.contours:
+        for contour in entity_contours:
             shape = Polygon([(float(x), float(y)) for x, y in list(contour.vertices())])
             self.project.shapes[k_shape] = shape
             k_shape += 1
@@ -112,7 +99,7 @@ class Model(QtCore.QObject):
         # Собираем self.zone_shapes
 
         k_zone = 0
-        for entity in self.project.taxation_plan.entity.zones:
+        for entity in entity_zones:
             if isinstance(entity, LWPolyline):
                 self.project.zone_shapes[k_zone] = Polygon([(float(x), float(y)) for x, y in list(entity.vertices())])
                 k_zone += 1
@@ -125,7 +112,7 @@ class Model(QtCore.QObject):
 
         k_zone_name = 0
         zone_names_temp_list = []
-        for entity in self.project.taxation_plan.entity.zones:
+        for entity in entity_zones:
             if isinstance(entity, Text) or isinstance(entity, MText):
                 zone_name = entity.plain_text()
                 if zone_name not in zone_names_temp_list:

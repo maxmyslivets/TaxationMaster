@@ -166,6 +166,7 @@
     </property>
     <addaction name="menu_project_new"/>
     <addaction name="menu_project_open"/>
+    <addaction name="menu_project_save"/>
     <addaction name="menu_project_save_as"/>
     <addaction name="separator"/>
     <addaction name="menu_project_import"/>
@@ -222,6 +223,7 @@
    </attribute>
    <addaction name="menu_project_new"/>
    <addaction name="menu_project_open"/>
+   <addaction name="menu_project_save"/>
    <addaction name="menu_project_save_as"/>
    <addaction name="menu_project_import"/>
    <addaction name="menu_project_export"/>
@@ -406,6 +408,17 @@
    </property>
    <property name="toolTip">
     <string>Загрузить DXF</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="menu_project_save">
+   <property name="text">
+    <string>Сохранить</string>
+   </property>
+   <property name="toolTip">
+    <string>Сохранить</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

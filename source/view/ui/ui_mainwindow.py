@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowzKSIRZ.ui'
+## Form generated from reading UI file 'mainwindowqWlzbC.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.0
 ##
@@ -107,6 +107,9 @@ class Ui_MainWindow(object):
         self.menu_processing_load_dxf = QAction(MainWindow)
         self.menu_processing_load_dxf.setObjectName(u"menu_processing_load_dxf")
         self.menu_processing_load_dxf.setMenuRole(QAction.MenuRole.NoRole)
+        self.menu_project_save = QAction(MainWindow)
+        self.menu_project_save.setObjectName(u"menu_project_save")
+        self.menu_project_save.setMenuRole(QAction.MenuRole.NoRole)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout = QGridLayout(self.centralwidget)
@@ -227,6 +230,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menu_help.menuAction())
         self.menu_project.addAction(self.menu_project_new)
         self.menu_project.addAction(self.menu_project_open)
+        self.menu_project.addAction(self.menu_project_save)
         self.menu_project.addAction(self.menu_project_save_as)
         self.menu_project.addSeparator()
         self.menu_project.addAction(self.menu_project_import)
@@ -245,6 +249,7 @@ class Ui_MainWindow(object):
         self.menu_processing_2.addAction(self.menu_processing_design_tables)
         self.toolBar.addAction(self.menu_project_new)
         self.toolBar.addAction(self.menu_project_open)
+        self.toolBar.addAction(self.menu_project_save)
         self.toolBar.addAction(self.menu_project_save_as)
         self.toolBar.addAction(self.menu_project_import)
         self.toolBar.addAction(self.menu_project_export)
@@ -292,6 +297,10 @@ class Ui_MainWindow(object):
         self.menu_processing_load_dxf.setText(QCoreApplication.translate("MainWindow", u"\u0417\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044c DXF", None))
 #if QT_CONFIG(tooltip)
         self.menu_processing_load_dxf.setToolTip(QCoreApplication.translate("MainWindow", u"\u0417\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044c DXF", None))
+#endif // QT_CONFIG(tooltip)
+        self.menu_project_save.setText(QCoreApplication.translate("MainWindow", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c", None))
+#if QT_CONFIG(tooltip)
+        self.menu_project_save.setToolTip(QCoreApplication.translate("MainWindow", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c", None))
 #endif // QT_CONFIG(tooltip)
         ___qtreewidgetitem = self.tree_manager.headerItem()
         ___qtreewidgetitem.setText(0, QCoreApplication.translate("MainWindow", u"\u041c\u0435\u043d\u0435\u0434\u0436\u0435\u0440 \u043f\u0440\u043e\u0435\u043a\u0442\u0430", None));

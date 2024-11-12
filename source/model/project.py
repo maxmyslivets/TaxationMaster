@@ -5,6 +5,7 @@ from ezdxf.entities import Text, MText, Line, LWPolyline
 
 
 class Entity:
+    # FIXME: Для решения проблемы с открытием проекта через pickle можно убрать Entity из TaxationPlan
     _numbers: list[Text | MText] = None
     _lines: list[Line | LWPolyline] = None
     _contours: list[LWPolyline] = None
@@ -41,12 +42,6 @@ class Entity:
     @zones.setter
     def zones(self, zones: list[Text | MText | LWPolyline]) -> None:
         self._zones = zones
-
-    def __getstate__(self):
-        return self.__dict__.copy()
-
-    def __setstate__(self, state: dict):
-        self.__dict__.update(state)
 
 
 def mark_as_unsaved(func):

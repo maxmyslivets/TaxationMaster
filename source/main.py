@@ -8,6 +8,7 @@ from pathlib import Path
 
 from PySide6 import QtWidgets, QtCore
 from PySide6.QtWidgets import QFileDialog, QTreeWidgetItem, QMessageBox
+from PySide6.scripts.pyside_tool import project
 
 from utils.convert import oda_converter
 from .view.view import View
@@ -37,6 +38,7 @@ class TaxationTool:
 
     def connect_signals(self) -> None:
         self.view.menu_project_save_as.triggered.connect(self.save_as_project)
+        self.view.menu_project_save.triggered.connect(self.save_project)
         self.view.menu_project_new.triggered.connect(self.create_new_project)
         self.view.menu_project_open.triggered.connect(self.open_project)
 
@@ -65,14 +67,17 @@ class TaxationTool:
         if _project_path:
             try:
                 project_path = Path(_project_path)
+                if project_path == self.project.path:
+                    self.save_project()
                 shutil.copytree(self.project.dir, project_path.parent / project_path.stem)
                 self.project.path = project_path
+                self.project.taxation_plan.entity = None    # WARNING: костыль для обхода десериализации аutocad объектов
                 self.project.is_saved = True
                 with open(self.project.path, 'wb') as file:
                     pickle.dump(self.project, file)
                 with open(self.project.taxation_plan_path, 'wb') as file:
                     pickle.dump(self.project.taxation_plan, file)
-                # FIXME: сохранение проекта в то же место, или перезапись другого проекта
+                # FIXME: перезапись другого проекта
 
                 self.clear_temp_project()
                 self.update_interface()
@@ -81,6 +86,19 @@ class TaxationTool:
             except Exception:
                 self.view.log(f"[ERROR]\tНе удалось сохранить проект в `{_project_path}`."
                               f"\n{traceback.format_exc()}")
+
+    def save_project(self) -> None:
+        self.project.taxation_plan.entity = None    # WARNING: костыль для обхода десериализации аutocad объектов
+        self.project.is_saved = True
+        try:
+            with open(self.project.path, 'wb') as file:
+                pickle.dump(self.project, file)
+            with open(self.project.taxation_plan_path, 'wb') as file:
+                pickle.dump(self.project.taxation_plan, file)
+            self.view.log(f"[DEBUG]\tПроект `{self.project.path}` успешно сохранен.")
+        except Exception:
+            self.view.log(f"[ERROR]\tНе удалось сохранить проект `{self.project.path}`."
+                          f"\n{traceback.format_exc()}")
 
     def create_new_project(self) -> None:
 
@@ -127,25 +145,25 @@ class TaxationTool:
         _project_path, _ = open_dialog.getOpenFileName(parent=self.view, caption="Открыть проект...", dir='/',
                                                        filter=f"Taxation tool project (*{self.project.suffix})")
         if _project_path:
-            try:
-                project_path = Path(_project_path)
-                if project_path.suffix != self.project.suffix:
-                    raise ValueError(f"Неверное расширение файла: `{self.project.suffix}`. "
-                                     f"Требуется `{self.project.suffix}`")
-                with open(project_path, 'rb') as file:
-                    self.project = pickle.load(file)
-                with open(self.project.taxation_plan_path, 'rb') as file:
-                    self.project.taxation_plan = pickle.load(file)
-                self.model.project = self.project
-                self.project.is_saved = True
+            # try:
+            project_path = Path(_project_path)
+            if project_path.suffix != self.project.suffix:
+                raise ValueError(f"Неверное расширение файла: `{self.project.suffix}`. "
+                                 f"Требуется `{self.project.suffix}`")
+            with open(project_path, 'rb') as file:
+                self.project = pickle.load(file)
+            with open(self.project.taxation_plan_path, 'rb') as file:
+                self.project.taxation_plan = pickle.load(file)
+            self.model.project = self.project
+            self.project.is_saved = True
 
-                self.clear_temp_project()
-                self.update_interface()
+            self.clear_temp_project()
+            self.update_interface()
 
-                self.view.log(f"[DEBUG]\tПроект `{self.project.path}` успешно открыт.")
-            except Exception:
-                self.view.log(f"[ERROR]\tНе удалось открыть проект `{_project_path}`."
-                              f"\n{traceback.format_exc()}")
+            self.view.log(f"[DEBUG]\tПроект `{self.project.path}` успешно открыт.")
+            # except Exception:
+            #     self.view.log(f"[ERROR]\tНе удалось открыть проект `{_project_path}`."
+            #                   f"\n{traceback.format_exc()}")
 
     def clear_temp_project(self) -> None:
         self.view.log("[DEBUG]\tУдаление временных файлов.")
@@ -224,11 +242,6 @@ class TaxationTool:
                       f"`{self.project.taxation_plan.dir_dxf}`.")
 
     def process_classification(self) -> None:
-        self.model.read_taxation_plan()
-        self.view.log(f"Количество объектов слоя номера: {len(self.project.taxation_plan.entity.numbers)}")
-        self.view.log(f"Количество объектов слоя полосы: {len(self.project.taxation_plan.entity.lines)}")
-        self.view.log(f"Количество объектов слоя контуры: {len(self.project.taxation_plan.entity.contours)}")
-        self.view.log(f"Количество объектов слоя зоны: {len(self.project.taxation_plan.entity.zones)}")
         self.model.autocad_data_structuring()
         self.view.log("Файл чертежа таксации успешно обработан.")
         self.view.log(f"Количество точечных растений: {len(self.project.numbers)}")
