@@ -44,7 +44,7 @@ class TaxationTool:
         self.view.menu_processing_converting_to_dxf.triggered.connect(self.convert_dwg_taxation_to_dxf)
         self.view.menu_processing_load_dxf.triggered.connect(self.load_dxf_taxation)
 
-        # self.view.menu_processing_classification.triggered.connect(self.process_classification)
+        self.view.menu_processing_classification.triggered.connect(self.process_classification)
 
     @staticmethod
     def _confirm_close_unsaved_project() -> bool:
@@ -220,25 +220,28 @@ class TaxationTool:
                       f"`{self.project.taxation_plan.dir_dxf}`.")
 
     def process_classification(self) -> None:
-        # TODO: изменить процесс обработки в модели из-за изменения структуры проекта
-        self.model.read_taxation_plan(self.project.taxation_plan.path_dxf)
+        self.model.read_taxation_plan()
+        self.view.log(f"Количество объектов слоя номера: {len(self.project.taxation_plan.entity.numbers)}")
+        self.view.log(f"Количество объектов слоя полосы: {len(self.project.taxation_plan.entity.lines)}")
+        self.view.log(f"Количество объектов слоя контуры: {len(self.project.taxation_plan.entity.contours)}")
+        self.view.log(f"Количество объектов слоя зоны: {len(self.project.taxation_plan.entity.zones)}")
         self.model.autocad_data_structuring()
         self.view.log("Файл чертежа таксации успешно обработан.")
-        self.view.log(f"Количество точечных растений: {len(self.model.numbers)}")
-        self.view.log(f"Количество полос и контуров растительности: {len(self.model.shapes)}")
-        self.view.log(f"Зоны: {[name for _, name in self.model.zone_names.items()]}")
+        self.view.log(f"Количество точечных растений: {len(self.project.numbers)}")
+        self.view.log(f"Количество полос и контуров растительности: {len(self.project.shapes)}")
+        self.view.log(f"Зоны: {[name for _, name in self.project.zone_names.items()]}")
         self.model.splitting_numbers()
         self.model.calculate_intersects_shapes_in_zones()
 
-        split_numbers_in_zones_from_model = {zone_name: [] for _, zone_name in self.model.zone_names.items()}
+        split_numbers_in_zones_from_model = {zone_name: [] for _, zone_name in self.project.zone_names.items()}
         for zone_name in split_numbers_in_zones_from_model.keys():
-            k_zone_name = next(k for k, v in self.model.zone_names.items() if v == zone_name)
-            k_zone_list = self.model.zones_from_zone_names[k_zone_name]
+            k_zone_name = next(k for k, v in self.project.zone_names.items() if v == zone_name)
+            k_zone_list = self.project.zones_from_zone_names[k_zone_name]
             for k_zone in k_zone_list:
-                for k_split_number, _k_zone_list in self.model.intersects_shapes_in_zones.items():
+                for k_split_number, _k_zone_list in self.project.intersects_shapes_in_zones.items():
                     for _k_zone in _k_zone_list:
                         if _k_zone == k_zone:
-                            split_numbers_in_zones_from_model[zone_name].append(self.model.split_numbers[k_split_number])
+                            split_numbers_in_zones_from_model[zone_name].append(self.project.split_numbers[k_split_number])
         for zone_name in split_numbers_in_zones_from_model.keys():
             self.view.log(f"Вхождения объектов в зону `{zone_name}`: "
                           f"{split_numbers_in_zones_from_model[zone_name]}")
