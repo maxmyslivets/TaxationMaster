@@ -50,7 +50,7 @@ class TaxationTool:
     def _confirm_close_unsaved_project() -> bool:
         dialog = QMessageBox()
         dialog.setWindowTitle("Подтвердите действие")
-        dialog.setText("Проект не сохранен.\nСоздать новый проект?")
+        dialog.setText("Проект не сохранен.\nПродолжить?")
         dialog.setIcon(QMessageBox.Icon.Warning)
         dialog.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         dialog.setDefaultButton(QMessageBox.StandardButton.Yes)
@@ -67,6 +67,7 @@ class TaxationTool:
                 project_path = Path(_project_path)
                 shutil.copytree(self.project.dir, project_path.parent / project_path.stem)
                 self.project.path = project_path
+                self.project.is_saved = True
                 with open(self.project.path, 'wb') as file:
                     pickle.dump(self.project, file)
                 with open(self.project.taxation_plan_path, 'wb') as file:
@@ -102,6 +103,7 @@ class TaxationTool:
 
             # создание проекта во временном каталоге
             self.project.path = self.temp_path / ("New project" + self.project.suffix)
+            self.project.is_saved = True
             os.makedirs(self.project.dir)
             os.makedirs(self.project.taxation_plan.dir_dwg)
             os.makedirs(self.project.taxation_plan.dir_dxf)
@@ -134,6 +136,8 @@ class TaxationTool:
                     self.project = pickle.load(file)
                 with open(self.project.taxation_plan_path, 'rb') as file:
                     self.project.taxation_plan = pickle.load(file)
+                self.model.project = self.project
+                self.project.is_saved = True
 
                 self.clear_temp_project()
                 self.update_interface()

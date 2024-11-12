@@ -38,6 +38,7 @@ class Model(QtCore.QObject):
         self.valid = True
 
         try:
+            print(self.project.taxation_plan.path_dxf)  # FIXME: path_dxf = None
             numbers, lines, contours, zones = extract_data_from_taxation_plan(self.project.taxation_plan.path_dxf)
         except Exception:
             self.log(f"Ошибка чтения данных из чертежа."
@@ -244,7 +245,6 @@ class Model(QtCore.QObject):
                     k_split_number += 1
                     self.project.split_numbers[k_split_number] = number
                     self.project.number_from_split_number[k_split_number] = [k_number]
-                    # split_numbers_temp_list.append(item)
 
                 # Извлечение диапазона чисел с разделителем "-"
                 elif re.match(r'^\d+-\d+$', number):
