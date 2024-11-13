@@ -29,6 +29,9 @@ class TaxationTool:
 
         self.project = Project()
         self.model.project = self.project
+
+        self.view.tree_manager.expandAll()
+
         self.create_new_project()
 
         self.connect_signals()
