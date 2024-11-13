@@ -37,6 +37,27 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="uniformRowHeights">
+        <bool>false</bool>
+       </property>
+       <property name="itemsExpandable">
+        <bool>true</bool>
+       </property>
+       <property name="sortingEnabled">
+        <bool>false</bool>
+       </property>
+       <property name="headerHidden">
+        <bool>false</bool>
+       </property>
+       <property name="expandsOnDoubleClick">
+        <bool>true</bool>
+       </property>
        <column>
         <property name="text">
          <string>Менеджер проекта</string>
@@ -58,12 +79,12 @@
         </property>
         <item>
          <property name="text">
-          <string>Зона благоустройства</string>
+          <string>Зона ул. Молодежная</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Зона ул. Молодежная</string>
+          <string>Зона благоустройства</string>
          </property>
         </item>
        </item>
@@ -164,13 +185,18 @@
     <property name="title">
      <string>Проект</string>
     </property>
+    <widget class="QMenu" name="menu">
+     <property name="title">
+      <string>Импорт</string>
+     </property>
+     <addaction name="menu_project_import_taxation_plan"/>
+    </widget>
     <addaction name="menu_project_new"/>
     <addaction name="menu_project_open"/>
     <addaction name="menu_project_save"/>
     <addaction name="menu_project_save_as"/>
     <addaction name="separator"/>
-    <addaction name="menu_project_import"/>
-    <addaction name="menu_project_export"/>
+    <addaction name="menu"/>
    </widget>
    <widget class="QMenu" name="menu_database">
     <property name="title">
@@ -197,9 +223,7 @@
     <property name="title">
      <string>Обработка</string>
     </property>
-    <addaction name="menu_processing_converting_to_dxf"/>
-    <addaction name="menu_processing_load_dxf"/>
-    <addaction name="menu_processing_classification"/>
+    <addaction name="menu_processing_preprocessing"/>
     <addaction name="menu_processing_sorted_numeration"/>
     <addaction name="menu_processing_design_objects"/>
     <addaction name="menu_processing_design_tables"/>
@@ -225,8 +249,6 @@
    <addaction name="menu_project_open"/>
    <addaction name="menu_project_save"/>
    <addaction name="menu_project_save_as"/>
-   <addaction name="menu_project_import"/>
-   <addaction name="menu_project_export"/>
   </widget>
   <widget class="QToolBar" name="toolBar_2">
    <property name="windowTitle">
@@ -238,7 +260,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="menu_processing_classification"/>
+   <addaction name="menu_processing_preprocessing"/>
    <addaction name="menu_processing_sorted_numeration"/>
    <addaction name="separator"/>
    <addaction name="menu_processing_design_objects"/>
@@ -306,31 +328,28 @@
     <string>Открыть</string>
    </property>
   </action>
-  <action name="menu_project_import">
+  <action name="menu_project_import_taxation_plan">
    <property name="icon">
     <iconset>
      <normaloff>:/project/file-receive.svg</normaloff>:/project/file-receive.svg</iconset>
    </property>
    <property name="text">
-    <string>Импорт...</string>
+    <string>Импортировать чертеж таксации</string>
+   </property>
+   <property name="toolTip">
+    <string>Импортировать чертеж таксации</string>
    </property>
   </action>
-  <action name="menu_project_export">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/project/file-send.svg</normaloff>:/project/file-send.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Экспорт...</string>
-   </property>
-  </action>
-  <action name="menu_processing_classification">
+  <action name="menu_processing_preprocessing">
    <property name="icon">
     <iconset>
      <normaloff>:/processing/off-grid.svg</normaloff>:/processing/off-grid.svg</iconset>
    </property>
    <property name="text">
-    <string>Классификация по зонам</string>
+    <string>Предобработка</string>
+   </property>
+   <property name="toolTip">
+    <string>Предобработка</string>
    </property>
   </action>
   <action name="menu_processing_design_objects">
@@ -389,28 +408,6 @@
    </property>
    <property name="text">
     <string>Настройки</string>
-   </property>
-  </action>
-  <action name="menu_processing_converting_to_dxf">
-   <property name="text">
-    <string>Конвертировать в DXF</string>
-   </property>
-   <property name="toolTip">
-    <string>Конвертировать в DXF</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
-  <action name="menu_processing_load_dxf">
-   <property name="text">
-    <string>Загрузить DXF</string>
-   </property>
-   <property name="toolTip">
-    <string>Загрузить DXF</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
   <action name="menu_project_save">

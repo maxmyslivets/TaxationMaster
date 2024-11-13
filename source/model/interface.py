@@ -2,6 +2,7 @@ import os
 import pickle
 import shutil
 import tempfile
+import time
 import traceback
 from pathlib import Path
 
@@ -172,8 +173,7 @@ class Interface:
         self.view.log(f"[DEBUG]\tDWG файл чертежа таксации `{dwg_path}` успешно импортирован в "
                       f"`{self.model.project.path_dwg}`.")
 
-    def convert_dwg_taxation_to_dxf(self) -> None:
-
+        # конвертация dwg в dxf
         dwg_path_without_space = self.model.project.path_dwg.name.replace(" ", "_")
 
         if self._temp_path_convert_input.exists():
@@ -186,7 +186,7 @@ class Interface:
             shutil.rmtree(self._temp_path_convert_output)
         os.makedirs(self._temp_path_convert_output, exist_ok=True)
 
-        converter_path = Path("utils/ODAFileConverter.exe").absolute()  # TODO: перенести в настройки
+        converter_path = Path("utils/ODAFileConverter.exe").absolute()  # TODO: вынести в настройки
 
         try:
             oda_converter(converter_path, self._temp_path_convert_input, self._temp_path_convert_output)
@@ -195,22 +195,30 @@ class Interface:
                           f"\n{traceback.format_exc()}")
             return
 
-        self.view.log(f"[DEBUG]\tФайлы успешно конвертированы из `{self._temp_path_convert_input}` в "
-                      f"`{self._temp_path_convert_output}`.")
-
-    def load_dxf_taxation(self) -> None:
-        try:
-            dxf = self._temp_path_convert_output / next(file for file in os.listdir(self._temp_path_convert_output))
-        except StopIteration:
-            self.view.log(f"[ERROR]\tНе удалось найти файл dxf в `{self._temp_path_convert_output}`.")
+        dxf_file = None
+        timeout = 10    # TODO: вынести в настройки
+        while not dxf_file:
+            try:
+                dxf_file = self._temp_path_convert_output / next(
+                    file for file in os.listdir(self._temp_path_convert_output))
+            except StopIteration:
+                time.sleep(1)
+                timeout -= 1
+            if timeout == 0:
+                self.view.log(f"[ERROR]\tНе удалось импортировать файл dxf. Превышено время ожидания.")
+                break
+        if timeout == 0:
             return
-        self.model.project.dxf_name = dxf.name
-        shutil.copyfile(dxf, self.model.project.path_dxf)
 
-        self.view.log(f"[DEBUG]\tDXF файл успешно загружен из `{dxf.parent}` в "
+        self.model.project.dxf_name = dxf_file.name
+        shutil.copyfile(dxf_file, self.model.project.path_dxf)
+        self.view.log(f"[DEBUG]\tФайл успешно конвертирован из `{self._temp_path_convert_input}` в "
+                      f"`{self._temp_path_convert_output}`.")
+        self.view.log(f"[DEBUG]\tDXF файл успешно загружен из `{dxf_file.parent}` в "
                       f"`{self.model.project.dir_dxf}`.")
+        shutil.rmtree(self._temp_path_convert_output)
 
-    def process_classification(self) -> None:
+    def preprocessing(self) -> None:
         self.model.processing.read_data_from_taxation_plan()
         self.view.log("Файл чертежа таксации успешно обработан.")
         self.view.log(f"Количество точечных растений: {len(self.model.project.numbers)}")
