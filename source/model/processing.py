@@ -12,16 +12,15 @@ from processing.autocad import extract_data_from_taxation_plan
 from source.model.project import Project
 
 
-class Model(QtCore.QObject):
+class Processing(QtCore.QObject):
 
-    def __init__(self, log):
-        super(Model, self).__init__()
+    def __init__(self, project: Project, log):
+        super(Processing, self).__init__()
 
         self.log = log
+        self.project = project
 
         self.valid = True
-
-        self.project = Project()
 
         self.MIN_DISTANCE = 0.01    # TODO: вынести в настройки
         self.MIN_AREA = 0.01        # TODO: вынести в настройки

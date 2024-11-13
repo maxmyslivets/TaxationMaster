@@ -2,7 +2,7 @@ import inspect
 
 import pytest
 
-from source.model.model import Model
+from source.model import Model
 from source.model.project import Project
 from test import log
 
@@ -10,7 +10,6 @@ from test import log
 @pytest.fixture
 def init_project():
     model = Model(log=log)
-    model.project = Project()
     return model.project
 
 

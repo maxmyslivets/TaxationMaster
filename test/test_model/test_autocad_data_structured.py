@@ -1,28 +1,25 @@
 import pytest
 from shapely.geometry import LineString, Polygon
 
-from source.model.model import Model
-from source.model.project import Project
+from source.model import Model
 from test import log
 
 
 @pytest.fixture(scope='module')
 def init_project():
     model = Model(log=log)
-    model.project = Project()
     model.project.dir_dxf = "test_model/data"
     model.project.dxf_name = "test.dxf"
-    model.autocad_data_structuring()
+    model.processing.autocad_data_structuring()
     return model.project
 
 
 @pytest.fixture(scope='module')
 def init_autocad_data_structuring():
     model = Model(log=log)
-    model.project = Project()
     model.project.dir_dxf = "test_model/data"
     model.project.dxf_name = "test.dxf"
-    model.autocad_data_structuring()
+    model.processing.autocad_data_structuring()
     return model.project
 
 

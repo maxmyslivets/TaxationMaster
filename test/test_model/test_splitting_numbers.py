@@ -1,6 +1,6 @@
 import pytest
 
-from source.model.model import Model
+from source.model import Model
 from source.model.project import Project
 from test import log
 
@@ -8,11 +8,10 @@ from test import log
 @pytest.fixture(scope='module')
 def init_project():
     model = Model(log=log)
-    model.project = Project()
     model.project.dir_dxf = "test_model/data"
     model.project.dxf_name = "test.dxf"
-    model.autocad_data_structuring()
-    model.splitting_numbers()
+    model.processing.autocad_data_structuring()
+    model.processing.splitting_numbers()
     return model.project
 
 
