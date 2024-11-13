@@ -66,14 +66,16 @@ class TaxationTool:
         if _project_path:
             try:
                 project_path = Path(_project_path)
-                if project_path == self.project.path:
+                if project_path.exists():
+                    os.remove(project_path)
+                    shutil.rmtree(project_path.parent / project_path.stem)
+                elif project_path == self.project.path:
                     self.save_project()
                 shutil.copytree(self.project.dir, project_path.parent / project_path.stem)
                 self.project.path = project_path
                 self.project.is_saved = True
                 with open(self.project.path, 'wb') as file:
                     pickle.dump(self.project, file)
-                # FIXME: перезапись другого проекта
 
                 self.clear_temp_project()
                 self.update_interface()
