@@ -102,6 +102,7 @@ class TaxationTool:
 
         try:
             self.clear_temp_project()
+            self.model.clear_project()
 
             # создание необходимых для работы директорий во временном каталоге
             try:

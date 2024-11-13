@@ -6,3 +6,6 @@ class Model:
     def __init__(self, log):
         self.project = Project()
         self.processing = Processing(self.project, log)
+
+    def clear_project(self) -> None:
+        self.project = Project()
