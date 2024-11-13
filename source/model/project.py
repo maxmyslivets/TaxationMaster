@@ -59,8 +59,8 @@ class Project:
         self._path = path if isinstance(path, Path) else Path(path)
         self._name = self._path.stem
         self._dir = self._path.parent / self._name
-        self.dir_dwg = self._dir / "taxation_plan" / "dwg"
-        self.dir_dxf = self._dir / "taxation_plan" / "dxf"
+        self._dir_dwg = self._dir / "taxation_plan" / "dwg"
+        self._dir_dxf = self._dir / "taxation_plan" / "dxf"
 
     @property
     def dir(self) -> Path:
@@ -70,19 +70,9 @@ class Project:
     def dir_dwg(self) -> Path:
         return self._dir_dwg
 
-    @dir_dwg.setter
-    @mark_as_unsaved
-    def dir_dwg(self, path: str | Path) -> None:
-        self._dir_dwg = path if isinstance(path, Path) else Path(path)
-
     @property
     def dir_dxf(self) -> Path:
         return self._dir_dxf
-
-    @dir_dxf.setter
-    @mark_as_unsaved
-    def dir_dxf(self, path: str | Path) -> None:
-        self._dir_dxf = path if isinstance(path, Path) else Path(path)
 
     @property
     def dwg_name(self) -> str:

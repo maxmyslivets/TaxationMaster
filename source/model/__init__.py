@@ -9,3 +9,4 @@ class Model:
 
     def clear_project(self) -> None:
         self.project = Project()
+        self.processing.project = self.project
