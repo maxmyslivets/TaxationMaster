@@ -3,12 +3,13 @@ from pathlib import Path
 import pytest
 
 from source.model import Model
-from test import log
+from test.test_model.fake_view import FakeView
 
 
 @pytest.fixture(scope='module')
 def init_project():
-    model = Model(log=log)
+    view = FakeView()
+    model = Model(view)
     model.project._dir_dxf = Path("test_model/data")
     model.project._dxf_name = Path("test.dxf")
     model.processing.read_data_from_taxation_plan()

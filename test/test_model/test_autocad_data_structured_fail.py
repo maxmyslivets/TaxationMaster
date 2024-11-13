@@ -3,11 +3,12 @@ from pathlib import Path
 import pytest
 
 from source.model import Model
-from test import log
+from test.test_model.fake_view import FakeView
 
 
 def init_model_fail_duplicate_numbers_of_tree() -> Model:
-    model = Model(log=log)
+    view = FakeView()
+    model = Model(view)
     model.project._dir_dxf = Path("test_model/data")
     model.project._dxf_name = Path("test_fail_duplicate_numbers_of_tree.dxf")
     model.processing.read_data_from_taxation_plan()
@@ -15,7 +16,8 @@ def init_model_fail_duplicate_numbers_of_tree() -> Model:
 
 
 def init_model_fail_duplicate_numbers_of_shapes() -> Model:
-    model = Model(log=log)
+    view = FakeView()
+    model = Model(view)
     model.project._dir_dxf = Path("test_model/data")
     model.project._dxf_name = Path("test_fail_duplicate_numbers_of_shapes.dxf")
     model.processing.read_data_from_taxation_plan()
@@ -23,7 +25,8 @@ def init_model_fail_duplicate_numbers_of_shapes() -> Model:
 
 
 def init_model_fail_duplicate_numbers_tree_shapes() -> Model:
-    model = Model(log=log)
+    view = FakeView()
+    model = Model(view)
     model.project._dir_dxf = Path("test_model/data")
     model.project._dxf_name = Path("test_fail_duplicate_numbers_tree-shapes.dxf")
     model.processing.read_data_from_taxation_plan()
@@ -31,7 +34,8 @@ def init_model_fail_duplicate_numbers_tree_shapes() -> Model:
 
 
 def init_model_fail_intersection_zone() -> Model:
-    model = Model(log=log)
+    view = FakeView()
+    model = Model(view)
     model.project._dir_dxf = Path("test_model/data")
     model.project._dxf_name = Path("test_fail_intersection_zone.dxf")
     model.processing.read_data_from_taxation_plan()

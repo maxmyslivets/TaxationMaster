@@ -4,12 +4,13 @@ from pathlib import Path
 import pytest
 
 from source.model import Model
-from test import log
+from test.test_model.fake_view import FakeView
 
 
 @pytest.fixture
 def init_project():
-    model = Model(log=log)
+    view = FakeView()
+    model = Model(view)
     return model.project
 
 
