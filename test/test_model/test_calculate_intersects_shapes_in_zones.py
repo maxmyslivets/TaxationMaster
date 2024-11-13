@@ -11,8 +11,7 @@ def init_project():
     model = Model(log=log)
     model.project._dir_dxf = Path("test_model/data")
     model.project._dxf_name = Path("test.dxf")
-    model.processing.autocad_data_structuring()
-    model.processing.autocad_data_structuring()
+    model.processing.read_data_from_taxation_plan()
     model.processing.splitting_numbers()
     model.processing.calculate_intersects_shapes_in_zones()
     return model.project

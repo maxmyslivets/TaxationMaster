@@ -237,7 +237,7 @@ class TaxationTool:
                       f"`{self.model.project.dir_dxf}`.")
 
     def process_classification(self) -> None:
-        self.model.processing.autocad_data_structuring()
+        self.model.processing.read_data_from_taxation_plan()
         self.view.log("Файл чертежа таксации успешно обработан.")
         self.view.log(f"Количество точечных растений: {len(self.model.project.numbers)}")
         self.view.log(f"Количество полос и контуров растительности: {len(self.model.project.shapes)}")

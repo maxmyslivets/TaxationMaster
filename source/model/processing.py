@@ -3,12 +3,12 @@ import traceback
 from collections import Counter
 from itertools import combinations
 
+import ezdxf
 from PySide6 import QtCore
 from ezdxf.entities import Text, MText, Line, LWPolyline
 from shapely import MultiPolygon
 from shapely.geometry import Point, LineString, Polygon
 
-from processing.autocad import extract_data_from_taxation_plan
 from source.model.project import Project
 
 
@@ -25,17 +25,46 @@ class Processing(QtCore.QObject):
         self.MIN_DISTANCE = 0.01    # TODO: вынести в настройки
         self.MIN_AREA = 0.01        # TODO: вынести в настройки
 
-    def autocad_data_structuring(self) -> None:
+    def read_data_from_taxation_plan(self) -> None:
         """
-        Структурирование данных из объектов autocad в словари.
+        Чтение файла dxf чертежа таксации и структурирование данных.
         """
 
         self.clear_data_for_autocad_data_structuring()
         self.valid = True
 
+        numbers_layers = ["номера"]     # TODO: вынести в настройки
+        lines_layers = ["полосы"]       # TODO: вынести в настройки
+        contours_layers = ["контуры"]   # TODO: вынести в настройки
+        zones_layers = ["зоны"]         # TODO: вынести в настройки
+
         try:
-            entity_numbers, entity_lines, entity_contours, entity_zones = extract_data_from_taxation_plan(
-                self.project.path_dxf)
+            entity_numbers, entity_lines, entity_contours, entity_zones = [], [], [], []
+
+            doc = ezdxf.readfile(self.project.path_dxf)
+
+            for entity in doc.modelspace():
+
+                if isinstance(entity, Text) and entity.dxf.layer in numbers_layers:
+                    entity_numbers.append(entity)
+                elif isinstance(entity, MText) and entity.dxf.layer in numbers_layers:
+                    entity_numbers.append(entity)
+
+                elif isinstance(entity, LWPolyline) and entity.dxf.layer in lines_layers:
+                    entity_lines.append(entity)
+                elif isinstance(entity, Line) and entity.dxf.layer in lines_layers:
+                    entity_lines.append(entity)
+
+                elif isinstance(entity, LWPolyline) and entity.dxf.layer in contours_layers:
+                    entity_contours.append(entity)
+
+                elif isinstance(entity, LWPolyline) and entity.dxf.layer in zones_layers:
+                    entity_zones.append(entity)
+                elif isinstance(entity, MText) and entity.dxf.layer in zones_layers:
+                    entity_zones.append(entity)
+                elif isinstance(entity, Text) and entity.dxf.layer in zones_layers:
+                    entity_zones.append(entity)
+
         except Exception:
             self.log(f"Ошибка чтения данных из чертежа."
                      f"\n{traceback.format_exc()}")
