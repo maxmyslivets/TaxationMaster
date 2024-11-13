@@ -32,7 +32,7 @@ class TaxationTool:
         self.view.menu_processing_preprocessing.triggered.connect(self.model.interface.preprocessing)
 
 
-def main():
+def run():
     app = QtWidgets.QApplication(sys.argv)
     view = View()
     model = Model(view)
