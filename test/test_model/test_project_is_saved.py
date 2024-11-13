@@ -1,9 +1,9 @@
 import inspect
+from pathlib import Path
 
 import pytest
 
 from source.model import Model
-from source.model.project import Project
 from test import log
 
 
@@ -24,10 +24,10 @@ def test_after_(init_project):
 
     assert project.is_saved == True
 
-    project.dir_dxf = "_"
-    project.dxf_name = "_"
-    project.dir_dwg = "_"
-    project.dwg_name = "_"
+    project._dir_dxf = Path("_")
+    project._dxf_name = Path("_")
+    project._dir_dwg = Path("_")
+    project._dwg_name = Path("_")
 
     project.is_saved = True
 

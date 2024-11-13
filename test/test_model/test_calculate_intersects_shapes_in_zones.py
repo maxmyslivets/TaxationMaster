@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 
 from source.model import Model
@@ -7,8 +9,8 @@ from test import log
 @pytest.fixture(scope='module')
 def init_project():
     model = Model(log=log)
-    model.project.dir_dxf = "test_model/data"
-    model.project.dxf_name = "test.dxf"
+    model.project._dir_dxf = Path("test_model/data")
+    model.project._dxf_name = Path("test.dxf")
     model.processing.autocad_data_structuring()
     model.processing.autocad_data_structuring()
     model.processing.splitting_numbers()

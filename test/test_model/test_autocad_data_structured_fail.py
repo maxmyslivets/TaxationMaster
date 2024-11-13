@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 
 from source.model import Model
@@ -6,32 +8,32 @@ from test import log
 
 def init_model_fail_duplicate_numbers_of_tree() -> Model:
     model = Model(log=log)
-    model.project.dir_dxf = "test_model/data"
-    model.project.dxf_name = "test_fail_duplicate_numbers_of_tree.dxf"
+    model.project._dir_dxf = Path("test_model/data")
+    model.project._dxf_name = Path("test_fail_duplicate_numbers_of_tree.dxf")
     model.processing.autocad_data_structuring()
     return model
 
 
 def init_model_fail_duplicate_numbers_of_shapes() -> Model:
     model = Model(log=log)
-    model.project.dir_dxf = "test_model/data"
-    model.project.dxf_name = "test_fail_duplicate_numbers_of_shapes.dxf"
+    model.project._dir_dxf = Path("test_model/data")
+    model.project._dxf_name = Path("test_fail_duplicate_numbers_of_shapes.dxf")
     model.processing.autocad_data_structuring()
     return model
 
 
 def init_model_fail_duplicate_numbers_tree_shapes() -> Model:
     model = Model(log=log)
-    model.project.dir_dxf = "test_model/data"
-    model.project.dxf_name = "test_fail_duplicate_numbers_tree-shapes.dxf"
+    model.project._dir_dxf = Path("test_model/data")
+    model.project._dxf_name = Path("test_fail_duplicate_numbers_tree-shapes.dxf")
     model.processing.autocad_data_structuring()
     return model
 
 
 def init_model_fail_intersection_zone() -> Model:
     model = Model(log=log)
-    model.project.dir_dxf = "test_model/data"
-    model.project.dxf_name = "test_fail_intersection_zone.dxf"
+    model.project._dir_dxf = Path("test_model/data")
+    model.project._dxf_name = Path("test_fail_intersection_zone.dxf")
     model.processing.autocad_data_structuring()
     return model
 
