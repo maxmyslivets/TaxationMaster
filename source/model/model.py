@@ -2,7 +2,6 @@ import re
 import traceback
 from collections import Counter
 from itertools import combinations
-from pathlib import Path
 
 from PySide6 import QtCore
 from ezdxf.entities import Text, MText, Line, LWPolyline
@@ -37,7 +36,7 @@ class Model(QtCore.QObject):
 
         try:
             entity_numbers, entity_lines, entity_contours, entity_zones = extract_data_from_taxation_plan(
-                self.project.taxation_plan.path_dxf)
+                self.project.path_dxf)
         except Exception:
             self.log(f"Ошибка чтения данных из чертежа."
                      f"\n{traceback.format_exc()}")

@@ -10,25 +10,18 @@ from test import log
 def init_project():
     model = Model(log=log)
     model.project = Project()
-    model.project.taxation_plan.path_dxf = "test_model/data/test.dxf"
-    model.read_taxation_plan()
+    model.project.dir_dxf = "test_model/data"
+    model.project.dxf_name = "test.dxf"
+    model.autocad_data_structuring()
     return model.project
-
-
-def test_read_taxation_plan(init_project):
-    project = init_project
-    assert len(project.taxation_plan.entity.numbers) == 29
-    assert len(project.taxation_plan.entity.lines) == 2
-    assert len(project.taxation_plan.entity.contours) == 4
-    assert len(project.taxation_plan.entity.zones) == 6
 
 
 @pytest.fixture(scope='module')
 def init_autocad_data_structuring():
     model = Model(log=log)
     model.project = Project()
-    model.project.taxation_plan.path_dxf = "test_model/data/test.dxf"
-    model.read_taxation_plan()
+    model.project.dir_dxf = "test_model/data"
+    model.project.dxf_name = "test.dxf"
     model.autocad_data_structuring()
     return model.project
 

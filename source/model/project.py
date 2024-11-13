@@ -1,136 +1,25 @@
 import shutil
 from pathlib import Path
 
-from ezdxf.entities import Text, MText, Line, LWPolyline
-
-
-class Entity:
-    # FIXME: Для решения проблемы с открытием проекта через pickle можно убрать Entity из TaxationPlan
-    _numbers: list[Text | MText] = None
-    _lines: list[Line | LWPolyline] = None
-    _contours: list[LWPolyline] = None
-    _zones: list[Text | MText | LWPolyline] = None
-
-    @property
-    def numbers(self) -> list[Text | MText]:
-        return self._numbers
-
-    @numbers.setter
-    def numbers(self, numbers: list[Text | MText]) -> None:
-        self._numbers = numbers
-
-    @property
-    def lines(self) -> list[Line | LWPolyline]:
-        return self._lines
-
-    @lines.setter
-    def lines(self, lines: list[Line | LWPolyline]) -> None:
-        self._lines = lines
-
-    @property
-    def contours(self) -> list[LWPolyline]:
-        return self._contours
-
-    @contours.setter
-    def contours(self, contours: list[LWPolyline]) -> None:
-        self._contours = contours
-
-    @property
-    def zones(self) -> list[Text | MText | LWPolyline]:
-        return self._zones
-
-    @zones.setter
-    def zones(self, zones: list[Text | MText | LWPolyline]) -> None:
-        self._zones = zones
-
 
 def mark_as_unsaved(func):
     def wrapper(self, *args, **kwargs):
         result = func(self, *args, **kwargs)
-        if hasattr(self, 'project') and hasattr(self.project, 'is_saved'):
-            self.project.is_saved = False
         self.is_saved = False
         return result
     return wrapper
 
 
-class TaxationPlan:
-
-    def __init__(self, project: "Project"):
-
-        self.project = project
-
-        self._dir_dwg: Path = None
-        self._dir_dxf: Path = None
-        self._path_dwg: Path = None
-        self._path_dxf: Path = None
-
-        self._entity_path: Path = None
-        self.entity = Entity()
-
-    @property
-    def dir_dwg(self) -> Path:
-        return self._dir_dwg
-
-    @dir_dwg.setter
-    @mark_as_unsaved
-    def dir_dwg(self, path: str | Path) -> None:
-        self._dir_dwg = path if isinstance(path, Path) else Path(path)
-
-    @property
-    def dir_dxf(self) -> Path:
-        return self._dir_dxf
-
-    @dir_dxf.setter
-    @mark_as_unsaved
-    def dir_dxf(self, path: str | Path) -> None:
-        self._dir_dxf = path if isinstance(path, Path) else Path(path)
-
-    @property
-    def path_dwg(self) -> Path:
-        return self._path_dwg
-
-    @path_dwg.setter
-    # @mark_as_unsaved
-    def path_dwg(self, path: str | Path):
-        self._path_dwg = path if isinstance(path, Path) else Path(path)
-        if self._path_dxf is not None and self._path_dxf.exists():
-            shutil.rmtree(self._path_dxf, ignore_errors=True)
-
-    @property
-    def path_dxf(self) -> Path:
-        return self._path_dxf
-
-    @path_dxf.setter
-    @mark_as_unsaved
-    def path_dxf(self, path: str | Path):
-        self._path_dxf = path if isinstance(path, Path) else Path(path)
-
-    @property
-    def entity_path(self) -> Path:
-        return self._entity_path
-
-    @entity_path.setter
-    @mark_as_unsaved
-    def entity_path(self, path: str | Path):
-        self._entity_path = path if isinstance(path, Path) else Path(path)
-
-    def __getstate__(self):
-        return self.__dict__.copy()
-
-    def __setstate__(self, state: dict):
-        self.__dict__.update(state)
-
-
 class Project:
 
     def __init__(self):
+        self._dir_dwg: Path = None
+        self._dir_dxf: Path = None
+        self._dwg_name: str = None
+        self._dxf_name: str = None
         self._name: str = None
         self._path: Path = None
         self._dir: Path = None
-
-        self._taxation_plan_path: Path = None
-        self._taxation_plan = TaxationPlan(self)
 
         self.is_saved: bool = True
 
@@ -170,28 +59,58 @@ class Project:
         self._path = path if isinstance(path, Path) else Path(path)
         self._name = self._path.stem
         self._dir = self._path.parent / self._name
-        self._taxation_plan_path = self._dir / "taxation_plan" / "taxation_plan.pkl"
-        self.taxation_plan.dir_dwg = self._dir / "taxation_plan" / "dwg"
-        self.taxation_plan.dir_dxf = self._dir / "taxation_plan" / "dxf"
-        self.taxation_plan.entity_path = self._dir / "taxation_plan" / "entity.pkl"
+        self.dir_dwg = self._dir / "taxation_plan" / "dwg"
+        self.dir_dxf = self._dir / "taxation_plan" / "dxf"
 
     @property
     def dir(self) -> Path:
         return self._dir
 
     @property
-    def taxation_plan(self) -> TaxationPlan:
-        return self._taxation_plan
+    def dir_dwg(self) -> Path:
+        return self._dir_dwg
 
-    @taxation_plan.setter
+    @dir_dwg.setter
     @mark_as_unsaved
-    def taxation_plan(self, taxation_plan: TaxationPlan) -> None:
-        self._taxation_plan = taxation_plan
-        self._taxation_plan.project = self
+    def dir_dwg(self, path: str | Path) -> None:
+        self._dir_dwg = path if isinstance(path, Path) else Path(path)
 
     @property
-    def taxation_plan_path(self) -> Path:
-        return self._taxation_plan_path
+    def dir_dxf(self) -> Path:
+        return self._dir_dxf
+
+    @dir_dxf.setter
+    @mark_as_unsaved
+    def dir_dxf(self, path: str | Path) -> None:
+        self._dir_dxf = path if isinstance(path, Path) else Path(path)
+
+    @property
+    def dwg_name(self) -> str:
+        return self._dwg_name
+
+    @dwg_name.setter
+    @mark_as_unsaved
+    def dwg_name(self, dwg_name: str):
+        self._dwg_name = dwg_name
+        if self._dxf_name is not None and (self._dir_dwg / self._dxf_name).exists():
+            shutil.rmtree(self._dir_dwg / self._dxf_name, ignore_errors=True)
+
+    @property
+    def dxf_name(self) -> str:
+        return self._dxf_name
+
+    @dxf_name.setter
+    @mark_as_unsaved
+    def dxf_name(self, dxf_name: str):
+        self._dxf_name = dxf_name
+
+    @property
+    def path_dwg(self) -> Path:
+        return self._dir_dwg / self._dwg_name
+
+    @property
+    def path_dxf(self) -> Path:
+        return self._dir_dxf / self._dxf_name
 
     def __getstate__(self):
         return self.__dict__.copy()

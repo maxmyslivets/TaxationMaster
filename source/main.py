@@ -8,7 +8,6 @@ from pathlib import Path
 
 from PySide6 import QtWidgets, QtCore
 from PySide6.QtWidgets import QFileDialog, QTreeWidgetItem, QMessageBox
-from PySide6.scripts.pyside_tool import project
 
 from utils.convert import oda_converter
 from .view.view import View
@@ -71,12 +70,9 @@ class TaxationTool:
                     self.save_project()
                 shutil.copytree(self.project.dir, project_path.parent / project_path.stem)
                 self.project.path = project_path
-                self.project.taxation_plan.entity = None    # WARNING: костыль для обхода десериализации аutocad объектов
                 self.project.is_saved = True
                 with open(self.project.path, 'wb') as file:
                     pickle.dump(self.project, file)
-                with open(self.project.taxation_plan_path, 'wb') as file:
-                    pickle.dump(self.project.taxation_plan, file)
                 # FIXME: перезапись другого проекта
 
                 self.clear_temp_project()
@@ -88,13 +84,10 @@ class TaxationTool:
                               f"\n{traceback.format_exc()}")
 
     def save_project(self) -> None:
-        self.project.taxation_plan.entity = None    # WARNING: костыль для обхода десериализации аutocad объектов
         self.project.is_saved = True
         try:
             with open(self.project.path, 'wb') as file:
                 pickle.dump(self.project, file)
-            with open(self.project.taxation_plan_path, 'wb') as file:
-                pickle.dump(self.project.taxation_plan, file)
             self.view.log(f"[DEBUG]\tПроект `{self.project.path}` успешно сохранен.")
         except Exception:
             self.view.log(f"[ERROR]\tНе удалось сохранить проект `{self.project.path}`."
@@ -123,8 +116,8 @@ class TaxationTool:
             self.project.path = self.temp_path / ("New project" + self.project.suffix)
             self.project.is_saved = True
             os.makedirs(self.project.dir)
-            os.makedirs(self.project.taxation_plan.dir_dwg)
-            os.makedirs(self.project.taxation_plan.dir_dxf)
+            os.makedirs(self.project.dir_dwg)
+            os.makedirs(self.project.dir_dxf)
 
             self.update_interface()
 
@@ -145,25 +138,29 @@ class TaxationTool:
         _project_path, _ = open_dialog.getOpenFileName(parent=self.view, caption="Открыть проект...", dir='/',
                                                        filter=f"Taxation tool project (*{self.project.suffix})")
         if _project_path:
-            # try:
-            project_path = Path(_project_path)
-            if project_path.suffix != self.project.suffix:
-                raise ValueError(f"Неверное расширение файла: `{self.project.suffix}`. "
-                                 f"Требуется `{self.project.suffix}`")
-            with open(project_path, 'rb') as file:
-                self.project = pickle.load(file)
-            with open(self.project.taxation_plan_path, 'rb') as file:
-                self.project.taxation_plan = pickle.load(file)
-            self.model.project = self.project
-            self.project.is_saved = True
+            try:
+                project_path = Path(_project_path)
+                if project_path.suffix != self.project.suffix:
+                    raise ValueError(f"Неверное расширение файла: `{self.project.suffix}`. "
+                                     f"Требуется `{self.project.suffix}`")
+                with open(project_path, 'rb') as file:
+                    self.project = pickle.load(file)
 
-            self.clear_temp_project()
-            self.update_interface()
+                self.model.project = self.project
+                self.project.is_saved = True
 
-            self.view.log(f"[DEBUG]\tПроект `{self.project.path}` успешно открыт.")
-            # except Exception:
-            #     self.view.log(f"[ERROR]\tНе удалось открыть проект `{_project_path}`."
-            #                   f"\n{traceback.format_exc()}")
+                self.clear_temp_project()
+                self.update_interface()
+
+                self.view.log(f"[DEBUG]\tПроект `{self.project.path}` успешно открыт.")
+
+                self.view.log(f"[DEBUG]\tПеременные экземпляра класса Project:")
+                for var, value in self.project.__dict__.items():
+                    self.view.log(f"[DEBUG]\t{var} = {value}")
+
+            except Exception:
+                self.view.log(f"[ERROR]\tНе удалось открыть проект `{_project_path}`."
+                              f"\n{traceback.format_exc()}")
 
     def clear_temp_project(self) -> None:
         self.view.log("[DEBUG]\tУдаление временных файлов.")
@@ -182,34 +179,31 @@ class TaxationTool:
         if dwg_path == "":
             return
 
-        dwg_dir_dst = self.project.taxation_plan.dir_dwg
-        if self.project.taxation_plan.dir_dwg.exists():
-            shutil.rmtree(self.project.taxation_plan.dir_dwg)
-        os.makedirs(self.project.taxation_plan.dir_dwg)
+        if self.project.dir_dwg.exists():
+            shutil.rmtree(self.project.dir_dwg)
+        os.makedirs(self.project.dir_dwg)
 
-        dwg_path_dst = dwg_dir_dst / Path(dwg_path).name
-        shutil.copyfile(dwg_path, dwg_path_dst)
-
-        self.project.taxation_plan.path_dwg = dwg_path_dst
+        self.project.dwg_name = Path(dwg_path).name
+        shutil.copyfile(dwg_path, self.project.path_dwg)
 
         # добавление имени dwg файла в позицию `Чертеж таксации` менеджера проекта
         root_item_taxation_plan = self.view.tree_manager.findItems("Чертеж таксации", QtCore.Qt.MatchContains)[0]
         root_item_taxation_plan.takeChild(0)
         children_item_taxation_plan = QTreeWidgetItem(root_item_taxation_plan)
-        children_item_taxation_plan.setText(0, self.project.taxation_plan.path_dwg.name)
+        children_item_taxation_plan.setText(0, self.project.path_dwg.name)
 
         self.view.log(f"[DEBUG]\tDWG файл чертежа таксации `{dwg_path}` успешно импортирован в "
-                      f"`{self.project.taxation_plan.path_dwg}`.")
+                      f"`{self.project.path_dwg}`.")
 
     def convert_dwg_taxation_to_dxf(self) -> None:
 
-        dwg_path_without_space = self.project.taxation_plan.path_dwg.name.replace(" ", "_")
+        dwg_path_without_space = self.project.path_dwg.name.replace(" ", "_")
 
         if self.temp_path_convert_input.exists():
             shutil.rmtree(self.temp_path_convert_input)
         os.makedirs(self.temp_path_convert_input, exist_ok=True)
 
-        shutil.copyfile(self.project.taxation_plan.path_dwg, self.temp_path_convert_input / dwg_path_without_space)
+        shutil.copyfile(self.project.path_dwg, self.temp_path_convert_input / dwg_path_without_space)
 
         if self.temp_path_convert_output.exists():
             shutil.rmtree(self.temp_path_convert_output)
@@ -233,13 +227,11 @@ class TaxationTool:
         except StopIteration:
             self.view.log(f"[ERROR]\tНе удалось найти файл dxf в `{self.temp_path_convert_output}`.")
             return
-        path_dxf_dst = self.project.taxation_plan.dir_dxf / dxf.name
-        shutil.copyfile(dxf, path_dxf_dst)
-
-        self.project.taxation_plan.path_dxf = path_dxf_dst
+        self.project.dxf_name = dxf.name
+        shutil.copyfile(dxf, self.project.path_dxf)
 
         self.view.log(f"[DEBUG]\tDXF файл успешно загружен из `{dxf.parent}` в "
-                      f"`{self.project.taxation_plan.dir_dxf}`.")
+                      f"`{self.project.dir_dxf}`.")
 
     def process_classification(self) -> None:
         self.model.autocad_data_structuring()

@@ -9,8 +9,9 @@ from test import log
 def init_project():
     model = Model(log=log)
     model.project = Project()
-    model.project.taxation_plan.path_dxf = "test_model/data/test.dxf"
-    model.read_taxation_plan()
+    model.project.dir_dxf = "test_model/data"
+    model.project.dxf_name = "test.dxf"
+    model.autocad_data_structuring()
     model.autocad_data_structuring()
     model.splitting_numbers()
     model.calculate_intersects_shapes_in_zones()
