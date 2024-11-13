@@ -295,7 +295,7 @@ class Processing(QtCore.QObject):
         """
         Вычисление вхождений фигур и точечных объектов растительности в зоны
         """
-
+        # TODO: Добавить вычисление площадей и длин линий для объектов на каждой зоне отдельно
         for k_zone, zone_shape in self.project.zone_shapes.items():
             for k_split_number, _ in self.project.split_numbers.items():
                 k_number_list = self.project.number_from_split_number[k_split_number]
