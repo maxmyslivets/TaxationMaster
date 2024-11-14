@@ -210,7 +210,7 @@
     <property name="title">
      <string>Настройки</string>
     </property>
-    <addaction name="Setting"/>
+    <addaction name="menu_settings_settings"/>
    </widget>
    <widget class="QMenu" name="menu_help">
     <property name="title">
@@ -281,7 +281,7 @@
    <addaction name="menu_database_densitys"/>
    <addaction name="menu_database_volumes"/>
    <addaction name="separator"/>
-   <addaction name="Setting"/>
+   <addaction name="menu_settings_settings"/>
   </widget>
   <action name="menu_database_species">
    <property name="icon">
@@ -401,7 +401,7 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
-  <action name="Setting">
+  <action name="menu_settings_settings">
    <property name="icon">
     <iconset>
      <normaloff>:/setting/settings-complex.svg</normaloff>:/setting/settings-complex.svg</iconset>

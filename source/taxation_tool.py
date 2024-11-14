@@ -30,6 +30,7 @@ class TaxationTool:
         self.view.main_window.menu_project_import_taxation_plan.triggered.connect(self.model.interface.import_dwg_taxation)
 
         self.view.main_window.menu_processing_preprocessing.triggered.connect(self.model.interface.preprocessing)
+        self.view.main_window.menu_settings_settings.triggered.connect(self.view.settings)
 
 
 def run():

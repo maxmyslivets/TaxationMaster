@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowsxoAMG.ui'
+## Form generated from reading UI file 'mainwindowRmLQZM.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.0
 ##
@@ -91,11 +91,11 @@ class Ui_MainWindow(object):
         icon11.addFile(u":/project/file-upload.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.menu_project_save_as.setIcon(icon11)
         self.menu_project_save_as.setMenuRole(QAction.MenuRole.NoRole)
-        self.Setting = QAction(MainWindow)
-        self.Setting.setObjectName(u"Setting")
+        self.menu_settings_settings = QAction(MainWindow)
+        self.menu_settings_settings.setObjectName(u"menu_settings_settings")
         icon12 = QIcon()
         icon12.addFile(u":/setting/settings-complex.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.Setting.setIcon(icon12)
+        self.menu_settings_settings.setIcon(icon12)
         self.menu_project_save = QAction(MainWindow)
         self.menu_project_save.setObjectName(u"menu_project_save")
         self.menu_project_save.setMenuRole(QAction.MenuRole.NoRole)
@@ -236,7 +236,7 @@ class Ui_MainWindow(object):
         self.menu_database.addAction(self.menu_database_species)
         self.menu_database.addAction(self.menu_database_densitys)
         self.menu_database.addAction(self.menu_database_volumes)
-        self.menu_settings.addAction(self.Setting)
+        self.menu_settings.addAction(self.menu_settings_settings)
         self.menu_help.addAction(self.menu_about)
         self.menu_help.addAction(self.menu_manual)
         self.menu_processing_2.addAction(self.menu_processing_preprocessing)
@@ -257,7 +257,7 @@ class Ui_MainWindow(object):
         self.toolBar_3.addAction(self.menu_database_densitys)
         self.toolBar_3.addAction(self.menu_database_volumes)
         self.toolBar_3.addSeparator()
-        self.toolBar_3.addAction(self.Setting)
+        self.toolBar_3.addAction(self.menu_settings_settings)
 
         self.retranslateUi(MainWindow)
 
@@ -288,7 +288,7 @@ class Ui_MainWindow(object):
         self.menu_about.setText(QCoreApplication.translate("MainWindow", u"\u041e \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u0435", None))
         self.menu_manual.setText(QCoreApplication.translate("MainWindow", u"\u0420\u0443\u043a\u043e\u0432\u043e\u0434\u0441\u0442\u0432\u043e", None))
         self.menu_project_save_as.setText(QCoreApplication.translate("MainWindow", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u043a\u0430\u043a", None))
-        self.Setting.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438", None))
+        self.menu_settings_settings.setText(QCoreApplication.translate("MainWindow", u"\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438", None))
         self.menu_project_save.setText(QCoreApplication.translate("MainWindow", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c", None))
 #if QT_CONFIG(tooltip)
         self.menu_project_save.setToolTip(QCoreApplication.translate("MainWindow", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c", None))
