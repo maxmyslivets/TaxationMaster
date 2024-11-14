@@ -1,7 +1,9 @@
 class FakeView:
 
     def __init__(self):
-        pass
+        self.main_window = FakeMainWindow()
+
+class FakeMainWindow:
 
     @staticmethod
     def log(s: str):

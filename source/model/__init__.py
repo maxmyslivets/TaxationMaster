@@ -6,7 +6,7 @@ from source.model.processing import Processing
 class Model:
     def __init__(self, view):
         self._project = Project()
-        self.processing = Processing(self.project, view.log)
+        self.processing = Processing(self.project, view.main_window.log)
         self.interface = Interface(self, view)
 
     def clear_project(self) -> None:

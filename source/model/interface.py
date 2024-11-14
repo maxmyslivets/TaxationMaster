@@ -21,21 +21,21 @@ class Interface:
         self._temp_path_convert_input = self._temp_path / "convert" / "input"
         self._temp_path_convert_output = self._temp_path / "convert" / "output"
 
-    @staticmethod
-    def _confirm_close_unsaved_project() -> bool:
-        dialog = QMessageBox()
-        dialog.setWindowTitle("Подтвердите действие")
-        dialog.setText("Проект не сохранен.\nПродолжить?")
-        dialog.setIcon(QMessageBox.Icon.Warning)
-        dialog.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-        dialog.setDefaultButton(QMessageBox.StandardButton.Yes)
-        dialog.exec_()
-        return True if dialog.result() == QMessageBox.StandardButton.Yes else False
+    # @staticmethod
+    # def _confirm_close_unsaved_project() -> bool:
+    #     dialog = QMessageBox()
+    #     dialog.setWindowTitle("Подтвердите действие")
+    #     dialog.setText("Проект не сохранен.\nПродолжить?")
+    #     dialog.setIcon(QMessageBox.Icon.Warning)
+    #     dialog.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+    #     dialog.setDefaultButton(QMessageBox.StandardButton.Yes)
+    #     dialog.exec_()
+    #     return True if dialog.result() == QMessageBox.StandardButton.Yes else False
 
     def save_as_project(self) -> None:
         save_as = QFileDialog()
         save_as.setDefaultSuffix(self.model.project.suffix)
-        _project_path, _ = save_as.getSaveFileName(parent=self.view, caption="Сохранить как...", dir='/',
+        _project_path, _ = save_as.getSaveFileName(parent=self.view.main_window, caption="Сохранить как...", dir='/',
                                                    filter=f"Taxation tool project (*{self.model.project.suffix})")
         if _project_path:
             try:
@@ -54,9 +54,9 @@ class Interface:
                 self.clear_temp_project()
                 self.update_interface()
 
-                self.view.log(f"[DEBUG]\tПроект `{self.model.project.path}` успешно сохранен.")
+                self.view.main_window.log(f"[DEBUG]\tПроект `{self.model.project.path}` успешно сохранен.")
             except Exception:
-                self.view.log(f"[ERROR]\tНе удалось сохранить проект в `{_project_path}`."
+                self.view.main_window.log(f"[ERROR]\tНе удалось сохранить проект в `{_project_path}`."
                               f"\n{traceback.format_exc()}")
 
     def save_project(self) -> None:
@@ -64,15 +64,15 @@ class Interface:
         try:
             with open(self.model.project.path, 'wb') as file:
                 pickle.dump(self.model.project, file)
-            self.view.log(f"[DEBUG]\tПроект `{self.model.project.path}` успешно сохранен.")
+            self.view.main_window.log(f"[DEBUG]\tПроект `{self.model.project.path}` успешно сохранен.")
         except Exception:
-            self.view.log(f"[ERROR]\tНе удалось сохранить проект `{self.model.project.path}`."
+            self.view.main_window.log(f"[ERROR]\tНе удалось сохранить проект `{self.model.project.path}`."
                           f"\n{traceback.format_exc()}")
 
     def create_new_project(self) -> None:
 
         # проверка на сохранение проекта перед созданием/открытием нового
-        if not self.model.project.is_saved and not Interface._confirm_close_unsaved_project():
+        if not self.model.project.is_saved and self.view.confirm_close_unsaved_project().result_no:
             return
 
         try:
@@ -85,7 +85,7 @@ class Interface:
                 os.makedirs(self._temp_path_convert_input)
                 os.makedirs(self._temp_path_convert_output)
             except Exception as e:
-                self.view.log(f"[ERROR]\tОшибка создания временной директории ({self._temp_path}).\n{str(e)}")
+                self.view.main_window.log(f"[ERROR]\tОшибка создания временной директории ({self._temp_path}).\n{str(e)}")
                 shutil.rmtree(self._temp_path, ignore_errors=True)
                 return
 
@@ -98,21 +98,21 @@ class Interface:
 
             self.update_interface()
 
-            self.view.log(f"[DEBUG]\tПроект `{self.model.project.path}` успешно создан.")
+            self.view.main_window.log(f"[DEBUG]\tПроект `{self.model.project.path}` успешно создан.")
 
         except Exception:
-            self.view.log(f"[ERROR]\tОшибка создания проекта во временной директории."
+            self.view.main_window.log(f"[ERROR]\tОшибка создания проекта во временной директории."
                           f"\n{traceback.format_exc()}")
 
     def open_project(self) -> None:
 
         # проверка на сохранение проекта перед созданием/открытием нового
-        if not self.model.project.is_saved and not Interface._confirm_close_unsaved_project():
+        if not self.model.project.is_saved and self.view.confirm_close_unsaved_project().result_no:
             return
 
         open_dialog = QFileDialog()
         open_dialog.setDefaultSuffix(self.model.project.suffix)
-        _project_path, _ = open_dialog.getOpenFileName(parent=self.view, caption="Открыть проект...", dir='/',
+        _project_path, _ = open_dialog.getOpenFileName(parent=self.view.main_window, caption="Открыть проект...", dir='/',
                                                        filter=f"Taxation tool project (*{self.model.project.suffix})")
         if _project_path:
             try:
@@ -128,29 +128,29 @@ class Interface:
                 self.clear_temp_project()
                 self.update_interface()
 
-                self.view.log(f"[DEBUG]\tПроект `{self.model.project.path}` успешно открыт.")
+                self.view.main_window.log(f"[DEBUG]\tПроект `{self.model.project.path}` успешно открыт.")
 
-                self.view.log(f"[DEBUG]\tПеременные экземпляра класса Project:")
+                self.view.main_window.log(f"[DEBUG]\tПеременные экземпляра класса Project:")
                 for var, value in self.model.project.__dict__.items():
-                    self.view.log(f"[DEBUG]\t{var} = {value}")
+                    self.view.main_window.log(f"[DEBUG]\t{var} = {value}")
 
             except Exception:
-                self.view.log(f"[ERROR]\tНе удалось открыть проект `{_project_path}`."
+                self.view.main_window.log(f"[ERROR]\tНе удалось открыть проект `{_project_path}`."
                               f"\n{traceback.format_exc()}")
 
     def clear_temp_project(self) -> None:
-        self.view.log("[DEBUG]\tУдаление временных файлов.")
+        self.view.main_window.log("[DEBUG]\tУдаление временных файлов.")
         if self._temp_path.exists():
             shutil.rmtree(self._temp_path)
 
     def update_interface(self) -> None:
-        self.view.setWindowTitle("Taxation Tool - " + self.model.project.name)
-        self.view.log("[DEBUG]\tОбновление интерфейса.")
+        self.view.main_window.setWindowTitle("Taxation Tool - " + self.model.project.name)
+        self.view.main_window.log("[DEBUG]\tОбновление интерфейса.")
 
     def import_dwg_taxation(self) -> None:
         import_dialog = QFileDialog()
         import_dialog.setDefaultSuffix('.dwg')
-        dwg_path, _ = import_dialog.getOpenFileName(parent=self.view, caption="Импорт чертежа...", dir='/',
+        dwg_path, _ = import_dialog.getOpenFileName(parent=self.view.main_window, caption="Импорт чертежа...", dir='/',
                                                     filter="Чертежи (*.dwg)")
         if dwg_path == "":
             return
@@ -165,12 +165,12 @@ class Interface:
         shutil.copyfile(dwg_path, self.model.project.path_dwg)
 
         # добавление имени dwg файла в позицию `Чертеж таксации` менеджера проекта
-        root_item_taxation_plan = self.view.tree_manager.findItems("Чертеж таксации", QtCore.Qt.MatchContains)[0]
+        root_item_taxation_plan = self.view.main_window.tree_manager.findItems("Чертеж таксации", QtCore.Qt.MatchContains)[0]
         root_item_taxation_plan.takeChild(0)
         children_item_taxation_plan = QTreeWidgetItem(root_item_taxation_plan)
         children_item_taxation_plan.setText(0, self.model.project.path_dwg.name)
 
-        self.view.log(f"[DEBUG]\tDWG файл чертежа таксации `{dwg_path}` успешно импортирован в "
+        self.view.main_window.log(f"[DEBUG]\tDWG файл чертежа таксации `{dwg_path}` успешно импортирован в "
                       f"`{self.model.project.path_dwg}`.")
 
         # конвертация dwg в dxf
@@ -191,7 +191,7 @@ class Interface:
         try:
             oda_converter(converter_path, self._temp_path_convert_input, self._temp_path_convert_output)
         except Exception:
-            self.view.log(f"[ERROR]\tОшибка конвертации файлов."
+            self.view.main_window.log(f"[ERROR]\tОшибка конвертации файлов."
                           f"\n{traceback.format_exc()}")
             return
 
@@ -205,25 +205,25 @@ class Interface:
                 time.sleep(1)
                 timeout -= 1
             if timeout == 0:
-                self.view.log(f"[ERROR]\tНе удалось импортировать файл dxf. Превышено время ожидания.")
+                self.view.main_window.log(f"[ERROR]\tНе удалось импортировать файл dxf. Превышено время ожидания.")
                 break
         if timeout == 0:
             return
 
         self.model.project.dxf_name = dxf_file.name
         shutil.copyfile(dxf_file, self.model.project.path_dxf)
-        self.view.log(f"[DEBUG]\tФайл успешно конвертирован из `{self._temp_path_convert_input}` в "
+        self.view.main_window.log(f"[DEBUG]\tФайл успешно конвертирован из `{self._temp_path_convert_input}` в "
                       f"`{self._temp_path_convert_output}`.")
-        self.view.log(f"[DEBUG]\tDXF файл успешно загружен из `{dxf_file.parent}` в "
+        self.view.main_window.log(f"[DEBUG]\tDXF файл успешно загружен из `{dxf_file.parent}` в "
                       f"`{self.model.project.dir_dxf}`.")
         shutil.rmtree(self._temp_path_convert_output)
 
     def preprocessing(self) -> None:
         self.model.processing.read_data_from_taxation_plan()
-        self.view.log("Файл чертежа таксации успешно обработан.")
-        self.view.log(f"Количество точечных растений: {len(self.model.project.numbers)}")
-        self.view.log(f"Количество полос и контуров растительности: {len(self.model.project.shapes)}")
-        self.view.log(f"Зоны: {[name for _, name in self.model.project.zone_names.items()]}")
+        self.view.main_window.log("Файл чертежа таксации успешно обработан.")
+        self.view.main_window.log(f"Количество точечных растений: {len(self.model.project.numbers)}")
+        self.view.main_window.log(f"Количество полос и контуров растительности: {len(self.model.project.shapes)}")
+        self.view.main_window.log(f"Зоны: {[name for _, name in self.model.project.zone_names.items()]}")
         self.model.processing.splitting_numbers()
         self.model.processing.calculate_intersects_shapes_in_zones()
 
@@ -237,5 +237,5 @@ class Interface:
                         if _k_zone == k_zone:
                             split_numbers_in_zones_from_model[zone_name].append(self.model.project.split_numbers[k_split_number])
         for zone_name in split_numbers_in_zones_from_model.keys():
-            self.view.log(f"Вхождения объектов в зону `{zone_name}`: "
+            self.view.main_window.log(f"Вхождения объектов в зону `{zone_name}`: "
                           f"{split_numbers_in_zones_from_model[zone_name]}")
