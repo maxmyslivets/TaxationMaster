@@ -179,6 +179,7 @@ class Interface:
                           f"\n{traceback.format_exc()}")
             return
 
+        timeout = self.model.config.timeout
         dxf_file = None
         while not dxf_file:
             try:
@@ -186,15 +187,29 @@ class Interface:
                     file for file in os.listdir(self.model.config.temp_path_convert_output))
             except StopIteration:
                 time.sleep(1)
-                self.model.config.timeout -= 1
-            if self.model.config.timeout == 0:
-                self.view.main_window.log(f"[ERROR]\tНе удалось импортировать файл dxf. Превышено время ожидания.")
+                timeout -= 1
+            if timeout == 0:
+                self.view.main_window.log(f"[ERROR]\tНе удалось конвертировать файл dxf. Превышено время ожидания.")
                 break
-        if self.model.config.timeout == 0:
+        if timeout == 0:
             return
 
-        self.model.project.dxf_name = dxf_file.name
-        shutil.copyfile(dxf_file, self.model.project.path_dxf)
+        timeout = self.model.config.timeout
+        permission = False
+        while not permission:
+            try:
+                self.model.project.dxf_name = dxf_file.name
+                shutil.copyfile(dxf_file, self.model.project.path_dxf)
+                permission = True
+            except PermissionError:
+                time.sleep(1)
+                timeout -= 1
+                if timeout == 0:
+                    self.view.main_window.log(f"[ERROR]\tНе удалось импортировать файл dxf. Превышено время ожидания.")
+                    break
+        if timeout == 0:
+            return
+
         self.view.main_window.log(f"[DEBUG]\tФайл успешно"
                                   f" конвертирован из `{self.model.config.temp_path_convert_input}` в "
                       f"`{self.model.config.temp_path_convert_output}`.")
