@@ -6,7 +6,7 @@ import traceback
 from pathlib import Path
 
 from PySide6 import QtCore
-from PySide6.QtWidgets import QFileDialog, QTreeWidgetItem
+from PySide6.QtWidgets import QFileDialog, QTreeWidgetItem, QTreeWidget
 
 from utils.convert import oda_converter
 
@@ -15,6 +15,9 @@ class Interface:
     def __init__(self, model, view):
         self.model = model
         self.view = view
+        # FIXME: Если сделать импорт чертежа в сохраненный проект и после этого не сохранить его,
+        #  то при следующем открытии в проекте будет импортированный чертеж.
+        # TODO: Не копировать и не сохранять dwg в проект
 
     def save_as_project(self) -> None:
         save_as = QFileDialog()
@@ -41,7 +44,7 @@ class Interface:
                 self.view.main_window.log(f"[DEBUG]\tПроект `{self.model.project.path}` успешно сохранен.")
             except Exception:
                 self.view.main_window.log(f"[ERROR]\tНе удалось сохранить проект в `{_project_path}`."
-                              f"\n{traceback.format_exc()}")
+                                          f"\n{traceback.format_exc()}")
 
     def save_project(self) -> None:
         self.model.project.is_saved = True
@@ -51,7 +54,7 @@ class Interface:
             self.view.main_window.log(f"[DEBUG]\tПроект `{self.model.project.path}` успешно сохранен.")
         except Exception:
             self.view.main_window.log(f"[ERROR]\tНе удалось сохранить проект `{self.model.project.path}`."
-                          f"\n{traceback.format_exc()}")
+                                      f"\n{traceback.format_exc()}")
 
     def create_new_project(self) -> None:
 
@@ -87,7 +90,7 @@ class Interface:
 
         except Exception:
             self.view.main_window.log(f"[ERROR]\tОшибка создания проекта во временной директории."
-                          f"\n{traceback.format_exc()}")
+                                      f"\n{traceback.format_exc()}")
 
     def open_project(self) -> None:
 
@@ -111,17 +114,17 @@ class Interface:
                 self.model.project.is_saved = True
 
                 self.clear_temp_project()
-                self.update_interface()
 
                 self.view.main_window.log(f"[DEBUG]\tПроект `{self.model.project.path}` успешно открыт.")
 
                 self.view.main_window.log(f"[DEBUG]\tПеременные экземпляра класса Project:")
                 for var, value in self.model.project.__dict__.items():
                     self.view.main_window.log(f"[DEBUG]\t{var} = {value}")
+                self.update_interface()
 
             except Exception:
                 self.view.main_window.log(f"[ERROR]\tНе удалось открыть проект `{_project_path}`."
-                              f"\n{traceback.format_exc()}")
+                                          f"\n{traceback.format_exc()}")
 
     def clear_temp_project(self) -> None:
         self.view.main_window.log("[DEBUG]\tУдаление временных файлов.")
@@ -134,7 +137,39 @@ class Interface:
 
     def update_interface(self) -> None:
         self.view.main_window.setWindowTitle("Taxation Tool - " + self.model.project.name)
+        self.update_project_manager()
         self.view.main_window.log("[DEBUG]\tОбновление интерфейса.")
+
+    def update_project_manager(self) -> None:
+
+        manager_project: QTreeWidget = self.view.main_window.tree_manager
+
+        manager_project_taxation_plan: QTreeWidgetItem = manager_project.findItems("Чертеж таксации",
+                                                                                   QtCore.Qt.MatchContains)[0]
+        # print(manager_project_taxation_plan.childCount())
+        for _ in range(manager_project_taxation_plan.childCount()):
+            manager_project_taxation_plan.removeChild(manager_project_taxation_plan.child(0))
+        if self.model.project.dir_dwg is not None and self.model.project.dwg_name is not None:
+            dwg_plan_item = QTreeWidgetItem(manager_project_taxation_plan)
+            dwg_plan_item.setText(0, self.model.project.path_dwg.name)
+            dwg_plan_item.setToolTip(0, str(self.model.project.path_dwg))
+        if self.model.project.dir_dxf is not None and self.model.project.dxf_name is not None:
+            dxf_plan_item = QTreeWidgetItem(manager_project_taxation_plan)
+            dxf_plan_item.setText(0, self.model.project.path_dxf.name)
+            dxf_plan_item.setToolTip(0, str(self.model.project.path_dxf))
+        # TODO: добавить триггеры
+        manager_project_taxation_plan.setExpanded(True)
+
+        manager_project_objects_in_zones: QTreeWidgetItem = manager_project.findItems("Объекты таксации по зонам",
+                                                                                      QtCore.Qt.MatchContains)[0]
+        for _ in range(manager_project_objects_in_zones.childCount()):
+            manager_project_objects_in_zones.removeChild(manager_project_objects_in_zones.child(0))
+        if len(self.model.project.zone_names) != 0:
+            for k_zone_name, zone_name in self.model.project.zone_names.items():
+                zone_item = QTreeWidgetItem(manager_project_objects_in_zones)
+                zone_item.setText(0, zone_name)
+                # TODO: добавить триггеры
+        manager_project_objects_in_zones.setExpanded(True)
 
     def import_dwg_taxation(self) -> None:
         import_dialog = QFileDialog()
@@ -153,14 +188,8 @@ class Interface:
         self.model.project.dwg_name = Path(dwg_path).name
         shutil.copyfile(dwg_path, self.model.project.path_dwg)
 
-        # добавление имени dwg файла в позицию `Чертеж таксации` менеджера проекта
-        root_item_taxation_plan = self.view.main_window.tree_manager.findItems("Чертеж таксации", QtCore.Qt.MatchContains)[0]
-        root_item_taxation_plan.takeChild(0)
-        children_item_taxation_plan = QTreeWidgetItem(root_item_taxation_plan)
-        children_item_taxation_plan.setText(0, self.model.project.path_dwg.name)
-
         self.view.main_window.log(f"[DEBUG]\tDWG файл чертежа таксации `{dwg_path}` успешно импортирован в "
-                      f"`{self.model.project.path_dwg}`.")
+                                  f"`{self.model.project.path_dwg}`.")
 
         # конвертация dwg в dxf
         dwg_path_without_space = self.model.project.path_dwg.name.replace(" ", "_")
@@ -214,15 +243,16 @@ class Interface:
         if timeout == 0:
             return
 
+        self.update_project_manager()
+
         self.view.main_window.log(f"[DEBUG]\tФайл успешно"
                                   f" конвертирован из `{self.model.config.temp_path_convert_input}` в "
-                      f"`{self.model.config.temp_path_convert_output}`.")
+                                  f"`{self.model.config.temp_path_convert_output}`.")
         self.view.main_window.log(f"[DEBUG]\tDXF файл успешно загружен из `{dxf_file.parent}` в "
-                      f"`{self.model.project.dir_dxf}`.")
+                                  f"`{self.model.project.dir_dxf}`.")
         shutil.rmtree(self.model.config.temp_path_convert_output)
 
     def preprocessing(self) -> None:
-        print(self.model.config.config)
         self.model.processing.read_data_from_taxation_plan(self.model.config.numbers_layers,
                                                            self.model.config.lines_layers,
                                                            self.model.config.contours_layers,
@@ -248,3 +278,5 @@ class Interface:
         for zone_name in split_numbers_in_zones_from_model.keys():
             self.view.main_window.log(f"Вхождения объектов в зону `{zone_name}`: "
                           f"{split_numbers_in_zones_from_model[zone_name]}")
+        self.model.processing.splitting_shapes_in_zones()
+        self.update_interface()

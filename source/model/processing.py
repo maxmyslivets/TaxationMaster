@@ -289,7 +289,7 @@ class Processing(QtCore.QObject):
         """
         Вычисление вхождений фигур и точечных объектов растительности в зоны
         """
-        # TODO: Добавить вычисление площадей и длин линий для объектов на каждой зоне отдельно
+
         for k_zone, zone_shape in self.project.zone_shapes.items():
             for k_split_number, _ in self.project.split_numbers.items():
                 k_number_list = self.project.number_from_split_number[k_split_number]
@@ -312,3 +312,9 @@ class Processing(QtCore.QObject):
 
         for k in self.project.intersects_shapes_in_zones.keys():
             self.project.intersects_shapes_in_zones[k] = list(set(self.project.intersects_shapes_in_zones[k]))
+
+    def splitting_shapes_in_zones(self) -> None:
+        """Вычисление площадей и длин линий для объектов на каждой зоне отдельно"""
+
+        # TODO: Добавить вычисление площадей и длин линий для объектов на каждой зоне отдельно
+        pass

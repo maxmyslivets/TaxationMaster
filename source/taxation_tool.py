@@ -13,8 +13,6 @@ class TaxationTool:
         self.view = view
         self.app = app
 
-        self.view.main_window.tree_manager.expandAll()
-
         self.model.interface.create_new_project()
 
         self.connect_signals()

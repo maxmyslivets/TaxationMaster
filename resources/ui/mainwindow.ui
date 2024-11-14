@@ -65,28 +65,18 @@
        </column>
        <item>
         <property name="text">
-         <string>Чертеж таксации (dxf)</string>
+         <string>Чертеж таксации</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Ведомость таксации (xslx)</string>
+         <string>Объекты таксации по зонам</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Таблицы объектов таксации</string>
+         <string>Ведомость таксации</string>
         </property>
-        <item>
-         <property name="text">
-          <string>Зона ул. Молодежная</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Зона благоустройства</string>
-         </property>
-        </item>
        </item>
       </widget>
       <widget class="QSplitter" name="splitter_2">
