@@ -12,7 +12,9 @@ def init_project():
     model = Model(view)
     model.project._dir_dxf = Path("test_model/data")
     model.project._dxf_name = Path("test.dxf")
-    model.processing.read_data_from_taxation_plan()
+    model.processing.read_data_from_taxation_plan(model.config.numbers_layers, model.config.lines_layers,
+                                                  model.config.contours_layers, model.config.zones_layers,
+                                                  model.config.min_distance, model.config.min_area)
     model.processing.splitting_numbers()
     model.processing.calculate_intersects_shapes_in_zones()
     return model.project

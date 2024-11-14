@@ -22,21 +22,15 @@ class Processing(QtCore.QObject):
 
         self.valid = True
 
-        self.MIN_DISTANCE = 0.01    # TODO: вынести в настройки
-        self.MIN_AREA = 0.01        # TODO: вынести в настройки
-
-    def read_data_from_taxation_plan(self) -> None:
+    def read_data_from_taxation_plan(self, numbers_layers: list[str], lines_layers: list[str],
+                                     contours_layers: list[str], zones_layers: list[str], min_distance: float,
+                                     min_area: float) -> None:
         """
         Чтение файла dxf чертежа таксации и структурирование данных.
         """
 
         self.clear_data_for_autocad_data_structuring()
         self.valid = True
-
-        numbers_layers = ["номера"]     # TODO: вынести в настройки
-        lines_layers = ["полосы"]       # TODO: вынести в настройки
-        contours_layers = ["контуры"]   # TODO: вынести в настройки
-        zones_layers = ["зоны"]         # TODO: вынести в настройки
 
         try:
             entity_numbers, entity_lines, entity_contours, entity_zones = [], [], [], []
@@ -106,7 +100,7 @@ class Processing(QtCore.QObject):
                 else:
                     self.log(f"[WARNING]\tТип фигуры {type(shape)} не является LineString или Polygon.")
                     continue
-                if distance < self.MIN_DISTANCE:
+                if distance < min_distance:
                     if k_shape not in self.project.numbers_from_shape:
                         self.project.numbers_from_shape[k_shape] = list()
                     self.project.numbers_from_shape[k_shape].append(k_number)
@@ -148,7 +142,7 @@ class Processing(QtCore.QObject):
                     k_zone_name += 1
                 zone_name_position = Point(entity.dxf.insert[0], entity.dxf.insert[1])
                 for k_zone, shape in self.project.zone_shapes.items():
-                    if zone_name_position.distance(shape.exterior) < self.MIN_DISTANCE:
+                    if zone_name_position.distance(shape.exterior) < min_distance:
                         _k_zone_name = next(k for k, v in self.project.zone_names.items() if v == zone_name)
                         if _k_zone_name not in self.project.zones_from_zone_names:
                             self.project.zones_from_zone_names[_k_zone_name] = list()
@@ -168,7 +162,7 @@ class Processing(QtCore.QObject):
             zone_1 = MultiPolygon([polygon for polygon in zone_shapes_1_list])
             zone_2 = MultiPolygon([polygon for polygon in zone_shapes_2_list])
 
-            if zone_1.intersection(zone_2).area > self.MIN_AREA:
+            if zone_1.intersection(zone_2).area > min_area:
                 self.valid = False
                 self.log(f"[ERROR]\tЗоны `{self.project.zone_names[k_zone_name_1]}` и "
                          f"`{self.project.zone_names[k_zone_name_2]}` перекрываются на "

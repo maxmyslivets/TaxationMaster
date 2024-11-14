@@ -13,28 +13,20 @@ def init_project():
     model = Model(view)
     model.project._dir_dxf = Path("test_model/data")
     model.project._dxf_name = Path("test.dxf")
-    model.processing.read_data_from_taxation_plan()
+    model.processing.read_data_from_taxation_plan(model.config.numbers_layers, model.config.lines_layers,
+                                                  model.config.contours_layers, model.config.zones_layers,
+                                                  model.config.min_distance, model.config.min_area)
     return model.project
 
 
-@pytest.fixture(scope='module')
-def init_autocad_data_structuring():
-    view = FakeView()
-    model = Model(view)
-    model.project._dir_dxf = Path("test_model/data")
-    model.project._dxf_name = Path("test.dxf")
-    model.processing.read_data_from_taxation_plan()
-    return model.project
-
-
-def test_numbers(init_autocad_data_structuring):
+def test_numbers(init_project):
 
     # Количество номеров в чертеже
     NUMBERS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10а", "11", "12", "13", "14", "15", "16", "16", "17",
                "18", "19а-г", "20", "21", "22", "23", "24, 25а", "26-27", "28", "28", "28"]
     NUMBERS.sort()
 
-    project = init_autocad_data_structuring
+    project = init_project
 
     numbers = [number for _, number in project.numbers.items()]
     numbers.sort()
@@ -42,64 +34,64 @@ def test_numbers(init_autocad_data_structuring):
     assert numbers == NUMBERS, "Номера не совпадают с чертежом"
 
 
-def test_len_numbers_position(init_autocad_data_structuring):
+def test_len_numbers_position(init_project):
 
     # Количество номеров в чертеже
     COUNT_NUMBER = 29
 
-    project = init_autocad_data_structuring
+    project = init_project
 
     assert len(project.numbers_position) == COUNT_NUMBER, "Количество позиций номеров не совпадает с чертежом"
 
 
-def test_len_shapes(init_autocad_data_structuring):
+def test_len_shapes(init_project):
 
     # Количество фигур в чертеже
     COUNT_SHAPES = 6
 
-    project = init_autocad_data_structuring
+    project = init_project
 
     assert len(project.shapes) == COUNT_SHAPES, "Количество фигур не совпадает с чертежом"
 
 
-def test_len_zone_shapes(init_autocad_data_structuring):
+def test_len_zone_shapes(init_project):
 
     # Количество зон в чертеже
     COUNT_ZONES = 3
 
-    project = init_autocad_data_structuring
+    project = init_project
 
     assert len(project.zone_shapes) == COUNT_ZONES, "Количество зон не совпадает с чертежом"
 
 
-def test_len_zone_names(init_autocad_data_structuring):
+def test_len_zone_names(init_project):
 
     # Количество названий зон в чертеже (несколько одинаковых названий считаются за одно)
     COUNT_NAMES = 2
 
-    project = init_autocad_data_structuring
+    project = init_project
 
     assert len(project.zone_names) == COUNT_NAMES, "Количество имен зон не совпадает с чертежом"
 
 
-def test_len_tree_from_numbers(init_autocad_data_structuring):
+def test_len_tree_from_numbers(init_project):
 
     # Количество точечных объектов в чертеже
     COUNT_TREES = 18
 
-    project = init_autocad_data_structuring
+    project = init_project
 
     assert len(project.tree) == COUNT_TREES, "Количество точечных объектов не совпадает с чертежом"
 
 
-def test_zones_from_zone_names(init_autocad_data_structuring):
+def test_zones_from_zone_names(init_project):
     """Проверка совпадения названий зон с названиями из чертежа"""
 
     # Названия зон в чертеже
     ZONE_NAMES = ["Зона 1", "Зона 2"]
     ZONE_NAMES.sort()
 
-    project = init_autocad_data_structuring
+    project = init_project
 
     zone_names_from_model = []
     for _, zone_name in project.zone_names.items():
@@ -109,7 +101,7 @@ def test_zones_from_zone_names(init_autocad_data_structuring):
     assert zone_names_from_model == ZONE_NAMES, "Названия зон не совпадают с чертежом"
 
 
-def test_numbers_from_tree(init_autocad_data_structuring):
+def test_numbers_from_tree(init_project):
     """Проверка совпадения номеров точечных объектов с названиями из чертежа"""
 
     # Список номеров точечных объектов чертеже
@@ -117,7 +109,7 @@ def test_numbers_from_tree(init_autocad_data_structuring):
                     "24, 25а", "26-27"]
     TREE_NUMBERS.sort()
 
-    project = init_autocad_data_structuring
+    project = init_project
 
     tree_numbers_from_model = []
     for _, k_number in project.numbers_from_tree.items():
@@ -127,14 +119,14 @@ def test_numbers_from_tree(init_autocad_data_structuring):
     assert tree_numbers_from_model == TREE_NUMBERS, "Номера деревьев не совпадают с чертежом"
 
 
-def test_numbers_from_shape(init_autocad_data_structuring):
+def test_numbers_from_shape(init_project):
     """Проверка совпадения номеров фигур с названиями из чертежа"""
 
     # Список номеров контуров в чертеже
     NUMBERS_FROM_SHAPE = ["1", "2", "8", "9", "15", "16", "16", "17", "28", "28", "28"]
     NUMBERS_FROM_SHAPE.sort()
 
-    project = init_autocad_data_structuring
+    project = init_project
 
     numbers_from_shape_from_model = []
     idx_numbers_from_shape_from_model = []
@@ -147,13 +139,13 @@ def test_numbers_from_shape(init_autocad_data_structuring):
     assert numbers_from_shape_from_model == NUMBERS_FROM_SHAPE, "Номера фигур не совпадают с чертежом"
 
 
-def test_count_shape_is_line(init_autocad_data_structuring):
+def test_count_shape_is_line(init_project):
     """Проверка количества полученных линий с количеством из чертежа"""
 
     # Количество полос в чертеже
     COUNT_LINE = 2
 
-    project = init_autocad_data_structuring
+    project = init_project
 
     line_count = 0
     for _, shape in project.shapes.items():
@@ -163,13 +155,13 @@ def test_count_shape_is_line(init_autocad_data_structuring):
     assert line_count == COUNT_LINE, "Количество полученных линий не совпадает с чертежом"
 
 
-def test_count_shape_is_contour(init_autocad_data_structuring):
+def test_count_shape_is_contour(init_project):
     """Проверка количества полученных контуров с количеством из чертежа"""
 
     # Количество контуров в чертеже
     COUNT_CONTOUR = 4
 
-    project = init_autocad_data_structuring
+    project = init_project
 
     contour_count = 0
     for _, shape in project.shapes.items():

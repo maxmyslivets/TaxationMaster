@@ -1,13 +1,12 @@
 import os
 import pickle
 import shutil
-import tempfile
 import time
 import traceback
 from pathlib import Path
 
 from PySide6 import QtCore
-from PySide6.QtWidgets import QMessageBox, QFileDialog, QTreeWidgetItem
+from PySide6.QtWidgets import QFileDialog, QTreeWidgetItem
 
 from utils.convert import oda_converter
 
@@ -16,21 +15,6 @@ class Interface:
     def __init__(self, model, view):
         self.model = model
         self.view = view
-
-        self._temp_path = Path(tempfile.gettempdir()) / "TaxationTool"      # TODO: вынести в настройки
-        self._temp_path_convert_input = self._temp_path / "convert" / "input"
-        self._temp_path_convert_output = self._temp_path / "convert" / "output"
-
-    # @staticmethod
-    # def _confirm_close_unsaved_project() -> bool:
-    #     dialog = QMessageBox()
-    #     dialog.setWindowTitle("Подтвердите действие")
-    #     dialog.setText("Проект не сохранен.\nПродолжить?")
-    #     dialog.setIcon(QMessageBox.Icon.Warning)
-    #     dialog.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-    #     dialog.setDefaultButton(QMessageBox.StandardButton.Yes)
-    #     dialog.exec_()
-    #     return True if dialog.result() == QMessageBox.StandardButton.Yes else False
 
     def save_as_project(self) -> None:
         save_as = QFileDialog()
@@ -81,16 +65,17 @@ class Interface:
 
             # создание необходимых для работы директорий во временном каталоге
             try:
-                os.makedirs(self._temp_path)
-                os.makedirs(self._temp_path_convert_input)
-                os.makedirs(self._temp_path_convert_output)
+                os.makedirs(self.model.config.temp_path)
+                os.makedirs(self.model.config.temp_path_convert_input)
+                os.makedirs(self.model.config.temp_path_convert_output)
             except Exception as e:
-                self.view.main_window.log(f"[ERROR]\tОшибка создания временной директории ({self._temp_path}).\n{str(e)}")
-                shutil.rmtree(self._temp_path, ignore_errors=True)
+                self.view.main_window.log(f"[ERROR]\tОшибка создания временной директории "
+                                          f"`{self.model.config.temp_path}`.\n{str(e)}")
+                shutil.rmtree(self.model.config.temp_path, ignore_errors=True)
                 return
 
             # создание проекта во временном каталоге
-            self.model.project.path = self._temp_path / ("New project" + self.model.project.suffix)
+            self.model.project.path = self.model.config.temp_path / ("New project" + self.model.project.suffix)
             self.model.project.is_saved = True
             os.makedirs(self.model.project.dir)
             os.makedirs(self.model.project.dir_dwg)
@@ -140,8 +125,8 @@ class Interface:
 
     def clear_temp_project(self) -> None:
         self.view.main_window.log("[DEBUG]\tУдаление временных файлов.")
-        if self._temp_path.exists():
-            shutil.rmtree(self._temp_path)
+        if self.model.config.temp_path.exists():
+            shutil.rmtree(self.model.config.temp_path)
 
     def update_interface(self) -> None:
         self.view.main_window.setWindowTitle("Taxation Tool - " + self.model.project.name)
@@ -176,50 +161,54 @@ class Interface:
         # конвертация dwg в dxf
         dwg_path_without_space = self.model.project.path_dwg.name.replace(" ", "_")
 
-        if self._temp_path_convert_input.exists():
-            shutil.rmtree(self._temp_path_convert_input)
-        os.makedirs(self._temp_path_convert_input, exist_ok=True)
+        if self.model.config.temp_path_convert_input.exists():
+            shutil.rmtree(self.model.config.temp_path_convert_input)
+        os.makedirs(self.model.config.temp_path_convert_input, exist_ok=True)
 
-        shutil.copyfile(self.model.project.path_dwg, self._temp_path_convert_input / dwg_path_without_space)
+        shutil.copyfile(self.model.project.path_dwg, self.model.config.temp_path_convert_input / dwg_path_without_space)
 
-        if self._temp_path_convert_output.exists():
-            shutil.rmtree(self._temp_path_convert_output)
-        os.makedirs(self._temp_path_convert_output, exist_ok=True)
-
-        converter_path = Path("utils/ODAFileConverter.exe").absolute()  # TODO: вынести в настройки
+        if self.model.config.temp_path_convert_output.exists():
+            shutil.rmtree(self.model.config.temp_path_convert_output)
+        os.makedirs(self.model.config.temp_path_convert_output, exist_ok=True)
 
         try:
-            oda_converter(converter_path, self._temp_path_convert_input, self._temp_path_convert_output)
+            oda_converter(self.model.config.oda_converter_path, self.model.config.temp_path_convert_input,
+                          self.model.config.temp_path_convert_output)
         except Exception:
             self.view.main_window.log(f"[ERROR]\tОшибка конвертации файлов."
                           f"\n{traceback.format_exc()}")
             return
 
         dxf_file = None
-        timeout = 10    # TODO: вынести в настройки
         while not dxf_file:
             try:
-                dxf_file = self._temp_path_convert_output / next(
-                    file for file in os.listdir(self._temp_path_convert_output))
+                dxf_file = self.model.config.temp_path_convert_output / next(
+                    file for file in os.listdir(self.model.config.temp_path_convert_output))
             except StopIteration:
                 time.sleep(1)
-                timeout -= 1
-            if timeout == 0:
+                self.model.config.timeout -= 1
+            if self.model.config.timeout == 0:
                 self.view.main_window.log(f"[ERROR]\tНе удалось импортировать файл dxf. Превышено время ожидания.")
                 break
-        if timeout == 0:
+        if self.model.config.timeout == 0:
             return
 
         self.model.project.dxf_name = dxf_file.name
         shutil.copyfile(dxf_file, self.model.project.path_dxf)
-        self.view.main_window.log(f"[DEBUG]\tФайл успешно конвертирован из `{self._temp_path_convert_input}` в "
-                      f"`{self._temp_path_convert_output}`.")
+        self.view.main_window.log(f"[DEBUG]\tФайл успешно"
+                                  f" конвертирован из `{self.model.config.temp_path_convert_input}` в "
+                      f"`{self.model.config.temp_path_convert_output}`.")
         self.view.main_window.log(f"[DEBUG]\tDXF файл успешно загружен из `{dxf_file.parent}` в "
                       f"`{self.model.project.dir_dxf}`.")
-        shutil.rmtree(self._temp_path_convert_output)
+        shutil.rmtree(self.model.config.temp_path_convert_output)
 
     def preprocessing(self) -> None:
-        self.model.processing.read_data_from_taxation_plan()
+        self.model.processing.read_data_from_taxation_plan(self.model.config.numbers_layers,
+                                                           self.model.config.lines_layers,
+                                                           self.model.config.contours_layers,
+                                                           self.model.config.zones_layers,
+                                                           self.model.config.min_distance,
+                                                           self.model.config.min_area)
         self.view.main_window.log("Файл чертежа таксации успешно обработан.")
         self.view.main_window.log(f"Количество точечных растений: {len(self.model.project.numbers)}")
         self.view.main_window.log(f"Количество полос и контуров растительности: {len(self.model.project.shapes)}")

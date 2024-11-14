@@ -1,3 +1,4 @@
+from source.model.config import Config
 from source.model.interface import Interface
 from source.model.project import Project
 from source.model.processing import Processing
@@ -5,6 +6,7 @@ from source.model.processing import Processing
 
 class Model:
     def __init__(self, view):
+        self.config = Config()
         self._project = Project()
         self.processing = Processing(self.project, view.main_window.log)
         self.interface = Interface(self, view)

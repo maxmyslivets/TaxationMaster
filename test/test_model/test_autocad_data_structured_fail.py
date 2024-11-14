@@ -11,7 +11,9 @@ def init_model_fail_duplicate_numbers_of_tree() -> Model:
     model = Model(view)
     model.project._dir_dxf = Path("test_model/data")
     model.project._dxf_name = Path("test_fail_duplicate_numbers_of_tree.dxf")
-    model.processing.read_data_from_taxation_plan()
+    model.processing.read_data_from_taxation_plan(model.config.numbers_layers, model.config.lines_layers,
+                                                  model.config.contours_layers, model.config.zones_layers,
+                                                  model.config.min_distance, model.config.min_area)
     return model
 
 
@@ -20,7 +22,9 @@ def init_model_fail_duplicate_numbers_of_shapes() -> Model:
     model = Model(view)
     model.project._dir_dxf = Path("test_model/data")
     model.project._dxf_name = Path("test_fail_duplicate_numbers_of_shapes.dxf")
-    model.processing.read_data_from_taxation_plan()
+    model.processing.read_data_from_taxation_plan(model.config.numbers_layers, model.config.lines_layers,
+                                                  model.config.contours_layers, model.config.zones_layers,
+                                                  model.config.min_distance, model.config.min_area)
     return model
 
 
@@ -29,7 +33,9 @@ def init_model_fail_duplicate_numbers_tree_shapes() -> Model:
     model = Model(view)
     model.project._dir_dxf = Path("test_model/data")
     model.project._dxf_name = Path("test_fail_duplicate_numbers_tree-shapes.dxf")
-    model.processing.read_data_from_taxation_plan()
+    model.processing.read_data_from_taxation_plan(model.config.numbers_layers, model.config.lines_layers,
+                                                  model.config.contours_layers, model.config.zones_layers,
+                                                  model.config.min_distance, model.config.min_area)
     return model
 
 
@@ -38,7 +44,9 @@ def init_model_fail_intersection_zone() -> Model:
     model = Model(view)
     model.project._dir_dxf = Path("test_model/data")
     model.project._dxf_name = Path("test_fail_intersection_zone.dxf")
-    model.processing.read_data_from_taxation_plan()
+    model.processing.read_data_from_taxation_plan(model.config.numbers_layers, model.config.lines_layers,
+                                                  model.config.contours_layers, model.config.zones_layers,
+                                                  model.config.min_distance, model.config.min_area)
     return model
 
 
@@ -54,7 +62,9 @@ init_models = [
 def test_valid(init_model):
 
     model = init_model()
-    model.processing.read_data_from_taxation_plan()
+    model.processing.read_data_from_taxation_plan(model.config.numbers_layers, model.config.lines_layers,
+                                                  model.config.contours_layers, model.config.zones_layers,
+                                                  model.config.min_distance, model.config.min_area)
 
     assert model.processing.valid == False
 
