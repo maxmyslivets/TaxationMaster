@@ -6,162 +6,163 @@
 from PySide6 import QtCore
 
 qt_resource_data = b"\
-\x00\x00\x0c\x07\
+\x00\x00\x0c\x1c\
 <\
 ?xml version=\x221.\
 0\x22 encoding=\x22UTF\
 -8\x22 standalone=\x22\
-no\x22?>\x0a<svg width\
-=\x2232px\x22 height=\x22\
-32px\x22 viewBox=\x220\
- 0 32 32\x22 versio\
-n=\x221.1\x22 xmlns=\x22h\
-ttp://www.w3.org\
-/2000/svg\x22 xmlns\
-:xlink=\x22http://w\
-ww.w3.org/1999/x\
-link\x22>\x0a    <!-- \
-Generator: Sketc\
-h 3.8.3 (29802) \
-- http://www.boh\
-emiancoding.com/\
-sketch -->\x0a    <\
-title>off-grid</\
-title>\x0a    <desc\
->Created with Sk\
-etch.</desc>\x0a   \
- <defs></defs>\x0a \
-   <g id=\x22Page-1\
-\x22 stroke=\x22none\x22 \
-stroke-width=\x221\x22\
- fill=\x22none\x22 fil\
-l-rule=\x22evenodd\x22\
- stroke-linecap=\
-\x22round\x22 stroke-l\
-inejoin=\x22round\x22>\
-\x0a        <g id=\x22\
-off-grid\x22 stroke\
-=\x22#FFFFFF\x22 strok\
-e-width=\x222\x22>\x0a   \
-         <g tran\
-sform=\x22translate\
-(1.000000, 0.000\
-000)\x22>\x0a         \
-       <path d=\x22\
-M7,25.9995 C7,24\
-.8955 6.104,23.9\
-995 5,23.9995 L2\
-,23.9995 C0.896,\
-23.9995 0,24.895\
-5 0,25.9995 L0,2\
-8.9995 C0,30.103\
-5 0.896,30.9995 \
-2,30.9995 L5,30.\
-9995 C6.104,30.9\
-995 7,30.1035 7,\
-28.9995 L7,25.99\
-95 L7,25.9995 Z\x22\
- id=\x22Stroke-1\x22><\
-/path>\x0a         \
-       <path d=\x22\
-M18,25.9995 C18,\
-24.8955 17.104,2\
-3.9995 16,23.999\
-5 L13,23.9995 C1\
-1.896,23.9995 11\
-,24.8955 11,25.9\
-995 L11,28.9995 \
-C11,30.1035 11.8\
-96,30.9995 13,30\
-.9995 L16,30.999\
-5 C17.104,30.999\
-5 18,30.1035 18,\
-28.9995 L18,25.9\
-995 L18,25.9995 \
-Z\x22 id=\x22Stroke-3\x22\
-></path>\x0a       \
-         <path d\
-=\x22M29,25.9995 C2\
-9,24.8955 28.104\
-,23.9995 27,23.9\
-995 L24,23.9995 \
-C22.896,23.9995 \
-22,24.8955 22,25\
-.9995 L22,28.999\
-5 C22,30.1035 22\
-.896,30.9995 24,\
-30.9995 L27,30.9\
-995 C28.104,30.9\
-995 29,30.1035 2\
-9,28.9995 L29,25\
-.9995 L29,25.999\
-5 Z\x22 id=\x22Stroke-\
-5\x22></path>\x0a     \
-           <path\
- d=\x22M7,14.9995 C\
-7,13.8955 6.104,\
-12.9995 5,12.999\
-5 L2,12.9995 C0.\
-896,12.9995 0,13\
-.8955 0,14.9995 \
-L0,17.9995 C0,19\
-.1035 0.896,19.9\
-995 2,19.9995 L5\
-,19.9995 C6.104,\
-19.9995 7,19.103\
-5 7,17.9995 L7,1\
-4.9995 L7,14.999\
-5 Z\x22 id=\x22Stroke-\
-7\x22></path>\x0a     \
-           <path\
- d=\x22M18,14.9995 \
-C18,13.8955 17.1\
-04,12.9995 16,12\
-.9995 L13,12.999\
-5 C11.896,12.999\
-5 11,13.8955 11,\
-14.9995 L11,17.9\
-995 C11,19.1035 \
-11.896,19.9995 1\
-3,19.9995 L16,19\
-.9995 C17.104,19\
-.9995 18,19.1035\
- 18,17.9995 L18,\
-14.9995 L18,14.9\
-995 Z\x22 id=\x22Strok\
-e-9\x22></path>\x0a   \
-             <pa\
-th d=\x22M29,14.999\
-5 C29,13.8955 28\
-.104,12.9995 27,\
-12.9995 L24,12.9\
-995 C22.896,12.9\
-995 22,13.8955 2\
-2,14.9995 L22,17\
-.9995 C22,19.103\
-5 22.896,19.9995\
- 24,19.9995 L27,\
-19.9995 C28.104,\
-19.9995 29,19.10\
-35 29,17.9995 L2\
-9,14.9995 L29,14\
-.9995 Z\x22 id=\x22Str\
-oke-11\x22></path>\x0a\
+no\x22?>\x0d\x0a<svg widt\
+h=\x2232px\x22 height=\
+\x2232px\x22 viewBox=\x22\
+0 0 32 32\x22 versi\
+on=\x221.1\x22 xmlns=\x22\
+http://www.w3.or\
+g/2000/svg\x22 xmln\
+s:xlink=\x22http://\
+www.w3.org/1999/\
+xlink\x22>\x0d\x0a    <!-\
+- Generator: Ske\
+tch 3.8.3 (29802\
+) - http://www.b\
+ohemiancoding.co\
+m/sketch -->\x0d\x0a  \
+  <title>off-gri\
+d</title>\x0d\x0a    <\
+desc>Created wit\
+h Sketch.</desc>\
+\x0d\x0a    <defs></de\
+fs>\x0d\x0a    <g id=\x22\
+Page-1\x22 stroke=\x22\
+none\x22 stroke-wid\
+th=\x221\x22 fill=\x22non\
+e\x22 fill-rule=\x22ev\
+enodd\x22 stroke-li\
+necap=\x22round\x22 st\
+roke-linejoin=\x22r\
+ound\x22>\x0d\x0a        \
+<g id=\x22off-grid\x22\
+ stroke=\x22#FFFFFF\
+\x22 stroke-width=\x22\
+2\x22>\x0d\x0a           \
+ <g transform=\x22t\
+ranslate(1.00000\
+0, 0.000000)\x22>\x0d\x0a\
                 \
-<path d=\x22M7,3.99\
-95 C7,2.8955 6.1\
-04,1.9995 5,1.99\
-95 L2,1.9995 C0.\
-896,1.9995 0,2.8\
-955 0,3.9995 L0,\
-6.9995 C0,8.1035\
- 0.896,8.9995 2,\
-8.9995 L5,8.9995\
- C6.104,8.9995 7\
-,8.1035 7,6.9995\
- L7,3.9995 L7,3.\
-9995 Z\x22 id=\x22Stro\
-ke-13\x22></path>\x0a \
+<path d=\x22M7,25.9\
+995 C7,24.8955 6\
+.104,23.9995 5,2\
+3.9995 L2,23.999\
+5 C0.896,23.9995\
+ 0,24.8955 0,25.\
+9995 L0,28.9995 \
+C0,30.1035 0.896\
+,30.9995 2,30.99\
+95 L5,30.9995 C6\
+.104,30.9995 7,3\
+0.1035 7,28.9995\
+ L7,25.9995 L7,2\
+5.9995 Z\x22 id=\x22St\
+roke-1\x22></path>\x0d\
+\x0a               \
+ <path d=\x22M18,25\
+.9995 C18,24.895\
+5 17.104,23.9995\
+ 16,23.9995 L13,\
+23.9995 C11.896,\
+23.9995 11,24.89\
+55 11,25.9995 L1\
+1,28.9995 C11,30\
+.1035 11.896,30.\
+9995 13,30.9995 \
+L16,30.9995 C17.\
+104,30.9995 18,3\
+0.1035 18,28.999\
+5 L18,25.9995 L1\
+8,25.9995 Z\x22 id=\
+\x22Stroke-3\x22></pat\
+h>\x0d\x0a            \
+    <path d=\x22M29\
+,25.9995 C29,24.\
+8955 28.104,23.9\
+995 27,23.9995 L\
+24,23.9995 C22.8\
+96,23.9995 22,24\
+.8955 22,25.9995\
+ L22,28.9995 C22\
+,30.1035 22.896,\
+30.9995 24,30.99\
+95 L27,30.9995 C\
+28.104,30.9995 2\
+9,30.1035 29,28.\
+9995 L29,25.9995\
+ L29,25.9995 Z\x22 \
+id=\x22Stroke-5\x22></\
+path>\x0d\x0a         \
+       <path d=\x22\
+M7,14.9995 C7,13\
+.8955 6.104,12.9\
+995 5,12.9995 L2\
+,12.9995 C0.896,\
+12.9995 0,13.895\
+5 0,14.9995 L0,1\
+7.9995 C0,19.103\
+5 0.896,19.9995 \
+2,19.9995 L5,19.\
+9995 C6.104,19.9\
+995 7,19.1035 7,\
+17.9995 L7,14.99\
+95 L7,14.9995 Z\x22\
+ id=\x22Stroke-7\x22><\
+/path>\x0d\x0a        \
+        <path d=\
+\x22M18,14.9995 C18\
+,13.8955 17.104,\
+12.9995 16,12.99\
+95 L13,12.9995 C\
+11.896,12.9995 1\
+1,13.8955 11,14.\
+9995 L11,17.9995\
+ C11,19.1035 11.\
+896,19.9995 13,1\
+9.9995 L16,19.99\
+95 C17.104,19.99\
+95 18,19.1035 18\
+,17.9995 L18,14.\
+9995 L18,14.9995\
+ Z\x22 id=\x22Stroke-9\
+\x22></path>\x0d\x0a     \
+           <path\
+ d=\x22M29,14.9995 \
+C29,13.8955 28.1\
+04,12.9995 27,12\
+.9995 L24,12.999\
+5 C22.896,12.999\
+5 22,13.8955 22,\
+14.9995 L22,17.9\
+995 C22,19.1035 \
+22.896,19.9995 2\
+4,19.9995 L27,19\
+.9995 C28.104,19\
+.9995 29,19.1035\
+ 29,17.9995 L29,\
+14.9995 L29,14.9\
+995 Z\x22 id=\x22Strok\
+e-11\x22></path>\x0d\x0a \
+               <\
+path d=\x22M7,3.999\
+5 C7,2.8955 6.10\
+4,1.9995 5,1.999\
+5 L2,1.9995 C0.8\
+96,1.9995 0,2.89\
+55 0,3.9995 L0,6\
+.9995 C0,8.1035 \
+0.896,8.9995 2,8\
+.9995 L5,8.9995 \
+C6.104,8.9995 7,\
+8.1035 7,6.9995 \
+L7,3.9995 L7,3.9\
+995 Z\x22 id=\x22Strok\
+e-13\x22></path>\x0d\x0a \
                <\
 path d=\x22M18,3.99\
 95 C18,2.8955 17\
@@ -177,272 +178,275 @@ path d=\x22M18,3.99\
 .1035 18,6.9995 \
 L18,3.9995 L18,3\
 .9995 Z\x22 id=\x22Str\
-oke-15\x22></path>\x0a\
-                \
-<path d=\x22M28.999\
-,2.7681 L26.401,\
-1.2681 C25.444,0\
-.7151 24.222,1.0\
-431 23.669,1.999\
-1 L22.169,4.5981\
- C21.616,5.5541 \
-21.944,6.7781 22\
-.901,7.3301 L25.\
-499,8.8301 C26.4\
-56,9.3811 27.679\
-,9.0541 28.231,8\
-.0981 L29.731,5.\
-4991 C30.283,4.5\
-431 29.956,3.320\
-1 28.999,2.7681 \
-L28.999,2.7681 Z\
-\x22 id=\x22Stroke-17\x22\
-></path>\x0a       \
-     </g>\x0a      \
-  </g>\x0a    </g>\x0a\
-</svg>\
-\x00\x00\x05x\
+oke-15\x22></path>\x0d\
+\x0a               \
+ <path d=\x22M28.99\
+9,2.7681 L26.401\
+,1.2681 C25.444,\
+0.7151 24.222,1.\
+0431 23.669,1.99\
+91 L22.169,4.598\
+1 C21.616,5.5541\
+ 21.944,6.7781 2\
+2.901,7.3301 L25\
+.499,8.8301 C26.\
+456,9.3811 27.67\
+9,9.0541 28.231,\
+8.0981 L29.731,5\
+.4991 C30.283,4.\
+5431 29.956,3.32\
+01 28.999,2.7681\
+ L28.999,2.7681 \
+Z\x22 id=\x22Stroke-17\
+\x22></path>\x0d\x0a     \
+       </g>\x0d\x0a   \
+     </g>\x0d\x0a    <\
+/g>\x0d\x0a</svg>\
+\x00\x00\x05\x8d\
 <\
 ?xml version=\x221.\
 0\x22 encoding=\x22UTF\
 -8\x22 standalone=\x22\
-no\x22?>\x0a<svg width\
-=\x2232px\x22 height=\x22\
-32px\x22 viewBox=\x220\
- 0 32 32\x22 versio\
-n=\x221.1\x22 xmlns=\x22h\
-ttp://www.w3.org\
-/2000/svg\x22 xmlns\
-:xlink=\x22http://w\
-ww.w3.org/1999/x\
-link\x22>\x0a    <!-- \
-Generator: Sketc\
-h 3.8.3 (29802) \
-- http://www.boh\
-emiancoding.com/\
-sketch -->\x0a    <\
-title>paper-rule\
-r</title>\x0a    <d\
-esc>Created with\
- Sketch.</desc>\x0a\
-    <defs></defs\
->\x0a    <g id=\x22Pag\
-e-1\x22 stroke=\x22non\
-e\x22 stroke-width=\
-\x221\x22 fill=\x22none\x22 \
-fill-rule=\x22eveno\
-dd\x22 stroke-linec\
-ap=\x22round\x22 strok\
-e-linejoin=\x22roun\
-d\x22>\x0a        <g i\
-d=\x22paper-ruler\x22 \
-stroke=\x22#FFFFFF\x22\
- stroke-width=\x222\
-\x22>\x0a            <\
-g transform=\x22tra\
-nslate(1.000000,\
- 1.000000)\x22>\x0a   \
+no\x22?>\x0d\x0a<svg widt\
+h=\x2232px\x22 height=\
+\x2232px\x22 viewBox=\x22\
+0 0 32 32\x22 versi\
+on=\x221.1\x22 xmlns=\x22\
+http://www.w3.or\
+g/2000/svg\x22 xmln\
+s:xlink=\x22http://\
+www.w3.org/1999/\
+xlink\x22>\x0d\x0a    <!-\
+- Generator: Ske\
+tch 3.8.3 (29802\
+) - http://www.b\
+ohemiancoding.co\
+m/sketch -->\x0d\x0a  \
+  <title>paper-r\
+uler</title>\x0d\x0a  \
+  <desc>Created \
+with Sketch.</de\
+sc>\x0d\x0a    <defs><\
+/defs>\x0d\x0a    <g i\
+d=\x22Page-1\x22 strok\
+e=\x22none\x22 stroke-\
+width=\x221\x22 fill=\x22\
+none\x22 fill-rule=\
+\x22evenodd\x22 stroke\
+-linecap=\x22round\x22\
+ stroke-linejoin\
+=\x22round\x22>\x0d\x0a     \
+   <g id=\x22paper-\
+ruler\x22 stroke=\x22#\
+FFFFFF\x22 stroke-w\
+idth=\x222\x22>\x0d\x0a     \
+       <g transf\
+orm=\x22translate(1\
+.000000, 1.00000\
+0)\x22>\x0d\x0a          \
+      <path d=\x22M\
+20,0 L20,9 C20,9\
+ 20,10 21,10 L25\
+,10\x22 id=\x22Stroke-\
+1\x22></path>\x0d\x0a    \
+            <pat\
+h d=\x22M0,30 L0,0.\
+977 C0,0.424 0.4\
+47,0 1,0 L13,0 C\
+13.553,0 14,0.42\
+4 14,0.977 L14,2\
+9.977 L14,30 L29\
+,30 C29,30 30,30\
+ 30,29 L30,10 C3\
+0,10 30,9 29,8 L\
+22,1 C21,0 20,0 \
+20,0 L17,0\x22 id=\x22\
+Stroke-3\x22></path\
+>\x0d\x0a             \
+   <path d=\x22M8,6\
+ L14,6\x22 id=\x22Stro\
+ke-5\x22></path>\x0d\x0a \
+               <\
+path d=\x22M8,22 L1\
+4,22\x22 id=\x22Stroke\
+-7\x22></path>\x0d\x0a   \
              <pa\
-th d=\x22M20,0 L20,\
-9 C20,9 20,10 21\
-,10 L25,10\x22 id=\x22\
-Stroke-1\x22></path\
->\x0a              \
-  <path d=\x22M0,30\
- L0,0.977 C0,0.4\
-24 0.447,0 1,0 L\
-13,0 C13.553,0 1\
-4,0.424 14,0.977\
- L14,29.977 L14,\
-30 L29,30 C29,30\
- 30,30 30,29 L30\
-,10 C30,10 30,9 \
-29,8 L22,1 C21,0\
- 20,0 20,0 L17,0\
-\x22 id=\x22Stroke-3\x22>\
-</path>\x0a        \
-        <path d=\
-\x22M8,6 L14,6\x22 id=\
-\x22Stroke-5\x22></pat\
-h>\x0a             \
-   <path d=\x22M8,2\
-2 L14,22\x22 id=\x22St\
-roke-7\x22></path>\x0a\
-                \
-<path d=\x22M11,10 \
-L14,10\x22 id=\x22Stro\
-ke-9\x22></path>\x0a  \
-              <p\
-ath d=\x22M11,14 L1\
-4,14\x22 id=\x22Stroke\
--11\x22></path>\x0a   \
-             <pa\
-th d=\x22M11,18 L14\
-,18\x22 id=\x22Stroke-\
-13\x22></path>\x0a    \
+th d=\x22M11,10 L14\
+,10\x22 id=\x22Stroke-\
+9\x22></path>\x0d\x0a    \
+            <pat\
+h d=\x22M11,14 L14,\
+14\x22 id=\x22Stroke-1\
+1\x22></path>\x0d\x0a    \
+            <pat\
+h d=\x22M11,18 L14,\
+18\x22 id=\x22Stroke-1\
+3\x22></path>\x0d\x0a    \
             <pat\
 h d=\x22M11,26 L14,\
 26\x22 id=\x22Stroke-1\
-5\x22></path>\x0a     \
-           <path\
- d=\x22M11,30 L14,3\
-0\x22 id=\x22Stroke-17\
-\x22></path>\x0a      \
-      </g>\x0a     \
-   </g>\x0a    </g>\
-\x0a</svg>\
-\x00\x00\x04H\
+5\x22></path>\x0d\x0a    \
+            <pat\
+h d=\x22M11,30 L14,\
+30\x22 id=\x22Stroke-1\
+7\x22></path>\x0d\x0a    \
+        </g>\x0d\x0a  \
+      </g>\x0d\x0a    \
+</g>\x0d\x0a</svg>\
+\x00\x00\x04X\
 <\
 ?xml version=\x221.\
 0\x22 encoding=\x22UTF\
 -8\x22 standalone=\x22\
-no\x22?>\x0a<svg width\
-=\x2232px\x22 height=\x22\
-32px\x22 viewBox=\x220\
- 0 32 32\x22 versio\
-n=\x221.1\x22 xmlns=\x22h\
-ttp://www.w3.org\
-/2000/svg\x22 xmlns\
-:xlink=\x22http://w\
-ww.w3.org/1999/x\
-link\x22>\x0a    <!-- \
-Generator: Sketc\
-h 3.8.3 (29802) \
-- http://www.boh\
-emiancoding.com/\
-sketch -->\x0a    <\
-title>stats-pipe\
-s</title>\x0a    <d\
-esc>Created with\
- Sketch.</desc>\x0a\
+no\x22?>\x0d\x0a<svg widt\
+h=\x2232px\x22 height=\
+\x2232px\x22 viewBox=\x22\
+0 0 32 32\x22 versi\
+on=\x221.1\x22 xmlns=\x22\
+http://www.w3.or\
+g/2000/svg\x22 xmln\
+s:xlink=\x22http://\
+www.w3.org/1999/\
+xlink\x22>\x0d\x0a    <!-\
+- Generator: Ske\
+tch 3.8.3 (29802\
+) - http://www.b\
+ohemiancoding.co\
+m/sketch -->\x0d\x0a  \
+  <title>stats-p\
+ipes</title>\x0d\x0a  \
+  <desc>Created \
+with Sketch.</de\
+sc>\x0d\x0a    <defs><\
+/defs>\x0d\x0a    <g i\
+d=\x22Page-1\x22 strok\
+e=\x22none\x22 stroke-\
+width=\x221\x22 fill=\x22\
+none\x22 fill-rule=\
+\x22evenodd\x22 stroke\
+-linecap=\x22round\x22\
+ stroke-linejoin\
+=\x22round\x22>\x0d\x0a     \
+   <g id=\x22stats-\
+pipes\x22 stroke=\x22#\
+FFFFFF\x22 stroke-w\
+idth=\x222\x22>\x0d\x0a     \
+       <g transf\
+orm=\x22translate(1\
+.000000, 1.00000\
+0)\x22>\x0d\x0a          \
+      <path d=\x22M\
+28,6 L29,6 C29.5\
+53,6 30,6.447 30\
+,7 L30,29 C30,29\
+.553 29.553,30 2\
+9,30 L1,30 C0.44\
+7,30 0,29.553 0,\
+29 L0,7 C0,6.447\
+ 0.447,6 1,6 L18\
+,6\x22 id=\x22Stroke-1\
+\x22></path>\x0d\x0a     \
+           <poly\
+line id=\x22Stroke-\
+3\x22 points=\x225 27 \
+5 18 9 18 9 27\x22>\
+</polyline>\x0d\x0a   \
+             <po\
+lyline id=\x22Strok\
+e-5\x22 points=\x2213 \
+27 13 12 17 12 1\
+7 27\x22></polyline\
+>\x0d\x0a             \
+   <polyline id=\
+\x22Stroke-7\x22 point\
+s=\x2221 27 21 0 25\
+ 0 25 27\x22></poly\
+line>\x0d\x0a         \
+   </g>\x0d\x0a       \
+ </g>\x0d\x0a    </g>\x0d\
+\x0a</svg>\
+\x00\x00\x06_\
+<\
+?xml version=\x221.\
+0\x22 encoding=\x22UTF\
+-8\x22 standalone=\x22\
+no\x22?>\x0d\x0a<svg widt\
+h=\x2232px\x22 height=\
+\x2232px\x22 viewBox=\x22\
+0 0 32 32\x22 versi\
+on=\x221.1\x22 xmlns=\x22\
+http://www.w3.or\
+g/2000/svg\x22 xmln\
+s:xlink=\x22http://\
+www.w3.org/1999/\
+xlink\x22>\x0d\x0a    <!-\
+- Generator: Ske\
+tch 3.8.3 (29802\
+) - http://www.b\
+ohemiancoding.co\
+m/sketch -->\x0d\x0a  \
+  <title>inkpen<\
+/title>\x0d\x0a    <de\
+sc>Created with \
+Sketch.</desc>\x0d\x0a\
     <defs></defs\
->\x0a    <g id=\x22Pag\
-e-1\x22 stroke=\x22non\
-e\x22 stroke-width=\
-\x221\x22 fill=\x22none\x22 \
-fill-rule=\x22eveno\
-dd\x22 stroke-linec\
-ap=\x22round\x22 strok\
-e-linejoin=\x22roun\
-d\x22>\x0a        <g i\
-d=\x22stats-pipes\x22 \
-stroke=\x22#FFFFFF\x22\
- stroke-width=\x222\
-\x22>\x0a            <\
-g transform=\x22tra\
-nslate(1.000000,\
- 1.000000)\x22>\x0a   \
+>\x0d\x0a    <g id=\x22Pa\
+ge-1\x22 stroke=\x22no\
+ne\x22 stroke-width\
+=\x221\x22 fill=\x22none\x22\
+ fill-rule=\x22even\
+odd\x22 stroke-line\
+cap=\x22round\x22 stro\
+ke-linejoin=\x22rou\
+nd\x22>\x0d\x0a        <g\
+ id=\x22inkpen\x22 str\
+oke=\x22#FFFFFF\x22 st\
+roke-width=\x222\x22>\x0d\
+\x0a            <g \
+transform=\x22trans\
+late(1.000000, 1\
+.000000)\x22>\x0d\x0a    \
+            <pat\
+h d=\x22M2,3 C2,2.4\
+47 1.553,2 1,2 C\
+0.447,2 0,2.447 \
+0,3 C0,3.553 0.4\
+47,4 1,4 C1.553,\
+4 2,3.553 2,3 L2\
+,3 Z\x22 id=\x22Stroke\
+-1\x22></path>\x0d\x0a   \
              <pa\
-th d=\x22M28,6 L29,\
-6 C29.553,6 30,6\
-.447 30,7 L30,29\
- C30,29.553 29.5\
-53,30 29,30 L1,3\
-0 C0.447,30 0,29\
-.553 0,29 L0,7 C\
-0,6.447 0.447,6 \
-1,6 L18,6\x22 id=\x22S\
-troke-1\x22></path>\
-\x0a               \
- <polyline id=\x22S\
-troke-3\x22 points=\
-\x225 27 5 18 9 18 \
-9 27\x22></polyline\
->\x0a              \
-  <polyline id=\x22\
-Stroke-5\x22 points\
-=\x2213 27 13 12 17\
- 12 17 27\x22></pol\
-yline>\x0a         \
-       <polyline\
- id=\x22Stroke-7\x22 p\
-oints=\x2221 27 21 \
-0 25 0 25 27\x22></\
-polyline>\x0a      \
-      </g>\x0a     \
-   </g>\x0a    </g>\
-\x0a</svg>\
-\x00\x00\x06K\
-<\
-?xml version=\x221.\
-0\x22 encoding=\x22UTF\
--8\x22 standalone=\x22\
-no\x22?>\x0a<svg width\
-=\x2232px\x22 height=\x22\
-32px\x22 viewBox=\x220\
- 0 32 32\x22 versio\
-n=\x221.1\x22 xmlns=\x22h\
-ttp://www.w3.org\
-/2000/svg\x22 xmlns\
-:xlink=\x22http://w\
-ww.w3.org/1999/x\
-link\x22>\x0a    <!-- \
-Generator: Sketc\
-h 3.8.3 (29802) \
-- http://www.boh\
-emiancoding.com/\
-sketch -->\x0a    <\
-title>inkpen</ti\
-tle>\x0a    <desc>C\
-reated with Sket\
-ch.</desc>\x0a    <\
-defs></defs>\x0a   \
- <g id=\x22Page-1\x22 \
-stroke=\x22none\x22 st\
-roke-width=\x221\x22 f\
-ill=\x22none\x22 fill-\
-rule=\x22evenodd\x22 s\
-troke-linecap=\x22r\
-ound\x22 stroke-lin\
-ejoin=\x22round\x22>\x0a \
-       <g id=\x22in\
-kpen\x22 stroke=\x22#F\
-FFFFF\x22 stroke-wi\
-dth=\x222\x22>\x0a       \
-     <g transfor\
-m=\x22translate(1.0\
-00000, 1.000000)\
-\x22>\x0a             \
-   <path d=\x22M2,3\
- C2,2.447 1.553,\
-2 1,2 C0.447,2 0\
-,2.447 0,3 C0,3.\
-553 0.447,4 1,4 \
-C1.553,4 2,3.553\
- 2,3 L2,3 Z\x22 id=\
-\x22Stroke-1\x22></pat\
-h>\x0a             \
-   <path d=\x22M19,\
-3 L2,3\x22 id=\x22Stro\
-ke-3\x22></path>\x0a  \
-              <p\
-ath d=\x22M18,26 C1\
-8,22.729 16.43,2\
-0.824 14.002,19 \
-L14,19 L22,6 L30\
-,19 C27.571,20.8\
-24 26,22.729 26,\
-26 L18,26 L18,26\
- Z\x22 id=\x22Stroke-5\
-\x22></path>\x0a      \
-          <path \
-d=\x22M22,6 L22,16\x22\
- id=\x22Stroke-7\x22><\
-/path>\x0a         \
-       <path d=\x22\
-M3,19 C3,10.164 \
-10.164,3 19,3\x22 i\
-d=\x22Stroke-9\x22></p\
-ath>\x0a           \
-     <path d=\x22M2\
-9,30 L15,30\x22 id=\
-\x22Stroke-11\x22></pa\
-th>\x0a            \
-    <polygon id=\
-\x22Stroke-13\x22 poin\
-ts=\x2222 0 19 3 22\
- 6 25 3\x22></polyg\
-on>\x0a            \
+th d=\x22M19,3 L2,3\
+\x22 id=\x22Stroke-3\x22>\
+</path>\x0d\x0a       \
+         <path d\
+=\x22M18,26 C18,22.\
+729 16.43,20.824\
+ 14.002,19 L14,1\
+9 L22,6 L30,19 C\
+27.571,20.824 26\
+,22.729 26,26 L1\
+8,26 L18,26 Z\x22 i\
+d=\x22Stroke-5\x22></p\
+ath>\x0d\x0a          \
+      <path d=\x22M\
+22,6 L22,16\x22 id=\
+\x22Stroke-7\x22></pat\
+h>\x0d\x0a            \
+    <path d=\x22M3,\
+19 C3,10.164 10.\
+164,3 19,3\x22 id=\x22\
+Stroke-9\x22></path\
+>\x0d\x0a             \
+   <path d=\x22M29,\
+30 L15,30\x22 id=\x22S\
+troke-11\x22></path\
+>\x0d\x0a             \
+   <polygon id=\x22\
+Stroke-13\x22 point\
+s=\x2222 0 19 3 22 \
+6 25 3\x22></polygo\
+n>\x0d\x0a            \
     <path d=\x22M3.\
 7148,23.707 C3.3\
 238,24.098 2.691\
@@ -461,10 +465,10 @@ C2.6918,19.074 3\
 .293 L3.7148,23.\
 707 L3.7148,23.7\
 07 Z\x22 id=\x22Stroke\
--15\x22></path>\x0a   \
-         </g>\x0a  \
-      </g>\x0a    <\
-/g>\x0a</svg>\
+-15\x22></path>\x0d\x0a  \
+          </g>\x0d\x0a\
+        </g>\x0d\x0a  \
+  </g>\x0d\x0a</svg>\
 \x00\x00\x11h\
 \x00\
 \x01\x08>x\xda\xed\x9dW|Uu\x12\xc7\xe3\xdb>\
@@ -746,193 +750,32 @@ e\x82L\xc4\xce\x91\xb6\x9c\xbc\x91\x91\x91\x91\x91\x91\x91\
 \x91\x91\x91\x91\x91\x91\x91\x91\x91\x91\x91\x91\x91\x91\x91\x91\
 \x91\x91\x91Q\xbaR\x96-[\xb6l\xd9\xb2e+\xe3\
 \xd6\xff\x01\x00\xb7\xd3%\
-\x00\x00\x06C\
+\x00\x00\x06W\
 <\
 ?xml version=\x221.\
 0\x22 encoding=\x22UTF\
 -8\x22 standalone=\x22\
-no\x22?>\x0a<svg width\
-=\x2232px\x22 height=\x22\
-32px\x22 viewBox=\x220\
- 0 32 32\x22 versio\
-n=\x221.1\x22 xmlns=\x22h\
-ttp://www.w3.org\
-/2000/svg\x22 xmlns\
-:xlink=\x22http://w\
-ww.w3.org/1999/x\
-link\x22>\x0a    <!-- \
-Generator: Sketc\
-h 3.8.3 (29802) \
-- http://www.boh\
-emiancoding.com/\
-sketch -->\x0a    <\
-title>settings-c\
-omplex</title>\x0a \
-   <desc>Created\
- with Sketch.</d\
-esc>\x0a    <defs><\
-/defs>\x0a    <g id\
-=\x22Page-1\x22 stroke\
-=\x22none\x22 stroke-w\
-idth=\x221\x22 fill=\x22n\
-one\x22 fill-rule=\x22\
-evenodd\x22 stroke-\
-linecap=\x22round\x22 \
-stroke-linejoin=\
-\x22round\x22>\x0a       \
- <g id=\x22settings\
--complex\x22 stroke\
-=\x22#FFFFFF\x22 strok\
-e-width=\x222\x22>\x0a   \
-         <g tran\
-sform=\x22translate\
-(1.000000, 1.000\
-000)\x22>\x0a         \
-       <path d=\x22\
-M30,29 C30,29.55\
-3 29.553,30 29,3\
-0 L1,30 C0.447,3\
-0 0,29.553 0,29 \
-L0,1 C0,0.447 0.\
-447,0 1,0 L29,0 \
-C29.553,0 30,0.4\
-47 30,1 L30,29 L\
-30,29 Z\x22 id=\x22Str\
-oke-1\x22></path>\x0a \
-               <\
-path d=\x22M10,8 C1\
-0,6.896 9.104,6 \
-8,6 C6.896,6 6,6\
-.896 6,8 C6,9.10\
-4 6.896,10 8,10 \
-C9.104,10 10,9.1\
-04 10,8 L10,8 Z\x22\
- id=\x22Stroke-3\x22><\
-/path>\x0a         \
-       <path d=\x22\
-M24,8 L10,8\x22 id=\
-\x22Stroke-5\x22></pat\
-h>\x0a             \
-   <path d=\x22M17,\
-15 C17,13.896 16\
-.104,13 15,13 C1\
-3.896,13 13,13.8\
-96 13,15 C13,16.\
-104 13.896,17 15\
-,17 C16.104,17 1\
-7,16.104 17,15 L\
-17,15 Z\x22 id=\x22Str\
-oke-7\x22></path>\x0a \
-               <\
-path d=\x22M9,15 L6\
-,15\x22 id=\x22Stroke-\
-9\x22></path>\x0a     \
-           <path\
- d=\x22M24,15 L17,1\
-5\x22 id=\x22Stroke-11\
-\x22></path>\x0a      \
-          <path \
-d=\x22M24,22 C24,20\
-.896 23.104,20 2\
-2,20 C20.896,20 \
-20,20.896 20,22 \
-C20,23.104 20.89\
-6,24 22,24 C23.1\
-04,24 24,23.104 \
-24,22 L24,22 Z\x22 \
-id=\x22Stroke-13\x22><\
-/path>\x0a         \
-       <path d=\x22\
-M16,22 L6,22\x22 id\
-=\x22Stroke-15\x22></p\
-ath>\x0a           \
- </g>\x0a        </\
-g>\x0a    </g>\x0a</sv\
-g>\
-\x00\x00\x03\x8e\
-<\
-?xml version=\x221.\
-0\x22 encoding=\x22UTF\
--8\x22 standalone=\x22\
-no\x22?>\x0a<svg width\
-=\x2232px\x22 height=\x22\
-32px\x22 viewBox=\x220\
- 0 32 32\x22 versio\
-n=\x221.1\x22 xmlns=\x22h\
-ttp://www.w3.org\
-/2000/svg\x22 xmlns\
-:xlink=\x22http://w\
-ww.w3.org/1999/x\
-link\x22>\x0a    <!-- \
-Generator: Sketc\
-h 3.8.3 (29802) \
-- http://www.boh\
-emiancoding.com/\
-sketch -->\x0a    <\
-title>file</titl\
-e>\x0a    <desc>Cre\
+no\x22?>\x0d\x0a<svg widt\
+h=\x2232px\x22 height=\
+\x2232px\x22 viewBox=\x22\
+0 0 32 32\x22 versi\
+on=\x221.1\x22 xmlns=\x22\
+http://www.w3.or\
+g/2000/svg\x22 xmln\
+s:xlink=\x22http://\
+www.w3.org/1999/\
+xlink\x22>\x0d\x0a    <!-\
+- Generator: Ske\
+tch 3.8.3 (29802\
+) - http://www.b\
+ohemiancoding.co\
+m/sketch -->\x0d\x0a  \
+  <title>setting\
+s-complex</title\
+>\x0d\x0a    <desc>Cre\
 ated with Sketch\
-.</desc>\x0a    <de\
-fs></defs>\x0a    <\
-g id=\x22Page-1\x22 st\
-roke=\x22none\x22 stro\
-ke-width=\x221\x22 fil\
-l=\x22none\x22 fill-ru\
-le=\x22evenodd\x22 str\
-oke-linecap=\x22rou\
-nd\x22 stroke-linej\
-oin=\x22round\x22>\x0a   \
-     <g id=\x22file\
-\x22 stroke=\x22#FFFFF\
-F\x22 stroke-width=\
-\x222\x22>\x0a           \
- <g transform=\x22t\
-ranslate(3.00000\
-0, 1.000000)\x22>\x0a \
-               <\
-path d=\x22M1,0 C1,\
-0 0,0 0,1 L0,29 \
-C0,29 0,30 1,30 \
-L25,30 C25,30 26\
-,30 26,29 L26,10\
- C26,10 26,9 25,\
-8 L18,1 C17,0 16\
-,0 16,0 L1,0 L1,\
-0 Z\x22 id=\x22Stroke-\
-1\x22></path>\x0a     \
-           <path\
- d=\x22M16,0 L16,9 \
-C16,9 16,10 17,1\
-0 L22,10\x22 id=\x22St\
-roke-3\x22></path>\x0a\
-            </g>\
-\x0a        </g>\x0a  \
-  </g>\x0a</svg>\
-\x00\x00\x03P\
-<\
-?xml version=\x221.\
-0\x22 encoding=\x22UTF\
--8\x22 standalone=\x22\
-no\x22?>\x0a<svg width\
-=\x2232px\x22 height=\x22\
-32px\x22 viewBox=\x220\
- 0 32 32\x22 versio\
-n=\x221.1\x22 xmlns=\x22h\
-ttp://www.w3.org\
-/2000/svg\x22 xmlns\
-:xlink=\x22http://w\
-ww.w3.org/1999/x\
-link\x22>\x0a    <!-- \
-Generator: Sketc\
-h 3.8.3 (29802) \
-- http://www.boh\
-emiancoding.com/\
-sketch -->\x0a    <\
-title>folder</ti\
-tle>\x0a    <desc>C\
-reated with Sket\
-ch.</desc>\x0a    <\
-defs></defs>\x0a   \
+.</desc>\x0d\x0a    <d\
+efs></defs>\x0d\x0a   \
  <g id=\x22Page-1\x22 \
 stroke=\x22none\x22 st\
 roke-width=\x221\x22 f\
@@ -940,55 +783,219 @@ ill=\x22none\x22 fill-\
 rule=\x22evenodd\x22 s\
 troke-linecap=\x22r\
 ound\x22 stroke-lin\
-ejoin=\x22round\x22>\x0a \
-       <g id=\x22fo\
-lder\x22 stroke=\x22#F\
-FFFFF\x22 stroke-wi\
-dth=\x222\x22>\x0a       \
-     <g transfor\
-m=\x22translate(1.0\
-00000, -1.000000\
-)\x22 id=\x22Page-1\x22>\x0a\
+ejoin=\x22round\x22>\x0d\x0a\
+        <g id=\x22s\
+ettings-complex\x22\
+ stroke=\x22#FFFFFF\
+\x22 stroke-width=\x22\
+2\x22>\x0d\x0a           \
+ <g transform=\x22t\
+ranslate(1.00000\
+0, 1.000000)\x22>\x0d\x0a\
                 \
-<path d=\x22M2,32 L\
-29,32 C29,32 30,\
-32 30,31 L30,9 C\
-30,9 30,8 29,8 L\
-5,8 C5,8 4,8 4,9\
- L4,26 C4,26 4,2\
-8 2,28 C0,28 0,2\
-6 0,26 L0,3 C0,3\
- 0,2 1,2 L7,2 L9\
-,4 L25,4\x22></path\
->\x0a            </\
-g>\x0a        </g>\x0a\
-    </g>\x0a</svg>\
-\x00\x00\x04\xcb\
+<path d=\x22M30,29 \
+C30,29.553 29.55\
+3,30 29,30 L1,30\
+ C0.447,30 0,29.\
+553 0,29 L0,1 C0\
+,0.447 0.447,0 1\
+,0 L29,0 C29.553\
+,0 30,0.447 30,1\
+ L30,29 L30,29 Z\
+\x22 id=\x22Stroke-1\x22>\
+</path>\x0d\x0a       \
+         <path d\
+=\x22M10,8 C10,6.89\
+6 9.104,6 8,6 C6\
+.896,6 6,6.896 6\
+,8 C6,9.104 6.89\
+6,10 8,10 C9.104\
+,10 10,9.104 10,\
+8 L10,8 Z\x22 id=\x22S\
+troke-3\x22></path>\
+\x0d\x0a              \
+  <path d=\x22M24,8\
+ L10,8\x22 id=\x22Stro\
+ke-5\x22></path>\x0d\x0a \
+               <\
+path d=\x22M17,15 C\
+17,13.896 16.104\
+,13 15,13 C13.89\
+6,13 13,13.896 1\
+3,15 C13,16.104 \
+13.896,17 15,17 \
+C16.104,17 17,16\
+.104 17,15 L17,1\
+5 Z\x22 id=\x22Stroke-\
+7\x22></path>\x0d\x0a    \
+            <pat\
+h d=\x22M9,15 L6,15\
+\x22 id=\x22Stroke-9\x22>\
+</path>\x0d\x0a       \
+         <path d\
+=\x22M24,15 L17,15\x22\
+ id=\x22Stroke-11\x22>\
+</path>\x0d\x0a       \
+         <path d\
+=\x22M24,22 C24,20.\
+896 23.104,20 22\
+,20 C20.896,20 2\
+0,20.896 20,22 C\
+20,23.104 20.896\
+,24 22,24 C23.10\
+4,24 24,23.104 2\
+4,22 L24,22 Z\x22 i\
+d=\x22Stroke-13\x22></\
+path>\x0d\x0a         \
+       <path d=\x22\
+M16,22 L6,22\x22 id\
+=\x22Stroke-15\x22></p\
+ath>\x0d\x0a          \
+  </g>\x0d\x0a        \
+</g>\x0d\x0a    </g>\x0d\x0a\
+</svg>\
+\x00\x00\x03\x9c\
 <\
 ?xml version=\x221.\
 0\x22 encoding=\x22UTF\
 -8\x22 standalone=\x22\
-no\x22?>\x0a<svg width\
-=\x2232px\x22 height=\x22\
-32px\x22 viewBox=\x220\
- 0 32 32\x22 versio\
-n=\x221.1\x22 xmlns=\x22h\
-ttp://www.w3.org\
-/2000/svg\x22 xmlns\
-:xlink=\x22http://w\
-ww.w3.org/1999/x\
-link\x22>\x0a    <!-- \
-Generator: Sketc\
-h 3.8.3 (29802) \
-- http://www.boh\
-emiancoding.com/\
-sketch -->\x0a    <\
-title>file-recei\
-ve</title>\x0a    <\
-desc>Created wit\
-h Sketch.</desc>\
-\x0a    <defs></def\
-s>\x0a    <g id=\x22Pa\
+no\x22?>\x0d\x0a<svg widt\
+h=\x2232px\x22 height=\
+\x2232px\x22 viewBox=\x22\
+0 0 32 32\x22 versi\
+on=\x221.1\x22 xmlns=\x22\
+http://www.w3.or\
+g/2000/svg\x22 xmln\
+s:xlink=\x22http://\
+www.w3.org/1999/\
+xlink\x22>\x0d\x0a    <!-\
+- Generator: Ske\
+tch 3.8.3 (29802\
+) - http://www.b\
+ohemiancoding.co\
+m/sketch -->\x0d\x0a  \
+  <title>file</t\
+itle>\x0d\x0a    <desc\
+>Created with Sk\
+etch.</desc>\x0d\x0a  \
+  <defs></defs>\x0d\
+\x0a    <g id=\x22Page\
+-1\x22 stroke=\x22none\
+\x22 stroke-width=\x22\
+1\x22 fill=\x22none\x22 f\
+ill-rule=\x22evenod\
+d\x22 stroke-lineca\
+p=\x22round\x22 stroke\
+-linejoin=\x22round\
+\x22>\x0d\x0a        <g i\
+d=\x22file\x22 stroke=\
+\x22#FFFFFF\x22 stroke\
+-width=\x222\x22>\x0d\x0a   \
+         <g tran\
+sform=\x22translate\
+(3.000000, 1.000\
+000)\x22>\x0d\x0a        \
+        <path d=\
+\x22M1,0 C1,0 0,0 0\
+,1 L0,29 C0,29 0\
+,30 1,30 L25,30 \
+C25,30 26,30 26,\
+29 L26,10 C26,10\
+ 26,9 25,8 L18,1\
+ C17,0 16,0 16,0\
+ L1,0 L1,0 Z\x22 id\
+=\x22Stroke-1\x22></pa\
+th>\x0d\x0a           \
+     <path d=\x22M1\
+6,0 L16,9 C16,9 \
+16,10 17,10 L22,\
+10\x22 id=\x22Stroke-3\
+\x22></path>\x0d\x0a     \
+       </g>\x0d\x0a   \
+     </g>\x0d\x0a    <\
+/g>\x0d\x0a</svg>\
+\x00\x00\x03Z\
+<\
+?xml version=\x221.\
+0\x22 encoding=\x22UTF\
+-8\x22?>\x0a<svg id=\x22_\
+\xd0\xa1\xd0\xbb\xd0\xbe\xd0\xb9_1\x22 data\
+-name=\x22\xd0\xa1\xd0\xbb\xd0\xbe\xd0\xb9 \
+1\x22 xmlns=\x22http:/\
+/www.w3.org/2000\
+/svg\x22 viewBox=\x220\
+ 0 28 32\x22>\x0a  <de\
+fs>\x0a    <style>\x0a\
+      .cls-1 {\x0a \
+       fill: non\
+e;\x0a        strok\
+e: #fff;\x0a       \
+ stroke-linecap:\
+ round;\x0a        \
+stroke-linejoin:\
+ round;\x0a        \
+stroke-width: 2p\
+x;\x0a      }\x0a    <\
+/style>\x0a  </defs\
+>\x0a  <g id=\x22Page-\
+1\x22>\x0a    <g id=\x22f\
+ile\x22>\x0a      <g>\x0a\
+        <path id\
+=\x22Stroke-1\x22 clas\
+s=\x22cls-1\x22 d=\x22M2,\
+1s-1,0-1,1v28s0,\
+1,1,1h24s1,0,1-1\
+V11s0-1-1-2l-7-7\
+c-1-1-2-1-2-1H2Z\
+\x22/>\x0a        <pat\
+h id=\x22Stroke-3\x22 \
+class=\x22cls-1\x22 d=\
+\x22M17,1v9s0,1,1,1\
+h5\x22/>\x0a      </g>\
+\x0a    </g>\x0a  </g>\
+\x0a  <line class=\x22\
+cls-1\x22 x1=\x225.42\x22\
+ y1=\x2221.43\x22 x2=\x22\
+23\x22 y2=\x2221.43\x22/>\
+\x0a  <line class=\x22\
+cls-1\x22 x1=\x225.42\x22\
+ y1=\x2218.37\x22 x2=\x22\
+23\x22 y2=\x2218.37\x22/>\
+\x0a  <line class=\x22\
+cls-1\x22 x1=\x225.42\x22\
+ y1=\x2224.49\x22 x2=\x22\
+23\x22 y2=\x2224.49\x22/>\
+\x0a  <rect class=\x22\
+cls-1\x22 x=\x225.42\x22 \
+y=\x221\x22 width=\x227.8\
+3\x22 height=\x224.53\x22\
+/>\x0a</svg>\
+\x00\x00\x03]\
+<\
+?xml version=\x221.\
+0\x22 encoding=\x22UTF\
+-8\x22 standalone=\x22\
+no\x22?>\x0d\x0a<svg widt\
+h=\x2232px\x22 height=\
+\x2232px\x22 viewBox=\x22\
+0 0 32 32\x22 versi\
+on=\x221.1\x22 xmlns=\x22\
+http://www.w3.or\
+g/2000/svg\x22 xmln\
+s:xlink=\x22http://\
+www.w3.org/1999/\
+xlink\x22>\x0d\x0a    <!-\
+- Generator: Ske\
+tch 3.8.3 (29802\
+) - http://www.b\
+ohemiancoding.co\
+m/sketch -->\x0d\x0a  \
+  <title>folder<\
+/title>\x0d\x0a    <de\
+sc>Created with \
+Sketch.</desc>\x0d\x0a\
+    <defs></defs\
+>\x0d\x0a    <g id=\x22Pa\
 ge-1\x22 stroke=\x22no\
 ne\x22 stroke-width\
 =\x221\x22 fill=\x22none\x22\
@@ -996,156 +1003,181 @@ ne\x22 stroke-width\
 odd\x22 stroke-line\
 cap=\x22round\x22 stro\
 ke-linejoin=\x22rou\
-nd\x22>\x0a        <g \
-id=\x22file-receive\
-\x22 stroke=\x22#FFFFF\
-F\x22 stroke-width=\
-\x222\x22>\x0a           \
- <g transform=\x22t\
-ranslate(1.00000\
-0, 1.000000)\x22>\x0a \
-               <\
-path d=\x22M26,15 L\
-26,10 C26,10 26,\
-9 25,8 L18,1 C17\
-,0 16,0 16,0 L1,\
-0 C1,0 0,0 0,1 L\
-0,29 C0,29 0,30 \
-1,30 L17,30\x22 id=\
-\x22Stroke-1\x22></pat\
-h>\x0a             \
-   <path d=\x22M16,\
-0 L16,9 C16,9 16\
-,10 17,10 L22,10\
-\x22 id=\x22Stroke-3\x22>\
-</path>\x0a        \
+nd\x22>\x0d\x0a        <g\
+ id=\x22folder\x22 str\
+oke=\x22#FFFFFF\x22 st\
+roke-width=\x222\x22>\x0d\
+\x0a            <g \
+transform=\x22trans\
+late(1.000000, -\
+1.000000)\x22 id=\x22P\
+age-1\x22>\x0d\x0a       \
+         <path d\
+=\x22M2,32 L29,32 C\
+29,32 30,32 30,3\
+1 L30,9 C30,9 30\
+,8 29,8 L5,8 C5,\
+8 4,8 4,9 L4,26 \
+C4,26 4,28 2,28 \
+C0,28 0,26 0,26 \
+L0,3 C0,3 0,2 1,\
+2 L7,2 L9,4 L25,\
+4\x22></path>\x0d\x0a    \
+        </g>\x0d\x0a  \
+      </g>\x0d\x0a    \
+</g>\x0d\x0a</svg>\
+\x00\x00\x03\xc4\
+<\
+?xml version=\x221.\
+0\x22 encoding=\x22UTF\
+-8\x22?>\x0a<svg id=\x22_\
+\xd0\xa1\xd0\xbb\xd0\xbe\xd0\xb9_1\x22 data\
+-name=\x22\xd0\xa1\xd0\xbb\xd0\xbe\xd0\xb9 \
+1\x22 xmlns=\x22http:/\
+/www.w3.org/2000\
+/svg\x22 viewBox=\x220\
+ 0 28 32\x22>\x0a  <de\
+fs>\x0a    <style>\x0a\
+      .cls-1 {\x0a \
+       fill: non\
+e;\x0a        strok\
+e: #fff;\x0a       \
+ stroke-linecap:\
+ round;\x0a        \
+stroke-linejoin:\
+ round;\x0a        \
+stroke-width: 2p\
+x;\x0a      }\x0a    <\
+/style>\x0a  </defs\
+>\x0a  <g id=\x22Page-\
+1\x22>\x0a    <g id=\x22f\
+ile\x22>\x0a      <g>\x0a\
+        <path id\
+=\x22Stroke-1\x22 clas\
+s=\x22cls-1\x22 d=\x22M2,\
+1s-1,0-1,1v28s0,\
+1,1,1h24s1,0,1-1\
+V11s0-1-1-2l-7-7\
+c-1-1-2-1-2-1H2Z\
+\x22/>\x0a        <pat\
+h id=\x22Stroke-3\x22 \
+class=\x22cls-1\x22 d=\
+\x22M17,1v9s0,1,1,1\
+h5\x22/>\x0a      </g>\
+\x0a    </g>\x0a  </g>\
+\x0a  <path class=\x22\
+cls-1\x22 d=\x22M24.1,\
+18.7v8.3c0,.5-.4\
+.9-.9.9h-10.3c-.\
+5,0-.9-.4-.9-.9v\
+-11.2c0-.5.4-.9.\
+9-.9h7\x22/>\x0a  <lin\
+e class=\x22cls-1\x22 \
+x1=\x2219.8\x22 y1=\x2214\
+.9\x22 x2=\x2224.1\x22 y2\
+=\x2218.7\x22/>\x0a  <lin\
+e class=\x22cls-1\x22 \
+x1=\x2215.1\x22 y1=\x2221\
+.4\x22 x2=\x2221.1\x22 y2\
+=\x2221.4\x22/>\x0a  <lin\
+e class=\x22cls-1\x22 \
+x1=\x2215.1\x22 y1=\x2224\
+.5\x22 x2=\x2221.1\x22 y2\
+=\x2224.5\x22/>\x0a  <rec\
+t class=\x22cls-1\x22 \
+x=\x2215.3\x22 y=\x2214.9\
+\x22 width=\x222.8\x22 he\
+ight=\x221.6\x22/>\x0a</s\
+vg>\
+\x00\x00\x03\xcd\
+<\
+?xml version=\x221.\
+0\x22 encoding=\x22UTF\
+-8\x22 standalone=\x22\
+no\x22?>\x0d\x0a<svg widt\
+h=\x2232px\x22 height=\
+\x2232px\x22 viewBox=\x22\
+0 0 32 32\x22 versi\
+on=\x221.1\x22 xmlns=\x22\
+http://www.w3.or\
+g/2000/svg\x22 xmln\
+s:xlink=\x22http://\
+www.w3.org/1999/\
+xlink\x22>\x0d\x0a    <!-\
+- Generator: Ske\
+tch 3.8.3 (29802\
+) - http://www.b\
+ohemiancoding.co\
+m/sketch -->\x0d\x0a  \
+  <title>book</t\
+itle>\x0d\x0a    <desc\
+>Created with Sk\
+etch.</desc>\x0d\x0a  \
+  <defs></defs>\x0d\
+\x0a    <g id=\x22Page\
+-1\x22 stroke=\x22none\
+\x22 stroke-width=\x22\
+1\x22 fill=\x22none\x22 f\
+ill-rule=\x22evenod\
+d\x22 stroke-lineca\
+p=\x22round\x22 stroke\
+-linejoin=\x22round\
+\x22>\x0d\x0a        <g i\
+d=\x22book\x22 stroke=\
+\x22#FFFFFF\x22 stroke\
+-width=\x222\x22>\x0d\x0a   \
+         <g tran\
+sform=\x22translate\
+(3.000000, 1.000\
+000)\x22>\x0d\x0a        \
         <path d=\
-\x22M30,24 C30,20.6\
-87 27.313,18 24,\
-18 C20.687,18 18\
-,20.687 18,24 C1\
-8,27.313 20.687,\
-30 24,30 C27.313\
-,30 30,27.313 30\
-,24 L30,24 Z\x22 id\
-=\x22Stroke-5\x22></pa\
-th>\x0a            \
-    <polyline id\
-=\x22Stroke-7\x22 poin\
-ts=\x2224 26.002 22\
- 24.002 24 22.00\
-2\x22></polyline>\x0a \
-               <\
-path d=\x22M26,24 L\
-22,24\x22 id=\x22Strok\
-e-9\x22></path>\x0a   \
-         </g>\x0a  \
-      </g>\x0a    <\
-/g>\x0a</svg>\
-\x00\x00\x04\xbd\
+\x22M10,8 L25,8 C25\
+,8 26,8 26,9 L26\
+,29 C26,29 26,30\
+ 25,30 L1,30 C1,\
+30 0,30 0,29 L0,\
+4\x22 id=\x22Stroke-1\x22\
+></path>\x0d\x0a      \
+          <path \
+d=\x22M26,0 L4,0 C4\
+,0 0,0 0,4 C0,8 \
+4,8 4,8\x22 id=\x22Str\
+oke-3\x22></path>\x0d\x0a\
+                \
+<polyline id=\x22St\
+roke-5\x22 points=\x22\
+4 4 4 16 7 14 10\
+ 16 10 4 24 4\x22><\
+/polyline>\x0d\x0a    \
+        </g>\x0d\x0a  \
+      </g>\x0d\x0a    \
+</g>\x0d\x0a</svg>\
+\x00\x00\x04\xac\
 <\
 ?xml version=\x221.\
 0\x22 encoding=\x22UTF\
 -8\x22 standalone=\x22\
-no\x22?>\x0a<svg width\
-=\x2232px\x22 height=\x22\
-32px\x22 viewBox=\x220\
- 0 32 32\x22 versio\
-n=\x221.1\x22 xmlns=\x22h\
-ttp://www.w3.org\
-/2000/svg\x22 xmlns\
-:xlink=\x22http://w\
-ww.w3.org/1999/x\
-link\x22>\x0a    <!-- \
-Generator: Sketc\
-h 3.8.3 (29802) \
-- http://www.boh\
-emiancoding.com/\
-sketch -->\x0a    <\
-title>file-uploa\
-d</title>\x0a    <d\
+no\x22?>\x0d\x0a<svg widt\
+h=\x2232px\x22 height=\
+\x2232px\x22 viewBox=\x22\
+0 0 32 32\x22 versi\
+on=\x221.1\x22 xmlns=\x22\
+http://www.w3.or\
+g/2000/svg\x22 xmln\
+s:xlink=\x22http://\
+www.w3.org/1999/\
+xlink\x22>\x0d\x0a    <!-\
+- Generator: Ske\
+tch 3.8.3 (29802\
+) - http://www.b\
+ohemiancoding.co\
+m/sketch -->\x0d\x0a  \
+  <title>article\
+</title>\x0d\x0a    <d\
 esc>Created with\
- Sketch.</desc>\x0a\
-    <defs></defs\
->\x0a    <g id=\x22Pag\
-e-1\x22 stroke=\x22non\
-e\x22 stroke-width=\
-\x221\x22 fill=\x22none\x22 \
-fill-rule=\x22eveno\
-dd\x22 stroke-linec\
-ap=\x22round\x22 strok\
-e-linejoin=\x22roun\
-d\x22>\x0a        <g i\
-d=\x22file-upload\x22 \
-stroke=\x22#FFFFFF\x22\
- stroke-width=\x222\
-\x22>\x0a            <\
-g transform=\x22tra\
-nslate(1.000000,\
- 1.000000)\x22>\x0a   \
-             <pa\
-th d=\x22M26,15 L26\
-,10 C26,10 26,9 \
-25,8 L18,1 C17,0\
- 16,0 16,0 L1,0 \
-C1,0 0,0 0,1 L0,\
-29 C0,29 0,30 1,\
-30 L17,30\x22 id=\x22S\
-troke-1\x22></path>\
-\x0a               \
- <path d=\x22M16,0 \
-L16,9 C16,9 16,1\
-0 17,10 L22,10\x22 \
-id=\x22Stroke-3\x22></\
-path>\x0a          \
-      <path d=\x22M\
-30,24 C30,20.687\
- 27.313,18 24,18\
- C20.687,18 18,2\
-0.687 18,24 C18,\
-27.313 20.687,30\
- 24,30 C27.313,3\
-0 30,27.313 30,2\
-4 L30,24 Z\x22 id=\x22\
-Stroke-5\x22></path\
->\x0a              \
-  <polyline id=\x22\
-Stroke-7\x22 points\
-=\x2222 24 24 22 26\
- 24\x22></polyline>\
-\x0a               \
- <path d=\x22M24,26\
- L24,22\x22 id=\x22Str\
-oke-9\x22></path>\x0a \
-           </g>\x0a\
-        </g>\x0a   \
- </g>\x0a</svg>\
-\x00\x00\x04\xc1\
-<\
-?xml version=\x221.\
-0\x22 encoding=\x22UTF\
--8\x22 standalone=\x22\
-no\x22?>\x0a<svg width\
-=\x2232px\x22 height=\x22\
-32px\x22 viewBox=\x220\
- 0 32 32\x22 versio\
-n=\x221.1\x22 xmlns=\x22h\
-ttp://www.w3.org\
-/2000/svg\x22 xmlns\
-:xlink=\x22http://w\
-ww.w3.org/1999/x\
-link\x22>\x0a    <!-- \
-Generator: Sketc\
-h 3.8.3 (29802) \
-- http://www.boh\
-emiancoding.com/\
-sketch -->\x0a    <\
-title>file-downl\
-oad</title>\x0a    \
-<desc>Created wi\
-th Sketch.</desc\
->\x0a    <defs></de\
-fs>\x0a    <g id=\x22P\
+ Sketch.</desc>\x0d\
+\x0a    <defs></def\
+s>\x0d\x0a    <g id=\x22P\
 age-1\x22 stroke=\x22n\
 one\x22 stroke-widt\
 h=\x221\x22 fill=\x22none\
@@ -1153,339 +1185,122 @@ h=\x221\x22 fill=\x22none\
 nodd\x22 stroke-lin\
 ecap=\x22round\x22 str\
 oke-linejoin=\x22ro\
-und\x22>\x0a        <g\
- id=\x22file-downlo\
-ad\x22 stroke=\x22#FFF\
-FFF\x22 stroke-widt\
-h=\x222\x22>\x0a         \
-   <g transform=\
-\x22translate(1.000\
-000, 1.000000)\x22>\
-\x0a               \
- <path d=\x22M26,15\
- L26,10 C26,10 2\
-6,9 25,8 L18,1 C\
-17,0 16,0 16,0 L\
-1,0 C1,0 0,0 0,1\
- L0,29 C0,29 0,3\
-0 1,30 L17,30\x22 i\
-d=\x22Stroke-1\x22></p\
-ath>\x0a           \
-     <path d=\x22M1\
-6,0 L16,9 C16,9 \
-16,10 17,10 L22,\
-10\x22 id=\x22Stroke-3\
-\x22></path>\x0a      \
-          <path \
-d=\x22M30,24 C30,20\
-.687 27.313,18 2\
-4,18 C20.687,18 \
-18,20.687 18,24 \
-C18,27.313 20.68\
-7,30 24,30 C27.3\
-13,30 30,27.313 \
-30,24 L30,24 Z\x22 \
-id=\x22Stroke-5\x22></\
-path>\x0a          \
-      <polyline \
-id=\x22Stroke-7\x22 po\
-ints=\x2226 24 24 2\
-6 22 24\x22></polyl\
-ine>\x0a           \
-     <path d=\x22M2\
-4,22 L24,26\x22 id=\
-\x22Stroke-9\x22></pat\
-h>\x0a            <\
-/g>\x0a        </g>\
-\x0a    </g>\x0a</svg>\
-\
-\x00\x00\x04\xb9\
-<\
-?xml version=\x221.\
-0\x22 encoding=\x22UTF\
--8\x22 standalone=\x22\
-no\x22?>\x0a<svg width\
-=\x2232px\x22 height=\x22\
-32px\x22 viewBox=\x220\
- 0 32 32\x22 versio\
-n=\x221.1\x22 xmlns=\x22h\
-ttp://www.w3.org\
-/2000/svg\x22 xmlns\
-:xlink=\x22http://w\
-ww.w3.org/1999/x\
-link\x22>\x0a    <!-- \
-Generator: Sketc\
-h 3.8.3 (29802) \
-- http://www.boh\
-emiancoding.com/\
-sketch -->\x0a    <\
-title>file-send<\
-/title>\x0a    <des\
-c>Created with S\
-ketch.</desc>\x0a  \
-  <defs></defs>\x0a\
-    <g id=\x22Page-\
-1\x22 stroke=\x22none\x22\
- stroke-width=\x221\
-\x22 fill=\x22none\x22 fi\
-ll-rule=\x22evenodd\
-\x22 stroke-linecap\
-=\x22round\x22 stroke-\
-linejoin=\x22round\x22\
->\x0a        <g id=\
-\x22file-send\x22 stro\
-ke=\x22#FFFFFF\x22 str\
-oke-width=\x222\x22>\x0a \
-           <g tr\
-ansform=\x22transla\
-te(1.000000, 1.0\
-00000)\x22>\x0a       \
-         <path d\
-=\x22M26,15 L26,10 \
-C26,10 26,9 25,8\
- L18,1 C17,0 16,\
-0 16,0 L1,0 C1,0\
- 0,0 0,1 L0,29 C\
-0,29 0,30 1,30 L\
-17,30\x22 id=\x22Strok\
-e-1\x22></path>\x0a   \
-             <pa\
-th d=\x22M16,0 L16,\
-9 C16,9 16,10 17\
-,10 L22,10\x22 id=\x22\
-Stroke-3\x22></path\
->\x0a              \
-  <path d=\x22M30,2\
-4 C30,20.687 27.\
-313,18 24,18 C20\
-.687,18 18,20.68\
-7 18,24 C18,27.3\
-13 20.687,30 24,\
-30 C27.313,30 30\
-,27.313 30,24 L3\
-0,24 Z\x22 id=\x22Stro\
-ke-5\x22></path>\x0a  \
+und\x22>\x0d\x0a        <\
+g id=\x22article\x22 s\
+troke=\x22#FFFFFF\x22 \
+stroke-width=\x222\x22\
+>\x0d\x0a            <\
+g transform=\x22tra\
+nslate(1.000000,\
+ 1.000000)\x22>\x0d\x0a  \
               <p\
-olyline id=\x22Stro\
-ke-7\x22 points=\x2224\
- 22 26 24 24 26\x22\
-></polyline>\x0a   \
-             <pa\
-th d=\x22M22,24 L26\
-,24\x22 id=\x22Stroke-\
-9\x22></path>\x0a     \
-       </g>\x0a    \
-    </g>\x0a    </g\
->\x0a</svg>\
-\x00\x00\x03\xbe\
-<\
-?xml version=\x221.\
-0\x22 encoding=\x22UTF\
--8\x22 standalone=\x22\
-no\x22?>\x0a<svg width\
-=\x2232px\x22 height=\x22\
-32px\x22 viewBox=\x220\
- 0 32 32\x22 versio\
-n=\x221.1\x22 xmlns=\x22h\
-ttp://www.w3.org\
-/2000/svg\x22 xmlns\
-:xlink=\x22http://w\
-ww.w3.org/1999/x\
-link\x22>\x0a    <!-- \
-Generator: Sketc\
-h 3.8.3 (29802) \
-- http://www.boh\
-emiancoding.com/\
-sketch -->\x0a    <\
-title>book</titl\
-e>\x0a    <desc>Cre\
-ated with Sketch\
-.</desc>\x0a    <de\
-fs></defs>\x0a    <\
-g id=\x22Page-1\x22 st\
-roke=\x22none\x22 stro\
-ke-width=\x221\x22 fil\
-l=\x22none\x22 fill-ru\
-le=\x22evenodd\x22 str\
-oke-linecap=\x22rou\
-nd\x22 stroke-linej\
-oin=\x22round\x22>\x0a   \
-     <g id=\x22book\
-\x22 stroke=\x22#FFFFF\
-F\x22 stroke-width=\
-\x222\x22>\x0a           \
- <g transform=\x22t\
-ranslate(3.00000\
-0, 1.000000)\x22>\x0a \
-               <\
-path d=\x22M10,8 L2\
-5,8 C25,8 26,8 2\
-6,9 L26,29 C26,2\
-9 26,30 25,30 L1\
-,30 C1,30 0,30 0\
-,29 L0,4\x22 id=\x22St\
-roke-1\x22></path>\x0a\
-                \
-<path d=\x22M26,0 L\
-4,0 C4,0 0,0 0,4\
- C0,8 4,8 4,8\x22 i\
-d=\x22Stroke-3\x22></p\
-ath>\x0a           \
-     <polyline i\
-d=\x22Stroke-5\x22 poi\
-nts=\x224 4 4 16 7 \
-14 10 16 10 4 24\
- 4\x22></polyline>\x0a\
-            </g>\
-\x0a        </g>\x0a  \
-  </g>\x0a</svg>\
-\x00\x00\x04\x9a\
-<\
-?xml version=\x221.\
-0\x22 encoding=\x22UTF\
--8\x22 standalone=\x22\
-no\x22?>\x0a<svg width\
-=\x2232px\x22 height=\x22\
-32px\x22 viewBox=\x220\
- 0 32 32\x22 versio\
-n=\x221.1\x22 xmlns=\x22h\
-ttp://www.w3.org\
-/2000/svg\x22 xmlns\
-:xlink=\x22http://w\
-ww.w3.org/1999/x\
-link\x22>\x0a    <!-- \
-Generator: Sketc\
-h 3.8.3 (29802) \
-- http://www.boh\
-emiancoding.com/\
-sketch -->\x0a    <\
-title>article</t\
-itle>\x0a    <desc>\
-Created with Ske\
-tch.</desc>\x0a    \
-<defs></defs>\x0a  \
-  <g id=\x22Page-1\x22\
- stroke=\x22none\x22 s\
-troke-width=\x221\x22 \
-fill=\x22none\x22 fill\
--rule=\x22evenodd\x22 \
-stroke-linecap=\x22\
-round\x22 stroke-li\
-nejoin=\x22round\x22>\x0a\
-        <g id=\x22a\
-rticle\x22 stroke=\x22\
-#FFFFFF\x22 stroke-\
-width=\x222\x22>\x0a     \
-       <g transf\
-orm=\x22translate(1\
-.000000, 1.00000\
-0)\x22>\x0a           \
-     <path d=\x22M6\
-,24 L6,1.005 C6,\
-1.005 6,0 7,0 L2\
-9,0 C29,0 30,0.0\
-05 30,1.005 L30,\
-27.005 C30,27.00\
-5 30,30 27,30 L3\
-,30 C3,30 0,30.0\
-05 0,26.005 L0,1\
-1.005 C0,11.005 \
-0,10 1,10 L3,10\x22\
- id=\x22Stroke-1\x22><\
-/path>\x0a         \
-       <path d=\x22\
-M12,6 L17,6\x22 id=\
-\x22Stroke-3\x22></pat\
-h>\x0a             \
-   <path d=\x22M12,\
-10 L24,10\x22 id=\x22S\
-troke-5\x22></path>\
+ath d=\x22M6,24 L6,\
+1.005 C6,1.005 6\
+,0 7,0 L29,0 C29\
+,0 30,0.005 30,1\
+.005 L30,27.005 \
+C30,27.005 30,30\
+ 27,30 L3,30 C3,\
+30 0,30.005 0,26\
+.005 L0,11.005 C\
+0,11.005 0,10 1,\
+10 L3,10\x22 id=\x22St\
+roke-1\x22></path>\x0d\
 \x0a               \
- <path d=\x22M12,14\
- L24,14\x22 id=\x22Str\
-oke-7\x22></path>\x0a \
-               <\
-path d=\x22M12,18 L\
-24,18\x22 id=\x22Strok\
-e-9\x22></path>\x0a   \
+ <path d=\x22M12,6 \
+L17,6\x22 id=\x22Strok\
+e-3\x22></path>\x0d\x0a  \
+              <p\
+ath d=\x22M12,10 L2\
+4,10\x22 id=\x22Stroke\
+-5\x22></path>\x0d\x0a   \
              <pa\
-th d=\x22M12,22 L24\
-,22\x22 id=\x22Stroke-\
-11\x22></path>\x0a    \
-        </g>\x0a   \
-     </g>\x0a    </\
-g>\x0a</svg>\
-\x00\x00\x04O\
+th d=\x22M12,14 L24\
+,14\x22 id=\x22Stroke-\
+7\x22></path>\x0d\x0a    \
+            <pat\
+h d=\x22M12,18 L24,\
+18\x22 id=\x22Stroke-9\
+\x22></path>\x0d\x0a     \
+           <path\
+ d=\x22M12,22 L24,2\
+2\x22 id=\x22Stroke-11\
+\x22></path>\x0d\x0a     \
+       </g>\x0d\x0a   \
+     </g>\x0d\x0a    <\
+/g>\x0d\x0a</svg>\
+\x00\x00\x04`\
 <\
 ?xml version=\x221.\
 0\x22 encoding=\x22UTF\
 -8\x22 standalone=\x22\
-no\x22?>\x0a<svg width\
-=\x2232px\x22 height=\x22\
-32px\x22 viewBox=\x220\
- 0 32 32\x22 versio\
-n=\x221.1\x22 xmlns=\x22h\
-ttp://www.w3.org\
-/2000/svg\x22 xmlns\
-:xlink=\x22http://w\
-ww.w3.org/1999/x\
-link\x22>\x0a    <!-- \
-Generator: Sketc\
-h 3.8.3 (29802) \
-- http://www.boh\
-emiancoding.com/\
-sketch -->\x0a    <\
-title>file-text<\
-/title>\x0a    <des\
-c>Created with S\
-ketch.</desc>\x0a  \
-  <defs></defs>\x0a\
-    <g id=\x22Page-\
-1\x22 stroke=\x22none\x22\
- stroke-width=\x221\
-\x22 fill=\x22none\x22 fi\
-ll-rule=\x22evenodd\
-\x22 stroke-linecap\
-=\x22round\x22 stroke-\
-linejoin=\x22round\x22\
->\x0a        <g id=\
-\x22file-text\x22 stro\
-ke=\x22#FFFFFF\x22 str\
-oke-width=\x222\x22>\x0a \
-           <g tr\
-ansform=\x22transla\
-te(3.000000, 1.0\
-00000)\x22>\x0a       \
-         <path d\
-=\x22M1,0 C1,0 0,0 \
-0,1 L0,29 C0,29 \
-0,30 1,30 L25,30\
- C25,30 26,30 26\
-,29 L26,10 C26,1\
-0 26,9 25,8 L18,\
-1 C17,0 16,0 16,\
-0 L1,0 L1,0 Z\x22 i\
-d=\x22Stroke-1\x22></p\
-ath>\x0a           \
-     <path d=\x22M1\
-6,0 L16,9 C16,9 \
-16,10 17,10 L22,\
-10\x22 id=\x22Stroke-3\
-\x22></path>\x0a      \
-          <path \
-d=\x22M6,16 L12,16\x22\
- id=\x22Stroke-5\x22><\
-/path>\x0a         \
-       <path d=\x22\
-M6,20 L20,20\x22 id\
-=\x22Stroke-7\x22></pa\
-th>\x0a            \
-    <path d=\x22M6,\
-24 L20,24\x22 id=\x22S\
-troke-9\x22></path>\
-\x0a            </g\
->\x0a        </g>\x0a \
-   </g>\x0a</svg>\
+no\x22?>\x0d\x0a<svg widt\
+h=\x2232px\x22 height=\
+\x2232px\x22 viewBox=\x22\
+0 0 32 32\x22 versi\
+on=\x221.1\x22 xmlns=\x22\
+http://www.w3.or\
+g/2000/svg\x22 xmln\
+s:xlink=\x22http://\
+www.w3.org/1999/\
+xlink\x22>\x0d\x0a    <!-\
+- Generator: Ske\
+tch 3.8.3 (29802\
+) - http://www.b\
+ohemiancoding.co\
+m/sketch -->\x0d\x0a  \
+  <title>file-te\
+xt</title>\x0d\x0a    \
+<desc>Created wi\
+th Sketch.</desc\
+>\x0d\x0a    <defs></d\
+efs>\x0d\x0a    <g id=\
+\x22Page-1\x22 stroke=\
+\x22none\x22 stroke-wi\
+dth=\x221\x22 fill=\x22no\
+ne\x22 fill-rule=\x22e\
+venodd\x22 stroke-l\
+inecap=\x22round\x22 s\
+troke-linejoin=\x22\
+round\x22>\x0d\x0a       \
+ <g id=\x22file-tex\
+t\x22 stroke=\x22#FFFF\
+FF\x22 stroke-width\
+=\x222\x22>\x0d\x0a         \
+   <g transform=\
+\x22translate(3.000\
+000, 1.000000)\x22>\
+\x0d\x0a              \
+  <path d=\x22M1,0 \
+C1,0 0,0 0,1 L0,\
+29 C0,29 0,30 1,\
+30 L25,30 C25,30\
+ 26,30 26,29 L26\
+,10 C26,10 26,9 \
+25,8 L18,1 C17,0\
+ 16,0 16,0 L1,0 \
+L1,0 Z\x22 id=\x22Stro\
+ke-1\x22></path>\x0d\x0a \
+               <\
+path d=\x22M16,0 L1\
+6,9 C16,9 16,10 \
+17,10 L22,10\x22 id\
+=\x22Stroke-3\x22></pa\
+th>\x0d\x0a           \
+     <path d=\x22M6\
+,16 L12,16\x22 id=\x22\
+Stroke-5\x22></path\
+>\x0d\x0a             \
+   <path d=\x22M6,2\
+0 L20,20\x22 id=\x22St\
+roke-7\x22></path>\x0d\
+\x0a               \
+ <path d=\x22M6,24 \
+L20,24\x22 id=\x22Stro\
+ke-9\x22></path>\x0d\x0a \
+           </g>\x0d\
+\x0a        </g>\x0d\x0a \
+   </g>\x0d\x0a</svg>\
 "
 
 qt_resource_name = b"\
@@ -1509,6 +1324,10 @@ qt_resource_name = b"\
 \x09\xc4n\xe7\
 \x00p\
 \x00r\x00o\x00c\x00e\x00s\x00s\x00i\x00n\x00g\
+\x00\x03\
+\x00\x00o\x9f\
+\x00i\
+\x00c\x00o\
 \x00\x0c\
 \x06N}\x07\
 \x00o\
@@ -1525,10 +1344,6 @@ qt_resource_name = b"\
 \x06\xcfP\x87\
 \x00i\
 \x00n\x00k\x00p\x00e\x00n\x00.\x00s\x00v\x00g\
-\x00\x03\
-\x00\x00o\x9f\
-\x00i\
-\x00c\x00o\
 \x00\x11\
 \x029\xf8\xdf\
 \x00t\
@@ -1543,27 +1358,18 @@ qt_resource_name = b"\
 \x00(Wg\
 \x00f\
 \x00i\x00l\x00e\x00.\x00s\x00v\x00g\
+\x00\x0d\
+\x02\xc5RG\
+\x00f\
+\x00i\x00l\x00e\x00-\x00s\x00a\x00v\x00e\x00.\x00s\x00v\x00g\
 \x00\x0a\
 \x0a\xc8\xf6\x87\
 \x00f\
 \x00o\x00l\x00d\x00e\x00r\x00.\x00s\x00v\x00g\
 \x00\x10\
-\x00Nn\xe7\
+\x03\x0e\x02g\
 \x00f\
-\x00i\x00l\x00e\x00-\x00r\x00e\x00c\x00e\x00i\x00v\x00e\x00.\x00s\x00v\x00g\
-\x00\x0f\
-\x00\x7f`\xa7\
-\x00f\
-\x00i\x00l\x00e\x00-\x00u\x00p\x00l\x00o\x00a\x00d\x00.\x00s\x00v\x00g\
-\x00\x11\
-\x03\xae\x9a\xa7\
-\x00f\
-\x00i\x00l\x00e\x00-\x00d\x00o\x00w\x00n\x00l\x00o\x00a\x00d\x00.\x00s\x00v\x00g\
-\
-\x00\x0d\
-\x02BRG\
-\x00f\
-\x00i\x00l\x00e\x00-\x00s\x00e\x00n\x00d\x00.\x00s\x00v\x00g\
+\x00i\x00l\x00e\x00-\x00s\x00a\x00v\x00e\x00-\x00a\x00s\x00.\x00s\x00v\x00g\
 \x00\x08\
 \x06^W\xe7\
 \x00b\
@@ -1581,48 +1387,52 @@ qt_resource_name = b"\
 qt_resource_struct = b"\
 \x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x01\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x00>\x00\x02\x00\x00\x00\x01\x00\x00\x00\x14\
+\x00\x00\x00>\x00\x02\x00\x00\x00\x01\x00\x00\x00\x16\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x00\x16\x00\x02\x00\x00\x00\x06\x00\x00\x00\x0e\
+\x00\x00\x00\x16\x00\x02\x00\x00\x00\x01\x00\x00\x00\x11\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x00\x00\x00\x02\x00\x00\x00\x03\x00\x00\x00\x0b\
+\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x0d\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x00J\x00\x02\x00\x00\x00\x04\x00\x00\x00\x07\
+\x00\x00\x00J\x00\x02\x00\x00\x00\x01\x00\x00\x00\x08\
 \x00\x00\x00\x00\x00\x00\x00\x00\
 \x00\x00\x00*\x00\x02\x00\x00\x00\x01\x00\x00\x00\x06\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x01\x18\x00\x00\x00\x00\x00\x01\x00\x00-\x8e\
-\x00\x00\x01U\xa9Kc\x10\
-\x00\x00\x00d\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
-\x00\x00\x01U\xa9Kc\x10\
-\x00\x00\x00\xca\x00\x00\x00\x00\x00\x01\x00\x00\x15\xd3\
-\x00\x00\x01U\xa9Kc\x10\
-\x00\x00\x00\xa6\x00\x00\x00\x00\x00\x01\x00\x00\x11\x87\
-\x00\x00\x01U\xa9Kc\x10\
-\x00\x00\x00\x82\x00\x00\x00\x00\x00\x01\x00\x00\x0c\x0b\
-\x00\x00\x01U\xa9Kc\x10\
-\x00\x00\x02\x08\x00\x00\x00\x00\x00\x01\x00\x00M\xcd\
-\x00\x00\x01U\xa9Kc\x10\
-\x00\x00\x02:\x00\x00\x00\x00\x00\x01\x00\x00V-\
-\x00\x00\x01U\xa9Kc\x10\
-\x00\x00\x02\x1e\x00\x00\x00\x00\x00\x01\x00\x00Q\x8f\
-\x00\x00\x01U\xa9Kc\x10\
-\x00\x00\x01F\x00\x00\x00\x00\x00\x01\x00\x003\xd5\
-\x00\x00\x01U\xa9Kc\x10\
-\x00\x00\x01v\x00\x00\x00\x00\x00\x01\x00\x00:\xbb\
-\x00\x00\x01U\xa9Kc\x10\
-\x00\x00\x01\x9c\x00\x00\x00\x00\x00\x01\x00\x00?\x8a\
-\x00\x00\x01U\xa9Kc\x10\
-\x00\x00\x01\xe8\x00\x00\x00\x00\x00\x01\x00\x00I\x10\
-\x00\x00\x01U\xa9Kc\x10\
-\x00\x00\x01\xc0\x00\x00\x00\x00\x00\x01\x00\x00DK\
-\x00\x00\x01U\xa9Kc\x10\
-\x00\x00\x01\x5c\x00\x00\x00\x00\x00\x01\x00\x007g\
-\x00\x00\x01U\xa9Kc\x10\
-\x00\x00\x00\xe4\x00\x02\x00\x00\x00\x01\x00\x00\x00\x15\
+\x00\x00\x00d\x00\x02\x00\x00\x00\x01\x00\x00\x00\x07\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x00\xf0\x00\x01\x00\x00\x00\x01\x00\x00\x1c\x22\
-\x00\x00\x01\x92\xe7\xcdb\xca\
+\x00\x00\x01\x18\x00\x00\x00\x00\x00\x01\x00\x00-\xdc\
+\x00\x00\x01\x93\x08_Ia\
+\x00\x00\x00d\x00\x02\x00\x00\x00\x04\x00\x00\x00\x09\
+\x00\x00\x00\x00\x00\x00\x00\x00\
+\x00\x00\x00p\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
+\x00\x00\x01\x93\x08_Ia\
+\x00\x00\x00\xd6\x00\x00\x00\x00\x00\x01\x00\x00\x16\x0d\
+\x00\x00\x01\x93\x08_I_\
+\x00\x00\x00\xb2\x00\x00\x00\x00\x00\x01\x00\x00\x11\xb1\
+\x00\x00\x01\x93\x08_Ia\
+\x00\x00\x00\x8e\x00\x00\x00\x00\x00\x01\x00\x00\x0c \
+\x00\x00\x01\x93\x08_Ia\
+\x00\x00\x00d\x00\x02\x00\x00\x00\x03\x00\x00\x00\x0e\
+\x00\x00\x00\x00\x00\x00\x00\x00\
+\x00\x00\x01\xbc\x00\x00\x00\x00\x00\x01\x00\x00B^\
+\x00\x00\x01\x93\x08_I^\
+\x00\x00\x01\xee\x00\x00\x00\x00\x00\x01\x00\x00J\xdf\
+\x00\x00\x01\x93\x08_I_\
+\x00\x00\x01\xd2\x00\x00\x00\x00\x00\x01\x00\x00F/\
+\x00\x00\x01\x93\x08_I^\
+\x00\x00\x00d\x00\x02\x00\x00\x00\x04\x00\x00\x00\x12\
+\x00\x00\x00\x00\x00\x00\x00\x00\
+\x00\x00\x01F\x00\x00\x00\x00\x00\x01\x00\x0047\
+\x00\x00\x01\x93\x08_I_\
+\x00\x00\x01\x5c\x00\x00\x00\x00\x00\x01\x00\x007\xd7\
+\x00\x00\x01\x93+`\x80\x05\
+\x00\x00\x01\x96\x00\x00\x00\x00\x00\x01\x00\x00>\x96\
+\x00\x00\x01\x93+_;\x99\
+\x00\x00\x01|\x00\x00\x00\x00\x00\x01\x00\x00;5\
+\x00\x00\x01\x93\x08_I_\
+\x00\x00\x00d\x00\x02\x00\x00\x00\x01\x00\x00\x00\x17\
+\x00\x00\x00\x00\x00\x00\x00\x00\
+\x00\x00\x00\xf0\x00\x01\x00\x00\x00\x01\x00\x00\x1cp\
+\x00\x00\x01\x92\xf7\xed\xe7 \
 "
 
 def qInitResources():

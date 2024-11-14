@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowRmLQZM.ui'
+## Form generated from reading UI file 'mainwindowkdQSBd.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.0
 ##
@@ -29,7 +29,7 @@ class Ui_MainWindow(object):
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(1371, 766)
         icon = QIcon()
-        icon.addFile(u":/icons/ico/taxation_tool.ico", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon.addFile(u":/app/ico/taxation_tool.ico", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         MainWindow.setWindowIcon(icon)
         self.menu_database_species = QAction(MainWindow)
         self.menu_database_species.setObjectName(u"menu_database_species")
@@ -44,7 +44,7 @@ class Ui_MainWindow(object):
         self.menu_project_new = QAction(MainWindow)
         self.menu_project_new.setObjectName(u"menu_project_new")
         icon3 = QIcon()
-        icon3.addFile(u":/project/file.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon3.addFile(u":/project/ico/file.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.menu_project_new.setIcon(icon3)
         self.menu_database_volumes = QAction(MainWindow)
         self.menu_database_volumes.setObjectName(u"menu_database_volumes")
@@ -54,7 +54,7 @@ class Ui_MainWindow(object):
         self.menu_project_open = QAction(MainWindow)
         self.menu_project_open.setObjectName(u"menu_project_open")
         icon5 = QIcon()
-        icon5.addFile(u":/project/folder.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon5.addFile(u":/project/ico/folder.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.menu_project_open.setIcon(icon5)
         self.menu_project_import_taxation_plan = QAction(MainWindow)
         self.menu_project_import_taxation_plan.setObjectName(u"menu_project_import_taxation_plan")
@@ -64,7 +64,7 @@ class Ui_MainWindow(object):
         self.menu_processing_preprocessing = QAction(MainWindow)
         self.menu_processing_preprocessing.setObjectName(u"menu_processing_preprocessing")
         icon7 = QIcon()
-        icon7.addFile(u":/processing/off-grid.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon7.addFile(u":/processing/ico/off-grid.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.menu_processing_preprocessing.setIcon(icon7)
         self.menu_processing_design_objects = QAction(MainWindow)
         self.menu_processing_design_objects.setObjectName(u"menu_processing_design_objects")
@@ -88,16 +88,19 @@ class Ui_MainWindow(object):
         self.menu_project_save_as = QAction(MainWindow)
         self.menu_project_save_as.setObjectName(u"menu_project_save_as")
         icon11 = QIcon()
-        icon11.addFile(u":/project/file-upload.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon11.addFile(u":/project/ico/file-save-as.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.menu_project_save_as.setIcon(icon11)
         self.menu_project_save_as.setMenuRole(QAction.MenuRole.NoRole)
         self.menu_settings_settings = QAction(MainWindow)
         self.menu_settings_settings.setObjectName(u"menu_settings_settings")
         icon12 = QIcon()
-        icon12.addFile(u":/setting/settings-complex.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon12.addFile(u":/setting/ico/settings-complex.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.menu_settings_settings.setIcon(icon12)
         self.menu_project_save = QAction(MainWindow)
         self.menu_project_save.setObjectName(u"menu_project_save")
+        icon13 = QIcon()
+        icon13.addFile(u":/project/ico/file-save.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.menu_project_save.setIcon(icon13)
         self.menu_project_save.setMenuRole(QAction.MenuRole.NoRole)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
@@ -256,8 +259,6 @@ class Ui_MainWindow(object):
         self.toolBar_3.addAction(self.menu_database_species)
         self.toolBar_3.addAction(self.menu_database_densitys)
         self.toolBar_3.addAction(self.menu_database_volumes)
-        self.toolBar_3.addSeparator()
-        self.toolBar_3.addAction(self.menu_settings_settings)
 
         self.retranslateUi(MainWindow)
 

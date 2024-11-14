@@ -14,8 +14,8 @@
    <string>Taxation Tool</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>:/icons/ico/taxation_tool.ico</normaloff>:/icons/ico/taxation_tool.ico</iconset>
+   <iconset resource="../resources.qrc">
+    <normaloff>:/app/ico/taxation_tool.ico</normaloff>:/app/ico/taxation_tool.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -280,8 +280,6 @@
    <addaction name="menu_database_species"/>
    <addaction name="menu_database_densitys"/>
    <addaction name="menu_database_volumes"/>
-   <addaction name="separator"/>
-   <addaction name="menu_settings_settings"/>
   </widget>
   <action name="menu_database_species">
    <property name="icon">
@@ -303,8 +301,8 @@
   </action>
   <action name="menu_project_new">
    <property name="icon">
-    <iconset>
-     <normaloff>:/project/file.svg</normaloff>:/project/file.svg</iconset>
+    <iconset resource="../resources.qrc">
+     <normaloff>:/project/ico/file.svg</normaloff>:/project/ico/file.svg</iconset>
    </property>
    <property name="text">
     <string>Новый</string>
@@ -321,8 +319,8 @@
   </action>
   <action name="menu_project_open">
    <property name="icon">
-    <iconset>
-     <normaloff>:/project/folder.svg</normaloff>:/project/folder.svg</iconset>
+    <iconset resource="../resources.qrc">
+     <normaloff>:/project/ico/folder.svg</normaloff>:/project/ico/folder.svg</iconset>
    </property>
    <property name="text">
     <string>Открыть</string>
@@ -342,8 +340,8 @@
   </action>
   <action name="menu_processing_preprocessing">
    <property name="icon">
-    <iconset>
-     <normaloff>:/processing/off-grid.svg</normaloff>:/processing/off-grid.svg</iconset>
+    <iconset resource="../resources.qrc">
+     <normaloff>:/processing/ico/off-grid.svg</normaloff>:/processing/ico/off-grid.svg</iconset>
    </property>
    <property name="text">
     <string>Предобработка</string>
@@ -391,8 +389,8 @@
   </action>
   <action name="menu_project_save_as">
    <property name="icon">
-    <iconset>
-     <normaloff>:/project/file-upload.svg</normaloff>:/project/file-upload.svg</iconset>
+    <iconset resource="../resources.qrc">
+     <normaloff>:/project/ico/file-save-as.svg</normaloff>:/project/ico/file-save-as.svg</iconset>
    </property>
    <property name="text">
     <string>Сохранить как</string>
@@ -403,14 +401,18 @@
   </action>
   <action name="menu_settings_settings">
    <property name="icon">
-    <iconset>
-     <normaloff>:/setting/settings-complex.svg</normaloff>:/setting/settings-complex.svg</iconset>
+    <iconset resource="../resources.qrc">
+     <normaloff>:/setting/ico/settings-complex.svg</normaloff>:/setting/ico/settings-complex.svg</iconset>
    </property>
    <property name="text">
     <string>Настройки</string>
    </property>
   </action>
   <action name="menu_project_save">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/project/ico/file-save.svg</normaloff>:/project/ico/file-save.svg</iconset>
+   </property>
    <property name="text">
     <string>Сохранить</string>
    </property>

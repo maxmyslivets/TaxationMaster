@@ -10,6 +10,9 @@ class Settings(QDialog, Ui_Dialog):
 
         self.setupUi(self)
 
+        self.buttonBox.buttons()[0].setText("Сохранить")
+        self.buttonBox.buttons()[1].setText("Отмена")
+
         self.config = Config()
 
         # Вкладка пользовательских настройки
