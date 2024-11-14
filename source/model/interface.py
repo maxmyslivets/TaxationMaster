@@ -15,9 +15,6 @@ class Interface:
     def __init__(self, model, view):
         self.model = model
         self.view = view
-        # FIXME: Если сделать импорт чертежа в сохраненный проект и после этого не сохранить его,
-        #  то при следующем открытии в проекте будет импортированный чертеж.
-        # TODO: Не копировать и не сохранять dwg в проект
 
     def save_as_project(self) -> None:
         save_as = QFileDialog()
@@ -81,7 +78,6 @@ class Interface:
             self.model.project.path = self.model.config.temp_path / ("New project" + self.model.project.suffix)
             self.model.project.is_saved = True
             os.makedirs(self.model.project.dir)
-            os.makedirs(self.model.project.dir_dwg)
             os.makedirs(self.model.project.dir_dxf)
 
             self.update_interface()
@@ -146,13 +142,7 @@ class Interface:
 
         manager_project_taxation_plan: QTreeWidgetItem = manager_project.findItems("Чертеж таксации",
                                                                                    QtCore.Qt.MatchContains)[0]
-        # print(manager_project_taxation_plan.childCount())
-        for _ in range(manager_project_taxation_plan.childCount()):
-            manager_project_taxation_plan.removeChild(manager_project_taxation_plan.child(0))
-        if self.model.project.dir_dwg is not None and self.model.project.dwg_name is not None:
-            dwg_plan_item = QTreeWidgetItem(manager_project_taxation_plan)
-            dwg_plan_item.setText(0, self.model.project.path_dwg.name)
-            dwg_plan_item.setToolTip(0, str(self.model.project.path_dwg))
+        manager_project_taxation_plan.removeChild(manager_project_taxation_plan.child(0))
         if self.model.project.dir_dxf is not None and self.model.project.dxf_name is not None:
             dxf_plan_item = QTreeWidgetItem(manager_project_taxation_plan)
             dxf_plan_item.setText(0, self.model.project.path_dxf.name)
@@ -179,26 +169,16 @@ class Interface:
         if dwg_path == "":
             return
 
-        if self.model.project.dir_dwg.exists():
-            shutil.rmtree(self.model.project.dir_dwg)
-        os.makedirs(self.model.project.dir_dwg)
-
         self.model.processing.clear_data_for_autocad_data_structuring()
 
-        self.model.project.dwg_name = Path(dwg_path).name
-        shutil.copyfile(dwg_path, self.model.project.path_dwg)
-
-        self.view.main_window.log(f"[DEBUG]\tDWG файл чертежа таксации `{dwg_path}` успешно импортирован в "
-                                  f"`{self.model.project.path_dwg}`.")
-
         # конвертация dwg в dxf
-        dwg_path_without_space = self.model.project.path_dwg.name.replace(" ", "_")
+        dwg_path_without_space = Path(dwg_path).name.replace(" ", "_")
 
         if self.model.config.temp_path_convert_input.exists():
             shutil.rmtree(self.model.config.temp_path_convert_input)
         os.makedirs(self.model.config.temp_path_convert_input, exist_ok=True)
 
-        shutil.copyfile(self.model.project.path_dwg, self.model.config.temp_path_convert_input / dwg_path_without_space)
+        shutil.copyfile(Path(dwg_path), self.model.config.temp_path_convert_input / dwg_path_without_space)
 
         if self.model.config.temp_path_convert_output.exists():
             shutil.rmtree(self.model.config.temp_path_convert_output)

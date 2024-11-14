@@ -13,9 +13,7 @@ def mark_as_unsaved(func):
 class Project:
 
     def __init__(self):
-        self._dir_dwg: Path = None
         self._dir_dxf: Path = None
-        self._dwg_name: str = None
         self._dxf_name: str = None
         self._name: str = None
         self._path: Path = None
@@ -59,7 +57,6 @@ class Project:
         self._path = path if isinstance(path, Path) else Path(path)
         self._name = self._path.stem
         self._dir = self._path.parent / self._name
-        self._dir_dwg = self._dir / "taxation_plan" / "dwg"
         self._dir_dxf = self._dir / "taxation_plan" / "dxf"
 
     @property
@@ -67,23 +64,8 @@ class Project:
         return self._dir
 
     @property
-    def dir_dwg(self) -> Path:
-        return self._dir_dwg
-
-    @property
     def dir_dxf(self) -> Path:
         return self._dir_dxf
-
-    @property
-    def dwg_name(self) -> str:
-        return self._dwg_name
-
-    @dwg_name.setter
-    @mark_as_unsaved
-    def dwg_name(self, dwg_name: str):
-        self._dwg_name = dwg_name
-        if self._dxf_name is not None and (self._dir_dwg / self._dxf_name).exists():
-            shutil.rmtree(self._dir_dwg / self._dxf_name, ignore_errors=True)
 
     @property
     def dxf_name(self) -> str:
@@ -93,10 +75,6 @@ class Project:
     @mark_as_unsaved
     def dxf_name(self, dxf_name: str):
         self._dxf_name = dxf_name
-
-    @property
-    def path_dwg(self) -> Path:
-        return self._dir_dwg / self._dwg_name
 
     @property
     def path_dxf(self) -> Path:
