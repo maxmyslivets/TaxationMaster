@@ -5,9 +5,9 @@ from ..model import Config
 
 class Settings(QDialog, Ui_Dialog):
     # TODO: добавить фильтры на ввод настроек
-    def __init__(self) -> None:
+    def __init__(self, config: Config) -> None:
         super().__init__()
-
+        # FIXME: TypeError: Settings.__init__() missing 1 required positional argument: 'config'
         self.setupUi(self)
 
         self.buttonBox.accepted.connect(self.save_settings)
@@ -15,7 +15,7 @@ class Settings(QDialog, Ui_Dialog):
         self.buttonBox.buttons()[0].setText("Сохранить")
         self.buttonBox.buttons()[1].setText("Отмена")
 
-        self.config = Config()
+        self.config = config
 
         # Вкладка пользовательских настройки
 

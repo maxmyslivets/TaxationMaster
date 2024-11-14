@@ -23,6 +23,9 @@ class Config:
         self.config.filename = str(self.path)
         self.config.write()
 
+    def reload(self) -> None:
+        self.config = configobj.ConfigObj(str(self.path), list_values=True, encoding='utf-8')
+
     def default_setup(self) -> None:
         self.config = configobj.ConfigObj(list_values=True, encoding='utf-8')
         self.config["system"] = {}

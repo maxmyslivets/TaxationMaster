@@ -127,6 +127,10 @@ class Interface:
         self.view.main_window.log("[DEBUG]\tУдаление временных файлов.")
         if self.model.config.temp_path.exists():
             shutil.rmtree(self.model.config.temp_path)
+        if self.model.config.temp_path_convert_input.exists():
+            shutil.rmtree(self.model.config.temp_path_convert_input)
+        if self.model.config.temp_path_convert_output.exists():
+            shutil.rmtree(self.model.config.temp_path_convert_output)
 
     def update_interface(self) -> None:
         self.view.main_window.setWindowTitle("Taxation Tool - " + self.model.project.name)
@@ -218,6 +222,7 @@ class Interface:
         shutil.rmtree(self.model.config.temp_path_convert_output)
 
     def preprocessing(self) -> None:
+        print(self.model.config.config)
         self.model.processing.read_data_from_taxation_plan(self.model.config.numbers_layers,
                                                            self.model.config.lines_layers,
                                                            self.model.config.contours_layers,

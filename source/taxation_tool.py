@@ -31,6 +31,8 @@ class TaxationTool:
 
         self.view.main_window.menu_processing_preprocessing.triggered.connect(self.model.interface.preprocessing)
         self.view.main_window.menu_settings_settings.triggered.connect(self.view.settings)
+        self.view.main_window.menu_settings_settings.triggered.connect(
+            lambda config: self.view.settings(self.model.config))
 
 
 def run():
