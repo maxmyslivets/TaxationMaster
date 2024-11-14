@@ -1,6 +1,6 @@
 import traceback
 
-from PySide6.QtWidgets import QMainWindow
+from PySide6.QtWidgets import QMainWindow, QTreeWidget
 from .ui.ui_mainwindow import Ui_MainWindow
 
 

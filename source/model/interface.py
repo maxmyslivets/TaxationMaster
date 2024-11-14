@@ -6,7 +6,8 @@ import traceback
 from pathlib import Path
 
 from PySide6 import QtCore
-from PySide6.QtWidgets import QFileDialog, QTreeWidgetItem, QTreeWidget
+from PySide6.QtGui import QAction
+from PySide6.QtWidgets import QFileDialog, QTreeWidgetItem, QTreeWidget, QMenu
 
 from utils.convert import oda_converter
 
@@ -15,6 +16,35 @@ class Interface:
     def __init__(self, model, view):
         self.model = model
         self.view = view
+
+    def project_manager_double_clicked(self) -> None:
+        manager_project: QTreeWidget = self.view.main_window.tree_manager
+        manager_project_taxation_plan: QTreeWidgetItem = manager_project.findItems("Чертеж таксации",
+                                                                                   QtCore.Qt.MatchContains)[0]
+        manager_project_objects_in_zones: QTreeWidgetItem = manager_project.findItems("Объекты таксации по зонам",
+                                                                                      QtCore.Qt.MatchContains)[0]
+        selected_item = manager_project.selectedItems()[0]
+
+        if selected_item is manager_project_taxation_plan.child(0):
+            pass    # TODO: Вывести в таблицу данные чертежа при двойном клике на имя чертежа таксации
+
+        manager_project_objects_in_zones_items = [manager_project_objects_in_zones.child(idx)
+                                                  for idx in range(manager_project_objects_in_zones.childCount())]
+        if selected_item in manager_project_objects_in_zones_items:
+            zone_name = selected_item.text(0)
+            pass    # TODO: Вывести в таблицу данные объектов попадающих в zone_name
+
+    def project_manager_context_menu(self, pos) -> None:
+        manager_project: QTreeWidget = self.view.main_window.tree_manager
+        manager_project_taxation_plan: QTreeWidgetItem = manager_project.findItems("Чертеж таксации",
+                                                                                   QtCore.Qt.MatchContains)[0]
+        item: QTreeWidgetItem = self.view.main_window.tree_manager.itemAt(pos)
+        if item and item.parent() == manager_project_taxation_plan:
+            menu = QMenu()
+            preprocessing_action = QAction("Предобработка")
+            preprocessing_action.triggered.connect(self.preprocessing)
+            menu.addAction(preprocessing_action)
+            menu.exec_(manager_project.viewport().mapToGlobal(pos))
 
     def save_as_project(self) -> None:
         save_as = QFileDialog()
@@ -147,18 +177,15 @@ class Interface:
             dxf_plan_item = QTreeWidgetItem(manager_project_taxation_plan)
             dxf_plan_item.setText(0, self.model.project.path_dxf.name)
             dxf_plan_item.setToolTip(0, str(self.model.project.path_dxf))
-        # TODO: добавить триггеры
         manager_project_taxation_plan.setExpanded(True)
 
         manager_project_objects_in_zones: QTreeWidgetItem = manager_project.findItems("Объекты таксации по зонам",
                                                                                       QtCore.Qt.MatchContains)[0]
         for _ in range(manager_project_objects_in_zones.childCount()):
             manager_project_objects_in_zones.removeChild(manager_project_objects_in_zones.child(0))
-        if len(self.model.project.zone_names) != 0:
-            for k_zone_name, zone_name in self.model.project.zone_names.items():
-                zone_item = QTreeWidgetItem(manager_project_objects_in_zones)
-                zone_item.setText(0, zone_name)
-                # TODO: добавить триггеры
+        for k_zone_name, zone_name in self.model.project.zone_names.items():
+            zone_item = QTreeWidgetItem(manager_project_objects_in_zones)
+            zone_item.setText(0, zone_name)
         manager_project_objects_in_zones.setExpanded(True)
 
     def import_dwg_taxation(self) -> None:
