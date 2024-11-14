@@ -4,11 +4,13 @@ from ..model import Config
 
 
 class Settings(QDialog, Ui_Dialog):
-
+    # TODO: добавить фильтры на ввод настроек
     def __init__(self) -> None:
         super().__init__()
 
         self.setupUi(self)
+
+        self.buttonBox.accepted.connect(self.save_settings)
 
         self.buttonBox.buttons()[0].setText("Сохранить")
         self.buttonBox.buttons()[1].setText("Отмена")
@@ -52,7 +54,22 @@ class Settings(QDialog, Ui_Dialog):
         self.timeout.setValue(self.config.timeout)
         tab_system_settings.addRow(QLabel("Лимит времени конвертирования, сек"), self.timeout)
 
-        # TODO: Добавить метод для сохранения настроек
-
         self.exec_()
+
+    def save_settings(self) -> None:
+
+        self.config.numbers_layers = eval(self.numbers_layers.text())
+        self.config.lines_layers = eval(self.lines_layers.text())
+        self.config.contours_layers = eval(self.contours_layers.text())
+        self.config.zones_layers = eval(self.zones_layers.text())
+        self.config.min_distance = float(self.min_distance.value())
+        self.config.min_area = float(self.min_area.value())
+        self.config.temp_path = self.temp_path.text()
+        self.config.temp_path_convert_input = self.temp_path_convert_input.text()
+        self.config.temp_path_convert_output = self.temp_path_convert_output.text()
+        self.config.oda_converter_path = self.oda_converter_path.text()
+        self.config.timeout = int(self.timeout.value())
+
+        self.config.save()
+
 
