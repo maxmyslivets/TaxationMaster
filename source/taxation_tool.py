@@ -8,6 +8,7 @@ from .model import Model
 class TaxationTool:
     def __init__(self, model, view, app):
         super(TaxationTool, self).__init__()
+        # FIXME: Сделать вывод любых ошибок программы в console_log через декоратор
 
         self.model = model
         self.view = view
