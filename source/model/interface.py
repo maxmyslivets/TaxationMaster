@@ -7,7 +7,8 @@ from pathlib import Path
 
 from PySide6 import QtCore
 from PySide6.QtGui import QAction
-from PySide6.QtWidgets import QFileDialog, QTreeWidgetItem, QTreeWidget, QMenu
+from PySide6.QtWidgets import QFileDialog, QTreeWidgetItem, QTreeWidget, QMenu, QTableView, QTableWidget, \
+    QTableWidgetItem
 
 from utils.convert import oda_converter
 
@@ -86,6 +87,7 @@ class Interface:
             os.makedirs(self.model.project.dir_dxf)
 
             self.update_interface()
+            self.show_table_from_taxation_plan()
 
             self.view.main_window.log(f"[DEBUG]\tПроект `{self.model.project.path}` успешно создан.")
 
@@ -122,6 +124,7 @@ class Interface:
                 for var, value in self.model.project.__dict__.items():
                     self.view.main_window.log(f"[DEBUG]\t{var} = {value}")
                 self.update_interface()
+                self.show_table_from_taxation_plan()
 
             except Exception:
                 self.view.main_window.log(f"[ERROR]\tНе удалось открыть проект `{_project_path}`."
@@ -244,6 +247,7 @@ class Interface:
                           f"{split_numbers_in_zones_from_model[zone_name]}")
         self.model.processing.splitting_shapes_in_zones()
         self.update_interface()
+        self.show_table_from_taxation_plan()
 
     ###################################################################################################################
     # Управление виджетом менеджера проекта
@@ -258,7 +262,7 @@ class Interface:
         selected_item = manager_project.selectedItems()[0]
 
         if selected_item is manager_project_taxation_plan.child(0):
-            pass    # TODO: Вывести в таблицу данные чертежа при двойном клике на имя чертежа таксации
+            self.show_table_from_taxation_plan()
 
         manager_project_objects_in_zones_items = [manager_project_objects_in_zones.child(idx)
                                                   for idx in range(manager_project_objects_in_zones.childCount())]
@@ -299,3 +303,76 @@ class Interface:
             zone_item = QTreeWidgetItem(manager_project_objects_in_zones)
             zone_item.setText(0, zone_name)
         manager_project_objects_in_zones.setExpanded(True)
+
+    ###################################################################################################################
+    # Управление виджетом таблицы
+    ###################################################################################################################
+
+    def show_table_from_taxation_plan(self) -> None:
+
+        table: QTableWidget = self.view.main_window.table
+        table.setRowCount(0)
+        table.setColumnCount(5)
+        table.setHorizontalHeaderLabels(["Номер", "Зона", "Тип", "Значение", "Ед.изм."])
+
+        table.cellChanged.connect(None)
+
+        # def add_row(numbers: str, zone_name: str, type_shape: str, value: str, unit: str) -> None:
+        #     row_position = table.rowCount()
+        #     table.insertRow(row_position)
+        #     item_numbers = _TableCustomItem(numbers)
+        #     table.setItem(row_position, 0, item_numbers)
+        #     item_zone_name = _TableCustomItem(zone_name)
+        #     table.setItem(row_position, 1, item_zone_name)
+        #     item_type_shape = _TableCustomItem(type_shape)
+        #     table.setItem(row_position, 2, item_type_shape)
+        #     item_value = _TableCustomItem(value)
+        #     table.setItem(row_position, 3, item_value)
+        #     item_unit = _TableCustomItem(unit)
+        #     table.setItem(row_position, 4, item_unit)
+
+        for k_number, number in self.model.project.numbers.items():
+            # добавление номера дерева
+            item_number = _TableCustomItem(number)
+            item_number.set_dict_data("numbers", k_number)
+            # добавление имени зоны
+            # zone_names = None
+            # for k_split_number, k_number_list in self.model.project.split_numbers.items():
+            #     if k_number in k_number_list:
+            #         k_zone_list = self.model.project.intersects_shapes_in_zones[k_split_number][0]
+
+
+            # if k_zone is not None:
+            #     item_number = _TableCustomItem(number)
+            #     item_number.set_dict_data("numbers", k_number)
+            # for k_shape, k_number_list in self.model.project.numbers_from_shape.items():
+            #     if k_number in k_number_list:
+
+            # добавление строки в таблицу
+            row_position = table.rowCount()
+            table.insertRow(row_position)
+            table.setItem(row_position, 0, item_number)
+            # table.setItem(row_position, 1, item_number)
+            # table.setItem(row_position, 2, item_number)
+            # table.setItem(row_position, 3, item_number)
+            # table.setItem(row_position, 4, item_number)
+
+
+        # add_row("1", "zone_1", "contour", str(5.04), "м2")
+        # add_row("1", "zone_1", "contour", str(5.04), "м2")
+
+        table.cellChanged.connect(self.update_data_from_table)
+        # table.setEditTriggers(QTableWidget.NoEditTriggers)
+
+    def update_data_from_table(self, row, col) -> None:
+        new_value = self.view.main_window.table.item(row, col).text()
+        pass    # TODO: Замена данных в project
+
+
+class _TableCustomItem(QTableWidgetItem):
+    dict_name: str
+    dict_key: str|int
+
+    def set_dict_data(self, dict_name: str, dict_key: str|int) -> None:
+        self.dict_name = dict_name
+        self.dict_key = dict_key

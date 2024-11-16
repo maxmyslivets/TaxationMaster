@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowwVbeiQ.ui'
+## Form generated from reading UI file 'mainwindow.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.0
 ##
@@ -19,8 +19,9 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
 from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QHeaderView,
     QLabel, QLayout, QMainWindow, QMenu,
     QMenuBar, QSizePolicy, QSplitter, QStatusBar,
-    QTabWidget, QTextBrowser, QToolBar, QTreeWidget,
-    QTreeWidgetItem, QVBoxLayout, QWidget)
+    QTabWidget, QTableWidget, QTableWidgetItem, QTextBrowser,
+    QToolBar, QTreeWidget, QTreeWidgetItem, QVBoxLayout,
+    QWidget)
 import source.view.ui.resources_rc
 
 class Ui_MainWindow(object):
@@ -149,11 +150,18 @@ class Ui_MainWindow(object):
         sizePolicy3.setVerticalStretch(1)
         sizePolicy3.setHeightForWidth(self.tabWidget.sizePolicy().hasHeightForWidth())
         self.tabWidget.setSizePolicy(sizePolicy3)
-        self.tab_model = QWidget()
-        self.tab_model.setObjectName(u"tab_model")
-        self.tabWidget.addTab(self.tab_model, "")
         self.tab_table = QWidget()
         self.tab_table.setObjectName(u"tab_table")
+        self.gridLayout_2 = QGridLayout(self.tab_table)
+        self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.table = QTableWidget(self.tab_table)
+        self.table.setObjectName(u"table")
+        self.table.verticalHeader().setVisible(False)
+        self.table.verticalHeader().setProperty(u"showSortIndicator", False)
+        self.table.verticalHeader().setStretchLastSection(False)
+
+        self.gridLayout_2.addWidget(self.table, 0, 0, 1, 1)
+
         self.tabWidget.addTab(self.tab_table, "")
         self.splitter_2.addWidget(self.tabWidget)
         self.layoutWidget = QWidget(self.splitter_2)
@@ -260,7 +268,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -305,8 +313,7 @@ class Ui_MainWindow(object):
         ___qtreewidgetitem3.setText(0, QCoreApplication.translate("MainWindow", u"\u0412\u0435\u0434\u043e\u043c\u043e\u0441\u0442\u044c \u0442\u0430\u043a\u0441\u0430\u0446\u0438\u0438", None));
         self.tree_manager.setSortingEnabled(__sortingEnabled)
 
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_model), QCoreApplication.translate("MainWindow", u"\u041c\u043e\u0434\u0435\u043b\u044c", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_table), QCoreApplication.translate("MainWindow", u"\u0422\u0430\u0431\u043b\u0438\u0446\u0430", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_table), QCoreApplication.translate("MainWindow", u"\u0427\u0435\u0440\u0442\u0435\u0436 \u0442\u0430\u043a\u0441\u0430\u0446\u0438\u0438", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u043e\u0433\u0440\u0435\u0441\u0441", None))
         self.menu_project.setTitle(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u043e\u0435\u043a\u0442", None))
         self.menu.setTitle(QCoreApplication.translate("MainWindow", u"\u0418\u043c\u043f\u043e\u0440\u0442", None))
