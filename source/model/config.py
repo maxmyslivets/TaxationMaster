@@ -30,6 +30,8 @@ class Config:
         self.config = configobj.ConfigObj(list_values=True, encoding='utf-8')
         self.config["system"] = {}
         self.config["user"] = {}
+        # project file extension
+        self.config["system"]["extension"] = ".ttpr"
         # temp_path
         self.config["system"]["temp_path"] = str(Path(tempfile.gettempdir()) / "TaxationTool")
         # converter
@@ -45,6 +47,14 @@ class Config:
         self.config["user"]["min_distance"] = 0.01
         self.config["user"]["min_area"] = 0.01
         self.save()
+
+    @property
+    def extension(self) -> str:
+        return str(self.config["system"]["extension"])
+
+    @extension.setter
+    def extension(self, extension: str) -> None:
+        self.config["system"]["extension"] = str(extension)
 
     @property
     def temp_path(self) -> Path:

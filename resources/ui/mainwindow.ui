@@ -63,21 +63,6 @@
          <string>Менеджер проекта</string>
         </property>
        </column>
-       <item>
-        <property name="text">
-         <string>Чертеж таксации</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Объекты таксации по зонам</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Ведомость таксации</string>
-        </property>
-       </item>
       </widget>
       <widget class="QSplitter" name="splitter_2">
        <property name="sizePolicy">

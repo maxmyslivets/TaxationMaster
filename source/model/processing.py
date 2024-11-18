@@ -2,6 +2,7 @@ import re
 import traceback
 from collections import Counter
 from itertools import combinations
+from pathlib import Path
 
 import ezdxf
 from PySide6 import QtCore
@@ -14,13 +15,150 @@ from source.model.project import Project
 
 class Processing(QtCore.QObject):
 
-    def __init__(self, project: Project, log):
+    def __init__(self, log):
         super(Processing, self).__init__()
 
         self.log = log
-        self.project = project
+        # self.project = project
 
-        self.valid = True
+        # self.valid = True
+
+    def create_taxation_plan(self, dxf_path: Path, numbers_layers: list[str], lines_layers: list[str],
+                             contours_layers: list[str], min_distance: float) -> Project.TaxationPlan:
+
+        valid = True
+        doc = ezdxf.readfile(dxf_path)
+
+        entity_numbers, entity_lines, entity_contours = [], [], []
+
+        for entity in doc.modelspace():
+
+            if isinstance(entity, Text) and entity.dxf.layer in numbers_layers:
+                entity_numbers.append(entity)
+            elif isinstance(entity, MText) and entity.dxf.layer in numbers_layers:
+                entity_numbers.append(entity)
+
+            elif isinstance(entity, LWPolyline) and entity.dxf.layer in lines_layers:
+                entity_lines.append(entity)
+            elif isinstance(entity, Line) and entity.dxf.layer in lines_layers:
+                entity_lines.append(entity)
+
+            elif isinstance(entity, LWPolyline) and entity.dxf.layer in contours_layers:
+                entity_contours.append(entity)
+
+        taxation_plan = Project.TaxationPlan()
+
+        # Собираем numbers и number_positions
+
+        for k_number, text in enumerate(entity_numbers):
+            number = text.plain_text().replace('\n', ' ') if isinstance(text, MText) else text.plain_text()
+            taxation_plan.numbers[k_number] = number
+            position = Point(text.dxf.insert[0], text.dxf.insert[1])
+            taxation_plan.numbers_position[k_number] = position
+
+        # Собираем shapes
+
+        k_shape = 0
+        for line in entity_lines:
+            if isinstance(line, LWPolyline):
+                shape = LineString([(float(x), float(y)) for x, y in list(line.vertices())])
+                taxation_plan.shapes[k_shape] = shape
+                k_shape += 1
+            if isinstance(line, Line):
+                shape = LineString([(line.dxf.start.x, line.dxf.start.y), (line.dxf.end.x, line.dxf.end.y)])
+                taxation_plan.shapes[k_shape] = shape
+                k_shape += 1
+        for contour in entity_contours:
+            shape = Polygon([(float(x), float(y)) for x, y in list(contour.vertices())])
+            taxation_plan.shapes[k_shape] = shape
+            k_shape += 1
+
+        # Собираем self.numbers_from_shape
+
+        for k_number, k_position in taxation_plan.numbers_position.items():
+            for k_shape, shape in taxation_plan.shapes.items():
+                if isinstance(shape, LineString):
+                    distance = shape.distance(k_position)
+                elif isinstance(shape, Polygon):
+                    distance = k_position.distance(shape.exterior)
+                else:
+                    self.log(f"[WARNING]\tТип фигуры {type(shape)} не является LineString или Polygon.")
+                    continue
+                if distance < min_distance:
+                    if k_shape not in taxation_plan.numbers_from_shape:
+                        taxation_plan.numbers_from_shape[k_shape] = list()
+                    taxation_plan.numbers_from_shape[k_shape].append(k_number)
+
+        # Валидация на наличие одинаковых номеров на разных фигурах
+        shapes_validation_dict = dict()
+        for k_shape, k_number_list in taxation_plan.numbers_from_shape.items():
+            for k_number in k_number_list:
+                if taxation_plan.numbers[k_number] not in shapes_validation_dict:
+                    shapes_validation_dict[taxation_plan.numbers[k_number]] = list()
+                shapes_validation_dict[taxation_plan.numbers[k_number]].append(k_shape)
+        for number, k_shape_list in shapes_validation_dict.items():
+            if len(set(k_shape_list)) > 1:
+                valid = False
+                self.log(f"[ERROR]\tНомер `{number}` встречается в чертеже на {len(k_shape_list)} фигурах.")
+
+        # Собираем tree и numbers_from_tree
+
+        shape_numbers_temp_list = []
+        for k_shape, k_number_list in taxation_plan.numbers_from_shape.items():
+            shape_numbers_temp_list.extend(k_number_list)
+
+        numbers_from_tree_validation = []  # список номеров для валидации
+        k_tree = 0
+        for k_number, number_position in taxation_plan.numbers_position.items():
+            if k_number not in shape_numbers_temp_list:
+                taxation_plan.tree[k_tree] = number_position
+                taxation_plan.numbers_from_tree[k_tree] = k_number
+                numbers_from_tree_validation.append(taxation_plan.numbers[k_number])
+                k_tree += 1
+
+        # Валидация на наличие одинаковых номеров для точечных объектов растительности
+        counter_number_of_tree = Counter(numbers_from_tree_validation)
+        for number, count in counter_number_of_tree.items():
+            if count > 1:
+                valid = False
+                self.log(f"[ERROR]\tНомер точечного объекта растительности `{number}` встречается в чертеже "
+                         f"{count} раз(а).")
+
+        # Валидация на наличие одинаковых номеров у объектов растительности относительно фигур
+        for number in list(set(shapes_validation_dict.keys()) & set(numbers_from_tree_validation)):
+            valid = False
+            self.log(f"[ERROR]\tНомер `{number}` встречается в чертеже и на точечном объекте растительности "
+                     f"и на фигуре")
+
+        if not valid:
+            self.log(f"[ERROR]\tЧертеж таксации содержит ошибки и не будет обработан. "
+                     f"Исправьте файл чертежа таксации и импортируйте его заново.")
+            return None
+
+        self.log(f"[DEBUG]\tКомпоновка данных для табличного представления...")
+        # Собираем данные в table_data
+        for k_number, number in taxation_plan.numbers.items():
+            taxation_plan_object = [number]
+            if k_number in taxation_plan.numbers_from_tree.values():
+                taxation_plan_object.append("Дерево")
+                taxation_plan_object.append("-")
+                taxation_plan_object.append("шт.")
+            else:
+                for k_shape, list_k_number in taxation_plan.numbers_from_shape.items():
+                    if k_number in list_k_number:
+                        if isinstance(taxation_plan.shapes[k_shape], LineString):
+                            taxation_plan_object.append("Полоса")
+                            taxation_plan_object.append(str(round(taxation_plan.shapes[k_shape].length, 1)))
+                            taxation_plan_object.append("м.п.")
+                            break
+                        if isinstance(taxation_plan.shapes[k_shape], Polygon):
+                            taxation_plan_object.append("Контур")
+                            taxation_plan_object.append(str(round(taxation_plan.shapes[k_shape].area, 1)))
+                            taxation_plan_object.append("м2")
+                            break
+            taxation_plan.table_data.append(taxation_plan_object)
+
+        return taxation_plan
 
     def read_data_from_taxation_plan(self, numbers_layers: list[str], lines_layers: list[str],
                                      contours_layers: list[str], zones_layers: list[str], min_distance: float,
@@ -29,7 +167,7 @@ class Processing(QtCore.QObject):
         Чтение файла dxf чертежа таксации и структурирование данных.
         """
 
-        self.clear_data_for_autocad_data_structuring()
+        # self.clear_data_for_autocad_data_structuring()
         self.valid = True
 
         try:

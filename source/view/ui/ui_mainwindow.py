@@ -116,9 +116,6 @@ class Ui_MainWindow(object):
         self.splitter.setSizePolicy(sizePolicy)
         self.splitter.setOrientation(Qt.Orientation.Horizontal)
         self.tree_manager = QTreeWidget(self.splitter)
-        QTreeWidgetItem(self.tree_manager)
-        QTreeWidgetItem(self.tree_manager)
-        QTreeWidgetItem(self.tree_manager)
         self.tree_manager.setObjectName(u"tree_manager")
         sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy1.setHorizontalStretch(0)
@@ -302,17 +299,6 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         ___qtreewidgetitem = self.tree_manager.headerItem()
         ___qtreewidgetitem.setText(0, QCoreApplication.translate("MainWindow", u"\u041c\u0435\u043d\u0435\u0434\u0436\u0435\u0440 \u043f\u0440\u043e\u0435\u043a\u0442\u0430", None));
-
-        __sortingEnabled = self.tree_manager.isSortingEnabled()
-        self.tree_manager.setSortingEnabled(False)
-        ___qtreewidgetitem1 = self.tree_manager.topLevelItem(0)
-        ___qtreewidgetitem1.setText(0, QCoreApplication.translate("MainWindow", u"\u0427\u0435\u0440\u0442\u0435\u0436 \u0442\u0430\u043a\u0441\u0430\u0446\u0438\u0438", None));
-        ___qtreewidgetitem2 = self.tree_manager.topLevelItem(1)
-        ___qtreewidgetitem2.setText(0, QCoreApplication.translate("MainWindow", u"\u041e\u0431\u044a\u0435\u043a\u0442\u044b \u0442\u0430\u043a\u0441\u0430\u0446\u0438\u0438 \u043f\u043e \u0437\u043e\u043d\u0430\u043c", None));
-        ___qtreewidgetitem3 = self.tree_manager.topLevelItem(2)
-        ___qtreewidgetitem3.setText(0, QCoreApplication.translate("MainWindow", u"\u0412\u0435\u0434\u043e\u043c\u043e\u0441\u0442\u044c \u0442\u0430\u043a\u0441\u0430\u0446\u0438\u0438", None));
-        self.tree_manager.setSortingEnabled(__sortingEnabled)
-
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_table), QCoreApplication.translate("MainWindow", u"\u0427\u0435\u0440\u0442\u0435\u0436 \u0442\u0430\u043a\u0441\u0430\u0446\u0438\u0438", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u043e\u0433\u0440\u0435\u0441\u0441", None))
         self.menu_project.setTitle(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u043e\u0435\u043a\u0442", None))

@@ -8,7 +8,7 @@ class Model:
     def __init__(self, view):
         self.config = Config()
         self._project = Project()
-        self.processing = Processing(self.project, view.main_window.log)
+        self.processing = Processing(view.main_window.log)
         self.interface = Interface(self, view)
 
     def clear_project(self) -> None:

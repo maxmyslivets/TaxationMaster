@@ -10,10 +10,13 @@ from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QFileDialog, QTreeWidgetItem, QTreeWidget, QMenu, QTableView, QTableWidget, \
     QTableWidgetItem
 
+from source.model.project import ProjectData, Project
 from utils.convert import oda_converter
 
 
 class Interface:
+    project_data: ProjectData
+
     def __init__(self, model, view):
         self.model = model
         self.view = view
@@ -24,39 +27,39 @@ class Interface:
 
     def save_as_project(self) -> None:
         save_as = QFileDialog()
-        save_as.setDefaultSuffix(self.model.project.suffix)
+        save_as.setDefaultSuffix(self.model.config.extension)
         _project_path, _ = save_as.getSaveFileName(parent=self.view.main_window, caption="Сохранить как...", dir='/',
-                                                   filter=f"Taxation tool project (*{self.model.project.suffix})")
+                                                   filter=f"Taxation tool project (*{self.model.config.extension})")
         if _project_path:
             try:
                 project_path = Path(_project_path)
                 if project_path.exists():
                     os.remove(project_path)
                     shutil.rmtree(project_path.parent / project_path.stem)
-                elif project_path == self.model.project.path:
+                elif project_path == self.project_data.path:
                     self.save_project()
-                shutil.copytree(self.model.project.dir, project_path.parent / project_path.stem)
-                self.model.project.path = project_path
+                # shutil.copytree(self.project_data.dir, project_path.parent / project_path.stem)
+                self.project_data.path = project_path
                 self.model.project.is_saved = True
-                with open(self.model.project.path, 'wb') as file:
+                with open(self.project_data.path, 'wb') as file:
                     pickle.dump(self.model.project, file)
 
                 self.clear_temp_project()
                 self.update_interface()
 
-                self.view.main_window.log(f"[DEBUG]\tПроект `{self.model.project.path}` успешно сохранен.")
+                self.view.main_window.log(f"[DEBUG]\tПроект `{self.project_data.path}` успешно сохранен.")
             except Exception:
                 self.view.main_window.log(f"[ERROR]\tНе удалось сохранить проект в `{_project_path}`."
                                           f"\n{traceback.format_exc()}")
 
     def save_project(self) -> None:
-        self.model.project.is_saved = True
         try:
-            with open(self.model.project.path, 'wb') as file:
+            with open(self.project_data.path, 'wb') as file:
                 pickle.dump(self.model.project, file)
-            self.view.main_window.log(f"[DEBUG]\tПроект `{self.model.project.path}` успешно сохранен.")
+            self.model.project.is_saved = True
+            self.view.main_window.log(f"[DEBUG]\tПроект `{self.project_data.path}` успешно сохранен.")
         except Exception:
-            self.view.main_window.log(f"[ERROR]\tНе удалось сохранить проект `{self.model.project.path}`."
+            self.view.main_window.log(f"[ERROR]\tНе удалось сохранить проект `{self.project_data.path}`."
                                       f"\n{traceback.format_exc()}")
 
     def create_new_project(self) -> None:
@@ -81,15 +84,14 @@ class Interface:
                 return
 
             # создание проекта во временном каталоге
-            self.model.project.path = self.model.config.temp_path / ("New project" + self.model.project.suffix)
+            self.project_data = ProjectData(self.model.config.temp_path / ("New project" + self.model.config.extension))
             self.model.project.is_saved = True
-            os.makedirs(self.model.project.dir)
-            os.makedirs(self.model.project.dir_dxf)
+            # os.makedirs(self.project_data.dir)
 
             self.update_interface()
-            self.show_table_from_taxation_plan()
+            # self.show_table_from_taxation_plan()
 
-            self.view.main_window.log(f"[DEBUG]\tПроект `{self.model.project.path}` успешно создан.")
+            self.view.main_window.log(f"[DEBUG]\tПроект `{self.project_data.path}` успешно создан.")
 
         except Exception:
             self.view.main_window.log(f"[ERROR]\tОшибка создания проекта во временной директории."
@@ -102,14 +104,14 @@ class Interface:
             return
 
         open_dialog = QFileDialog()
-        open_dialog.setDefaultSuffix(self.model.project.suffix)
+        open_dialog.setDefaultSuffix(self.model.config.extension)
         _project_path, _ = open_dialog.getOpenFileName(parent=self.view.main_window, caption="Открыть проект...", dir='/',
-                                                       filter=f"Taxation tool project (*{self.model.project.suffix})")
+                                                       filter=f"Taxation tool project (*{self.model.config.extension})")
         if _project_path:
             try:
                 project_path = Path(_project_path)
-                if project_path.suffix != self.model.project.suffix:
-                    raise ValueError(f"Неверное расширение файла: `{self.model.project.suffix}`. "
+                if project_path.suffix != self.model.config.extension:
+                    raise ValueError(f"Неверное расширение файла: `{self.model.config.extension}`. "
                                      f"Требуется `{self.model.project.suffix}`")
                 with open(project_path, 'rb') as file:
                     self.model.project = pickle.load(file)
@@ -118,13 +120,17 @@ class Interface:
 
                 self.clear_temp_project()
 
-                self.view.main_window.log(f"[DEBUG]\tПроект `{self.model.project.path}` успешно открыт.")
+                self.view.main_window.log(f"[DEBUG]\tПроект `{self.project_data.path}` успешно открыт.")
 
                 self.view.main_window.log(f"[DEBUG]\tПеременные экземпляра класса Project:")
                 for var, value in self.model.project.__dict__.items():
                     self.view.main_window.log(f"[DEBUG]\t{var} = {value}")
+
                 self.update_interface()
-                self.show_table_from_taxation_plan()
+
+                self.clear_project_manager()
+                if "taxation_plan" in self.model.project.__dict__.keys():
+                    self.set_taxation_plan_to_project_manager()
 
             except Exception:
                 self.view.main_window.log(f"[ERROR]\tНе удалось открыть проект `{_project_path}`."
@@ -139,7 +145,7 @@ class Interface:
         if self.model.config.temp_path_convert_output.exists():
             shutil.rmtree(self.model.config.temp_path_convert_output)
 
-    def import_dwg_taxation(self) -> None:
+    def import_taxation_plan(self) -> None:
         import_dialog = QFileDialog()
         import_dialog.setDefaultSuffix('.dwg')
         dwg_path, _ = import_dialog.getOpenFileName(parent=self.view.main_window, caption="Импорт чертежа...", dir='/',
@@ -147,7 +153,7 @@ class Interface:
         if dwg_path == "":
             return
 
-        self.model.processing.clear_data_for_autocad_data_structuring()
+        # self.model.processing.clear_data_for_autocad_data_structuring()
 
         # конвертация dwg в dxf
         dwg_path_without_space = Path(dwg_path).name.replace(" ", "_")
@@ -167,7 +173,7 @@ class Interface:
                           self.model.config.temp_path_convert_output)
         except Exception:
             self.view.main_window.log(f"[ERROR]\tОшибка конвертации файлов."
-                          f"\n{traceback.format_exc()}")
+                                      f"\n{traceback.format_exc()}")
             return
 
         timeout = self.model.config.timeout
@@ -189,8 +195,6 @@ class Interface:
         permission = False
         while not permission:
             try:
-                self.model.project.dxf_name = dxf_file.name
-                shutil.copyfile(dxf_file, self.model.project.path_dxf)
                 permission = True
             except PermissionError:
                 time.sleep(1)
@@ -201,178 +205,127 @@ class Interface:
         if timeout == 0:
             return
 
-        self.update_project_manager()
+        taxation_plan = self.model.processing.create_taxation_plan(dxf_file,
+                                                                   self.model.config.numbers_layers,
+                                                                   self.model.config.lines_layers,
+                                                                   self.model.config.contours_layers,
+                                                                   self.model.config.min_distance)
+        if taxation_plan is not None:
+            self.model.project.taxation_plan = taxation_plan
 
-        self.view.main_window.log(f"[DEBUG]\tФайл успешно"
-                                  f" конвертирован из `{self.model.config.temp_path_convert_input}` в "
-                                  f"`{self.model.config.temp_path_convert_output}`.")
-        self.view.main_window.log(f"[DEBUG]\tDXF файл успешно загружен из `{dxf_file.parent}` в "
-                                  f"`{self.model.project.dir_dxf}`.")
+        self.set_taxation_plan_to_project_manager()
+
+        self.view.main_window.log(f"[DEBUG]\tЧертеж таксации успешно импортирован.")
         shutil.rmtree(self.model.config.temp_path_convert_output)
 
     def update_interface(self) -> None:
-        self.view.main_window.setWindowTitle("Taxation Tool - " + self.model.project.name)
-        self.update_project_manager()
+        self.view.main_window.setWindowTitle("Taxation Tool - " + self.project_data.name)
+        # self.update_project_manager()
         self.view.main_window.log("[DEBUG]\tОбновление интерфейса.")
 
     ###################################################################################################################
     # Меню Обработка
     ###################################################################################################################
 
-    def preprocessing(self) -> None:
-        self.model.processing.read_data_from_taxation_plan(self.model.config.numbers_layers,
-                                                           self.model.config.lines_layers,
-                                                           self.model.config.contours_layers,
-                                                           self.model.config.zones_layers,
-                                                           self.model.config.min_distance,
-                                                           self.model.config.min_area)
-        self.view.main_window.log("Файл чертежа таксации успешно обработан.")
-        self.view.main_window.log(f"Количество точечных растений: {len(self.model.project.numbers)}")
-        self.view.main_window.log(f"Количество полос и контуров растительности: {len(self.model.project.shapes)}")
-        self.view.main_window.log(f"Зоны: {[name for _, name in self.model.project.zone_names.items()]}")
-        self.model.processing.splitting_numbers()
-        self.model.processing.calculate_intersects_shapes_in_zones()
-
-        split_numbers_in_zones_from_model = {zone_name: [] for _, zone_name in self.model.project.zone_names.items()}
-        for zone_name in split_numbers_in_zones_from_model.keys():
-            k_zone_name = next(k for k, v in self.model.project.zone_names.items() if v == zone_name)
-            k_zone_list = self.model.project.zones_from_zone_names[k_zone_name]
-            for k_zone in k_zone_list:
-                for k_split_number, _k_zone_list in self.model.project.intersects_shapes_in_zones.items():
-                    for _k_zone in _k_zone_list:
-                        if _k_zone == k_zone:
-                            split_numbers_in_zones_from_model[zone_name].append(self.model.project.split_numbers[k_split_number])
-        for zone_name in split_numbers_in_zones_from_model.keys():
-            self.view.main_window.log(f"Вхождения объектов в зону `{zone_name}`: "
-                          f"{split_numbers_in_zones_from_model[zone_name]}")
-        self.model.processing.splitting_shapes_in_zones()
-        self.update_interface()
-        self.show_table_from_taxation_plan()
+    # def preprocessing(self) -> None:
+    #     self.model.processing.read_data_from_taxation_plan(self.model.config.numbers_layers,
+    #                                                        self.model.config.lines_layers,
+    #                                                        self.model.config.contours_layers,
+    #                                                        self.model.config.zones_layers,
+    #                                                        self.model.config.min_distance,
+    #                                                        self.model.config.min_area)
+    #     self.view.main_window.log("Файл чертежа таксации успешно обработан.")
+    #     self.view.main_window.log(f"Количество точечных растений: {len(self.model.project.numbers)}")
+    #     self.view.main_window.log(f"Количество полос и контуров растительности: {len(self.model.project.shapes)}")
+    #     self.view.main_window.log(f"Зоны: {[name for _, name in self.model.project.zone_names.items()]}")
+    #     self.model.processing.splitting_numbers()
+    #     self.model.processing.calculate_intersects_shapes_in_zones()
+    #
+    #     split_numbers_in_zones_from_model = {zone_name: [] for _, zone_name in self.model.project.zone_names.items()}
+    #     for zone_name in split_numbers_in_zones_from_model.keys():
+    #         k_zone_name = next(k for k, v in self.model.project.zone_names.items() if v == zone_name)
+    #         k_zone_list = self.model.project.zones_from_zone_names[k_zone_name]
+    #         for k_zone in k_zone_list:
+    #             for k_split_number, _k_zone_list in self.model.project.intersects_shapes_in_zones.items():
+    #                 for _k_zone in _k_zone_list:
+    #                     if _k_zone == k_zone:
+    #                         split_numbers_in_zones_from_model[zone_name].append(self.model.project.split_numbers[k_split_number])
+    #     for zone_name in split_numbers_in_zones_from_model.keys():
+    #         self.view.main_window.log(f"Вхождения объектов в зону `{zone_name}`: "
+    #                       f"{split_numbers_in_zones_from_model[zone_name]}")
+    #     self.model.processing.splitting_shapes_in_zones()
+    #     self.update_interface()
+    #     self.show_table_from_taxation_plan()
 
     ###################################################################################################################
     # Управление виджетом менеджера проекта
     ###################################################################################################################
 
+    def clear_project_manager(self) -> None:
+        manager_project: QTreeWidget = self.view.main_window.tree_manager
+        manager_project.clear()
+
+    def set_taxation_plan_to_project_manager(self) -> None:
+        manager_project: QTreeWidget = self.view.main_window.tree_manager
+        try:
+            manager_project_taxation_plan: QTreeWidgetItem = manager_project.findItems(
+                "Чертеж таксации",
+                QtCore.Qt.MatchStartsWith | QtCore.Qt.MatchRecursive)[0]
+            index = manager_project.indexOfTopLevelItem(manager_project_taxation_plan)
+            manager_project.takeTopLevelItem(index)
+        except IndexError:
+            pass
+        manager_project_taxation_plan = QTreeWidgetItem([f"Чертеж таксации"])
+        manager_project.insertTopLevelItem(0, manager_project_taxation_plan)
+
     def project_manager_double_clicked(self) -> None:
         manager_project: QTreeWidget = self.view.main_window.tree_manager
-        manager_project_taxation_plan: QTreeWidgetItem = manager_project.findItems("Чертеж таксации",
-                                                                                   QtCore.Qt.MatchContains)[0]
-        manager_project_objects_in_zones: QTreeWidgetItem = manager_project.findItems("Объекты таксации по зонам",
-                                                                                      QtCore.Qt.MatchContains)[0]
-        selected_item = manager_project.selectedItems()[0]
-
-        if selected_item is manager_project_taxation_plan.child(0):
-            self.show_table_from_taxation_plan()
-
-        manager_project_objects_in_zones_items = [manager_project_objects_in_zones.child(idx)
-                                                  for idx in range(manager_project_objects_in_zones.childCount())]
-        if selected_item in manager_project_objects_in_zones_items:
-            zone_name = selected_item.text(0)
-            pass    # TODO: Вывести в таблицу данные объектов попадающих в zone_name
+        item: QTreeWidgetItem = manager_project.selectedItems()[0]
+        if item and item.parent() is None and item.text(0).startswith("Чертеж таксации"):
+            self.show_taxation_plan_in_table()
 
     def project_manager_context_menu(self, pos) -> None:
         manager_project: QTreeWidget = self.view.main_window.tree_manager
-        manager_project_taxation_plan: QTreeWidgetItem = manager_project.findItems("Чертеж таксации",
-                                                                                   QtCore.Qt.MatchContains)[0]
-        item: QTreeWidgetItem = self.view.main_window.tree_manager.itemAt(pos)
-        if item and item.parent() == manager_project_taxation_plan:
+        item: QTreeWidgetItem = manager_project.itemAt(pos)
+        if item and item.parent() is None and item.text(0).startswith("Чертеж таксации"):
             menu = QMenu()
-            preprocessing_action = QAction("Предобработка")
-            preprocessing_action.triggered.connect(self.preprocessing)
-            menu.addAction(preprocessing_action)
+            import_taxation_plan_action = QAction("Новый импорт")
+            import_taxation_plan_action.triggered.connect(self.import_taxation_plan)
+            menu.addAction(import_taxation_plan_action)
             menu.exec_(manager_project.viewport().mapToGlobal(pos))
-
-    def update_project_manager(self) -> None:
-
-        manager_project: QTreeWidget = self.view.main_window.tree_manager
-
-        manager_project_taxation_plan: QTreeWidgetItem = manager_project.findItems("Чертеж таксации",
-                                                                                   QtCore.Qt.MatchContains)[0]
-        manager_project_taxation_plan.removeChild(manager_project_taxation_plan.child(0))
-        if self.model.project.dir_dxf is not None and self.model.project.dxf_name is not None:
-            dxf_plan_item = QTreeWidgetItem(manager_project_taxation_plan)
-            dxf_plan_item.setText(0, self.model.project.path_dxf.name)
-            dxf_plan_item.setToolTip(0, str(self.model.project.path_dxf))
-        manager_project_taxation_plan.setExpanded(True)
-
-        manager_project_objects_in_zones: QTreeWidgetItem = manager_project.findItems("Объекты таксации по зонам",
-                                                                                      QtCore.Qt.MatchContains)[0]
-        for _ in range(manager_project_objects_in_zones.childCount()):
-            manager_project_objects_in_zones.removeChild(manager_project_objects_in_zones.child(0))
-        for k_zone_name, zone_name in self.model.project.zone_names.items():
-            zone_item = QTreeWidgetItem(manager_project_objects_in_zones)
-            zone_item.setText(0, zone_name)
-        manager_project_objects_in_zones.setExpanded(True)
 
     ###################################################################################################################
     # Управление виджетом таблицы
     ###################################################################################################################
 
-    def show_table_from_taxation_plan(self) -> None:
+    def show_taxation_plan_in_table(self) -> None:
 
         table: QTableWidget = self.view.main_window.table
         table.setRowCount(0)
-        table.setColumnCount(5)
-        table.setHorizontalHeaderLabels(["Номер", "Зона", "Тип", "Значение", "Ед.изм."])
+        table.setColumnCount(4)
+        table.setHorizontalHeaderLabels(["Номер", "Тип", "Значение", "Ед.изм."])
 
-        table.cellChanged.connect(None)
+        for number, type_shape, value, unit in self.model.project.taxation_plan.table_data:
+            item_number = QTableWidgetItem(number)
+            item_type_shape = QTableWidgetItem(type_shape)
+            item_value = QTableWidgetItem(value)
+            item_unit = QTableWidgetItem(unit)
 
-        # def add_row(numbers: str, zone_name: str, type_shape: str, value: str, unit: str) -> None:
-        #     row_position = table.rowCount()
-        #     table.insertRow(row_position)
-        #     item_numbers = _TableCustomItem(numbers)
-        #     table.setItem(row_position, 0, item_numbers)
-        #     item_zone_name = _TableCustomItem(zone_name)
-        #     table.setItem(row_position, 1, item_zone_name)
-        #     item_type_shape = _TableCustomItem(type_shape)
-        #     table.setItem(row_position, 2, item_type_shape)
-        #     item_value = _TableCustomItem(value)
-        #     table.setItem(row_position, 3, item_value)
-        #     item_unit = _TableCustomItem(unit)
-        #     table.setItem(row_position, 4, item_unit)
-
-        for k_number, number in self.model.project.numbers.items():
-            # добавление номера дерева
-            item_number = _TableCustomItem(number)
-            item_number.set_dict_data("numbers", k_number)
-            # добавление имени зоны
-            # zone_names = None
-            # for k_split_number, k_number_list in self.model.project.split_numbers.items():
-            #     if k_number in k_number_list:
-            #         k_zone_list = self.model.project.intersects_shapes_in_zones[k_split_number][0]
-
-
-            # if k_zone is not None:
-            #     item_number = _TableCustomItem(number)
-            #     item_number.set_dict_data("numbers", k_number)
-            # for k_shape, k_number_list in self.model.project.numbers_from_shape.items():
-            #     if k_number in k_number_list:
-
-            # добавление строки в таблицу
             row_position = table.rowCount()
             table.insertRow(row_position)
+
             table.setItem(row_position, 0, item_number)
-            # table.setItem(row_position, 1, item_number)
-            # table.setItem(row_position, 2, item_number)
-            # table.setItem(row_position, 3, item_number)
-            # table.setItem(row_position, 4, item_number)
+            table.setItem(row_position, 1, item_type_shape)
+            table.setItem(row_position, 2, item_value)
+            table.setItem(row_position, 3, item_unit)
+
+        table.setEditTriggers(QTableWidget.NoEditTriggers)
 
 
-        # add_row("1", "zone_1", "contour", str(5.04), "м2")
-        # add_row("1", "zone_1", "contour", str(5.04), "м2")
-
-        table.cellChanged.connect(self.update_data_from_table)
-        # table.setEditTriggers(QTableWidget.NoEditTriggers)
-
-    def update_data_from_table(self, row, col) -> None:
-        new_value = self.view.main_window.table.item(row, col).text()
-        pass    # TODO: Замена данных в project
-
-
-class _TableCustomItem(QTableWidgetItem):
-    dict_name: str
-    dict_key: str|int
-
-    def set_dict_data(self, dict_name: str, dict_key: str|int) -> None:
-        self.dict_name = dict_name
-        self.dict_key = dict_key
+# class _TableCustomItem(QTableWidgetItem):
+#     dict_name: str
+#     dict_key: str|int
+#
+#     def set_dict_data(self, dict_name: str, dict_key: str|int) -> None:
+#         self.dict_name = dict_name
+#         self.dict_key = dict_key
