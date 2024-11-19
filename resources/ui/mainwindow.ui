@@ -63,6 +63,16 @@
          <string>Менеджер проекта</string>
         </property>
        </column>
+       <item>
+        <property name="text">
+         <string>Чертеж таксации</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Ведомость таксации</string>
+        </property>
+       </item>
       </widget>
       <widget class="QSplitter" name="splitter_2">
        <property name="sizePolicy">
@@ -175,6 +185,7 @@
       <string>Импорт</string>
      </property>
      <addaction name="menu_project_import_taxation_plan"/>
+     <addaction name="menu_project_import_taxation_list"/>
     </widget>
     <addaction name="menu_project_new"/>
     <addaction name="menu_project_open"/>
@@ -317,10 +328,10 @@
      <normaloff>:/project/file-receive.svg</normaloff>:/project/file-receive.svg</iconset>
    </property>
    <property name="text">
-    <string>Импортировать чертеж таксации</string>
+    <string>Импорт чертежа таксации</string>
    </property>
    <property name="toolTip">
-    <string>Импортировать чертеж таксации</string>
+    <string>Импорт чертежа таксации</string>
    </property>
   </action>
   <action name="menu_processing_preprocessing">
@@ -406,6 +417,14 @@
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="menu_project_import_taxation_list">
+   <property name="text">
+    <string>Импорт ведомости таксации</string>
+   </property>
+   <property name="toolTip">
+    <string>Импорт ведомости таксации</string>
    </property>
   </action>
  </widget>

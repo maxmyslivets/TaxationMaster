@@ -6,6 +6,7 @@ rcc:
 uic:
 	pyside6-uic resources/ui/mainwindow.ui -o source/view/ui/ui_mainwindow.py
 	pyside6-uic resources/ui/settings.ui -o source/view/ui/ui_settings.py
+	pyside6-uic resources/ui/configuration_import.ui -o source/view/ui/ui_configuration_import.py
 	python make_tools/replace_import_resources_string.py
 
 # сборка exe

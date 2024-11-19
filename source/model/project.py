@@ -1,7 +1,4 @@
-import shutil
 from pathlib import Path
-
-from shapely import Point, LineString
 
 
 class ProjectData:
@@ -15,10 +12,6 @@ class ProjectData:
     @property
     def name(self) -> str:
         return self.path.stem
-
-    # @property
-    # def dir(self) -> Path:
-    #     return self.path.parent / self.name
 
 
 # class _Dict(dict):
@@ -147,7 +140,7 @@ class Project:
     class TaxationList:
         """Данные ведомости таксации"""
         def __init__(self):
-            pass
+            self.data = list()  # TODO
 
     taxation_plan: TaxationPlan
     taxation_list: TaxationList

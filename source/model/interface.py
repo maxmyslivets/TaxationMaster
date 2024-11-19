@@ -4,6 +4,8 @@ import shutil
 import time
 import traceback
 from pathlib import Path
+from docx import Document as DocxDocument
+from openpyxl import load_workbook
 
 from PySide6 import QtCore
 from PySide6.QtGui import QAction
@@ -38,7 +40,6 @@ class Interface:
                     shutil.rmtree(project_path.parent / project_path.stem)
                 elif project_path == self.project_data.path:
                     self.save_project()
-                # shutil.copytree(self.project_data.dir, project_path.parent / project_path.stem)
                 self.project_data.path = project_path
                 self.model.project.is_saved = True
                 with open(self.project_data.path, 'wb') as file:
@@ -86,10 +87,11 @@ class Interface:
             # создание проекта во временном каталоге
             self.project_data = ProjectData(self.model.config.temp_path / ("New project" + self.model.config.extension))
             self.model.project.is_saved = True
-            # os.makedirs(self.project_data.dir)
 
             self.update_interface()
-            # self.show_table_from_taxation_plan()
+            self.clear_project_manager()
+            self.view.main_window.table.setRowCount(0)
+            self.view.main_window.table.setColumnCount(0)
 
             self.view.main_window.log(f"[DEBUG]\tПроект `{self.project_data.path}` успешно создан.")
 
@@ -122,15 +124,16 @@ class Interface:
 
                 self.view.main_window.log(f"[DEBUG]\tПроект `{self.project_data.path}` успешно открыт.")
 
-                self.view.main_window.log(f"[DEBUG]\tПеременные экземпляра класса Project:")
-                for var, value in self.model.project.__dict__.items():
-                    self.view.main_window.log(f"[DEBUG]\t{var} = {value}")
-
+                self.project_data = ProjectData(project_path)
                 self.update_interface()
+                self.view.main_window.table.setRowCount(0)
+                self.view.main_window.table.setColumnCount(0)
 
                 self.clear_project_manager()
                 if "taxation_plan" in self.model.project.__dict__.keys():
                     self.set_taxation_plan_to_project_manager()
+                if "taxation_list" in self.model.project.__dict__.keys():
+                    self.set_taxation_list_to_project_manager()
 
             except Exception:
                 self.view.main_window.log(f"[ERROR]\tНе удалось открыть проект `{_project_path}`."
@@ -147,13 +150,10 @@ class Interface:
 
     def import_taxation_plan(self) -> None:
         import_dialog = QFileDialog()
-        import_dialog.setDefaultSuffix('.dwg')
         dwg_path, _ = import_dialog.getOpenFileName(parent=self.view.main_window, caption="Импорт чертежа...", dir='/',
                                                     filter="Чертежи (*.dwg)")
         if dwg_path == "":
             return
-
-        # self.model.processing.clear_data_for_autocad_data_structuring()
 
         # конвертация dwg в dxf
         dwg_path_without_space = Path(dwg_path).name.replace(" ", "_")
@@ -212,15 +212,72 @@ class Interface:
                                                                    self.model.config.min_distance)
         if taxation_plan is not None:
             self.model.project.taxation_plan = taxation_plan
+            self.model.project.is_saved = False
 
         self.set_taxation_plan_to_project_manager()
 
         self.view.main_window.log(f"[DEBUG]\tЧертеж таксации успешно импортирован.")
         shutil.rmtree(self.model.config.temp_path_convert_output)
 
+    def import_taxation_list(self) -> None:
+        import_dialog = QFileDialog()
+        doc_path, _ = import_dialog.getOpenFileName(parent=self.view.main_window,
+                                                    caption="Импорт ведомости таксации...", dir='/',
+                                                    filter="Документы Word/Excel (*.docx *.xlsx)")
+        if doc_path == "":
+            return
+
+        list_of_tables = []
+
+        if doc_path.endswith(".docx"):
+            docx_document = DocxDocument(doc_path)
+            for table in docx_document.tables:
+                table_data = []
+                for row in table.rows:
+                    row_data = [cell.text.strip() for cell in row.cells]
+                    table_data.append(row_data)
+                list_of_tables.extend(table_data)
+
+        elif doc_path.endswith(".xlsx") or doc_path.endswith(".xls"):
+            xlsx_document = load_workbook(doc_path)
+            sheet = xlsx_document[xlsx_document.sheetnames[0]]
+            for row in sheet.iter_rows(values_only=True):
+                row_data = [cell if cell is not None else "" for cell in row]
+                list_of_tables.append(row_data)
+
+        import_parameters = self.view.configurate_import(list_of_tables).parameters
+
+        if not import_parameters["is_import_first_row"]:
+            list_of_tables.pop(0)
+
+        edited_list_of_tables = []
+        for row in list_of_tables:
+            number, name, quantity, height, diameter, quality = row
+            parts_idx_column = (
+                (import_parameters["number"], number),
+                (import_parameters["name"], name),
+                (import_parameters["quantity"], quantity),
+                (import_parameters["height"], height),
+                (import_parameters["diameter"], diameter),
+                (import_parameters["quality"], quality),
+            )
+            parts_idx_column = sorted(parts_idx_column, key=lambda x: x[0])
+            edited_row = []
+            for _, value in parts_idx_column:
+                edited_row.append(value)
+            edited_list_of_tables.append(edited_row)
+
+        taxation_list = self.model.processing.create_taxation_list(edited_list_of_tables)
+        if taxation_list is not None:
+            self.model.project.taxation_list = taxation_list
+            self.model.project.is_saved = False
+
+        self.set_taxation_list_to_project_manager()
+
+        self.view.main_window.log(f"[DEBUG]\tВедомость таксации успешно импортирована.")
+
     def update_interface(self) -> None:
         self.view.main_window.setWindowTitle("Taxation Tool - " + self.project_data.name)
-        # self.update_project_manager()
         self.view.main_window.log("[DEBUG]\tОбновление интерфейса.")
 
     ###################################################################################################################
@@ -264,6 +321,10 @@ class Interface:
     def clear_project_manager(self) -> None:
         manager_project: QTreeWidget = self.view.main_window.tree_manager
         manager_project.clear()
+        manager_project_taxation_plan = QTreeWidgetItem([f"Чертеж таксации"])
+        manager_project.insertTopLevelItem(0, manager_project_taxation_plan)
+        manager_project_taxation_list = QTreeWidgetItem([f"Ведомость таксации"])
+        manager_project.insertTopLevelItem(1, manager_project_taxation_list)
 
     def set_taxation_plan_to_project_manager(self) -> None:
         manager_project: QTreeWidget = self.view.main_window.tree_manager
@@ -275,24 +336,51 @@ class Interface:
             manager_project.takeTopLevelItem(index)
         except IndexError:
             pass
-        manager_project_taxation_plan = QTreeWidgetItem([f"Чертеж таксации"])
+        manager_project_taxation_plan = QTreeWidgetItem([f"Чертеж таксации ({len(self.model.project.taxation_plan.numbers)})"])
         manager_project.insertTopLevelItem(0, manager_project_taxation_plan)
+
+    def set_taxation_list_to_project_manager(self) -> None:
+        manager_project: QTreeWidget = self.view.main_window.tree_manager
+        try:
+            manager_project_taxation_list: QTreeWidgetItem = manager_project.findItems(
+                "Ведомость таксации",
+                QtCore.Qt.MatchStartsWith | QtCore.Qt.MatchRecursive)[0]
+            index = manager_project.indexOfTopLevelItem(manager_project_taxation_list)
+            manager_project.takeTopLevelItem(index)
+        except IndexError:
+            pass
+        manager_project_taxation_list = QTreeWidgetItem([f"Ведомость таксации "
+                                                         f"({len(self.model.project.taxation_list.data)})"])    # TODO
+        manager_project.insertTopLevelItem(1, manager_project_taxation_list)
 
     def project_manager_double_clicked(self) -> None:
         manager_project: QTreeWidget = self.view.main_window.tree_manager
         item: QTreeWidgetItem = manager_project.selectedItems()[0]
-        if item and item.parent() is None and item.text(0).startswith("Чертеж таксации"):
+        # Действия при нажатии на "Чертеж таксации"
+        if item and item.parent() is None and item.text(0).startswith("Чертеж таксации")\
+                and item.text(0) != "Чертеж таксации":
             self.show_taxation_plan_in_table()
+        # Действия при нажатии на "Ведомость таксации"
+        elif item and item.parent() is None and item.text(0).startswith("Ведомость таксации")\
+                and item.text(0) != "Ведомость таксации":
+            self.show_taxation_list_in_table()
 
     def project_manager_context_menu(self, pos) -> None:
         manager_project: QTreeWidget = self.view.main_window.tree_manager
         item: QTreeWidgetItem = manager_project.itemAt(pos)
+        menu = QMenu()
+        # Действия при нажатии на "Чертеж таксации"
         if item and item.parent() is None and item.text(0).startswith("Чертеж таксации"):
-            menu = QMenu()
             import_taxation_plan_action = QAction("Новый импорт")
             import_taxation_plan_action.triggered.connect(self.import_taxation_plan)
             menu.addAction(import_taxation_plan_action)
-            menu.exec_(manager_project.viewport().mapToGlobal(pos))
+        elif item and item.parent() is None and item.text(0).startswith("Ведомость таксации"):
+            import_taxation_list_action = QAction("Новый импорт")
+            import_taxation_list_action.triggered.connect(self.import_taxation_list)
+            menu.addAction(import_taxation_list_action)
+        else:
+            return
+        menu.exec_(manager_project.viewport().mapToGlobal(pos))
 
     ###################################################################################################################
     # Управление виджетом таблицы
@@ -318,6 +406,34 @@ class Interface:
             table.setItem(row_position, 1, item_type_shape)
             table.setItem(row_position, 2, item_value)
             table.setItem(row_position, 3, item_unit)
+
+        table.setEditTriggers(QTableWidget.NoEditTriggers)
+
+    def show_taxation_list_in_table(self) -> None:
+        # TODO
+        table: QTableWidget = self.view.main_window.table
+        table.setRowCount(0)
+        table.setColumnCount(6)
+        table.setHorizontalHeaderLabels(["Номер", "Наименование", "Количество", "Диаметр", "Высота", "Состояние"])
+
+        for row in self.model.project.taxation_list.data:
+            number, name, quantity, height, diameter, quality = row
+            item_number = QTableWidgetItem(number)
+            item_name = QTableWidgetItem(name)
+            item_quantity = QTableWidgetItem(quantity)
+            item_height = QTableWidgetItem(height)
+            item_diameter = QTableWidgetItem(diameter)
+            item_quality = QTableWidgetItem(quality)
+
+            row_position = table.rowCount()
+            table.insertRow(row_position)
+
+            table.setItem(row_position, 0, item_number)
+            table.setItem(row_position, 1, item_name)
+            table.setItem(row_position, 2, item_quantity)
+            table.setItem(row_position, 3, item_height)
+            table.setItem(row_position, 4, item_diameter)
+            table.setItem(row_position, 5, item_quality)
 
         table.setEditTriggers(QTableWidget.NoEditTriggers)
 

@@ -19,12 +19,9 @@ class Processing(QtCore.QObject):
         super(Processing, self).__init__()
 
         self.log = log
-        # self.project = project
-
-        # self.valid = True
 
     def create_taxation_plan(self, dxf_path: Path, numbers_layers: list[str], lines_layers: list[str],
-                             contours_layers: list[str], min_distance: float) -> Project.TaxationPlan:
+                             contours_layers: list[str], min_distance: float) -> Project.TaxationPlan | None:
 
         valid = True
         doc = ezdxf.readfile(dxf_path)
@@ -159,6 +156,12 @@ class Processing(QtCore.QObject):
             taxation_plan.table_data.append(taxation_plan_object)
 
         return taxation_plan
+
+    def create_taxation_list(self, taxation_list_data: list[list[str]]) -> Project.TaxationList | None:
+        # TODO
+        taxation_list = Project.TaxationList()
+        taxation_list.data = taxation_list_data
+        return taxation_list
 
     def read_data_from_taxation_plan(self, numbers_layers: list[str], lines_layers: list[str],
                                      contours_layers: list[str], zones_layers: list[str], min_distance: float,

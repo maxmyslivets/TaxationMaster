@@ -29,14 +29,16 @@ class TaxationTool:
         self.view.main_window.menu_project_open.triggered.connect(self.model.interface.open_project)
         self.view.main_window.menu_project_import_taxation_plan.triggered.connect(
             self.model.interface.import_taxation_plan)
+        self.view.main_window.menu_project_import_taxation_list.triggered.connect(
+            self.model.interface.import_taxation_list)
 
         # Меню обработки
         # self.view.main_window.menu_processing_preprocessing.triggered.connect(self.model.interface.preprocessing)
 
         # Меню настроек
-        # self.view.main_window.menu_settings_settings.triggered.connect(self.view.settings)
-        # self.view.main_window.menu_settings_settings.triggered.connect(
-        #     lambda config: self.view.settings(self.model.config))
+        self.view.main_window.menu_settings_settings.triggered.connect(self.view.settings)
+        self.view.main_window.menu_settings_settings.triggered.connect(
+            lambda config: self.view.settings(self.model.config))
 
         # Менеджер проекта
         manager_project = self.view.main_window.tree_manager
