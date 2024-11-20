@@ -140,7 +140,11 @@ class Project:
     class TaxationList:
         """Данные ведомости таксации"""
         def __init__(self):
-            self.data = list()  # TODO
+            self.numbers = dict()                           # key: k_number         value: number
+            self.characteristics = dict()                   # key: k_number         value: characteristics
+            self.split_numbers = dict()                     # key: k_split_number   value: split_number
+            self.number_from_split_number = dict()          # key: k_split_number   value: k_number
+            self.table_data = list()                        # [[number, name, quantity, height, diameter, quality],...]
 
     taxation_plan: TaxationPlan
     taxation_list: TaxationList

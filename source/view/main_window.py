@@ -1,6 +1,8 @@
 import traceback
 
-from PySide6.QtWidgets import QMainWindow, QTreeWidget
+from PySide6.QtWidgets import QMainWindow, QTreeWidget, QVBoxLayout, QSizePolicy, QFrame
+
+from .custom_widgets import CustomTabWidget
 from .ui.ui_mainwindow import Ui_MainWindow
 
 
@@ -10,6 +12,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__()
 
         self.setupUi(self)
+
+        self.tab_widget = CustomTabWidget(self.centralwidget)
+        # self.tab_widget.setStyleSheet(u"porder: none;\nbackground: transparent;\n")
+        tab_widget_layout = QVBoxLayout(self.centralwidget)
+        tab_widget_layout.setSpacing(0)
+        tab_widget_layout.setContentsMargins(0, 0, 0, 0)
+        tab_widget_layout.addWidget(self.tab_widget)
 
     def log(self, text: str) -> None:
         if text.startswith("[DEBUG]"):

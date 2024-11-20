@@ -3,6 +3,7 @@ import sys
 from PySide6 import QtWidgets, QtCore
 from .view import View
 from .model import Model
+from .view.settings import Settings
 
 
 class TaxationTool:
@@ -36,15 +37,20 @@ class TaxationTool:
         # self.view.main_window.menu_processing_preprocessing.triggered.connect(self.model.interface.preprocessing)
 
         # Меню настроек
-        self.view.main_window.menu_settings_settings.triggered.connect(self.view.settings)
+        self.view.main_window.menu_settings_settings.triggered.connect(Settings)
         self.view.main_window.menu_settings_settings.triggered.connect(
-            lambda config: self.view.settings(self.model.config))
+            lambda config: Settings(self.model.config))
 
         # Менеджер проекта
         manager_project = self.view.main_window.tree_manager
         manager_project.itemDoubleClicked.connect(self.model.interface.project_manager_double_clicked)
         manager_project.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         manager_project.customContextMenuRequested.connect(self.model.interface.project_manager_context_menu)
+
+        # Таблица
+        # table = self.view.main_window.table
+        # table.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        # table.customContextMenuRequested.connect(self.model.interface.table_context_menu)
 
 
 def run():

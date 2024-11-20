@@ -4,15 +4,19 @@ import shutil
 import time
 import traceback
 from pathlib import Path
+
+from PySide6.QtCore import Qt
 from docx import Document as DocxDocument
 from openpyxl import load_workbook
 
 from PySide6 import QtCore
-from PySide6.QtGui import QAction
+from PySide6.QtGui import QAction, QColor, QBrush
 from PySide6.QtWidgets import QFileDialog, QTreeWidgetItem, QTreeWidget, QMenu, QTableView, QTableWidget, \
-    QTableWidgetItem
+    QTableWidgetItem, QComboBox, QTabWidget
 
 from source.model.project import ProjectData, Project
+from source.view.configuration_import import ConfigurationImport
+from source.view.custom_widgets import EditableComboBox, CustomTabWidget
 from utils.convert import oda_converter
 
 
@@ -66,7 +70,7 @@ class Interface:
     def create_new_project(self) -> None:
 
         # проверка на сохранение проекта перед созданием/открытием нового
-        if not self.model.project.is_saved and self.view.confirm_close_unsaved_project().result_no:
+        if not self.model.project.is_saved and self.view.ConfirmCloseUnsavedProject().result_no:
             return
 
         try:
@@ -90,8 +94,8 @@ class Interface:
 
             self.update_interface()
             self.clear_project_manager()
-            self.view.main_window.table.setRowCount(0)
-            self.view.main_window.table.setColumnCount(0)
+            # self.view.main_window.table.setRowCount(0)
+            # self.view.main_window.table.setColumnCount(0)
 
             self.view.main_window.log(f"[DEBUG]\tПроект `{self.project_data.path}` успешно создан.")
 
@@ -102,7 +106,7 @@ class Interface:
     def open_project(self) -> None:
 
         # проверка на сохранение проекта перед созданием/открытием нового
-        if not self.model.project.is_saved and self.view.confirm_close_unsaved_project().result_no:
+        if not self.model.project.is_saved and self.view.ConfirmCloseUnsavedProject().result_no:
             return
 
         open_dialog = QFileDialog()
@@ -245,7 +249,7 @@ class Interface:
                 row_data = [cell if cell is not None else "" for cell in row]
                 list_of_tables.append(row_data)
 
-        import_parameters = self.view.configurate_import(list_of_tables).parameters
+        import_parameters = ConfigurationImport(list_of_tables).parameters
 
         if not import_parameters["is_import_first_row"]:
             list_of_tables.pop(0)
@@ -350,7 +354,7 @@ class Interface:
         except IndexError:
             pass
         manager_project_taxation_list = QTreeWidgetItem([f"Ведомость таксации "
-                                                         f"({len(self.model.project.taxation_list.data)})"])    # TODO
+                                                         f"({len(self.model.project.taxation_list.numbers)})"])
         manager_project.insertTopLevelItem(1, manager_project_taxation_list)
 
     def project_manager_double_clicked(self) -> None:
@@ -388,13 +392,29 @@ class Interface:
 
     def show_taxation_plan_in_table(self) -> None:
 
-        table: QTableWidget = self.view.main_window.table
-        table.setRowCount(0)
-        table.setColumnCount(4)
-        table.setHorizontalHeaderLabels(["Номер", "Тип", "Значение", "Ед.изм."])
+        # TODO: Для реализации возможности внесения изменений в разделение номеров необходимо:
+        #  1. при неудачном определении регулярного выражения подсвечивать строку красным
+        #  2. добавить на строки таблицы контекстное меню "разделить строку & принудительная валидация".
+        #  3. ячейки столбца "номер" представляют listBox с возможностью написания номера (проверка на написание только
+        #     из имеющихся)
+        #  4. при разделении строки вставлять строку ниже, подсветить желтым
+        #  5. при нажатии "принудительная валидация" строку подсветить зеленым
+        #     и добавить данные в taxation_plan.split_numbers и taxation_plan.number_from_split_number
+        tab_widget: CustomTabWidget = self.view.main_window.tab_widget
 
-        for number, type_shape, value, unit in self.model.project.taxation_plan.table_data:
-            item_number = QTableWidgetItem(number)
+        if tab_widget.create_or_open_tab("Чертеж таксации"):
+            return
+
+        table = QTableWidget(0, 5)
+        tab_widget.add_table_to_tab(table)
+        # table.setRowCount(0)
+        # table.setColumnCount(5)
+        table.setHorizontalHeaderLabels(["Номер", "Исх.Номер", "Тип", "Значение", "Ед.изм."])
+        # table.setEditTriggers(QTableWidget.NoEditTriggers)
+
+        for split_number, number, type_shape, value, unit in self.model.project.taxation_plan.table_data:
+            item_split_number = QTableWidgetItem(split_number)
+            combobox_number = EditableComboBox(self.model.project.taxation_plan.numbers.values(), number)
             item_type_shape = QTableWidgetItem(type_shape)
             item_value = QTableWidgetItem(value)
             item_unit = QTableWidgetItem(unit)
@@ -402,22 +422,38 @@ class Interface:
             row_position = table.rowCount()
             table.insertRow(row_position)
 
-            table.setItem(row_position, 0, item_number)
-            table.setItem(row_position, 1, item_type_shape)
-            table.setItem(row_position, 2, item_value)
-            table.setItem(row_position, 3, item_unit)
+            table.setItem(row_position, 0, item_split_number)
+            table.setCellWidget(row_position, 1, combobox_number)
+            table.setItem(row_position, 2, item_type_shape)
+            table.setItem(row_position, 3, item_value)
+            table.setItem(row_position, 4, item_unit)
 
-        table.setEditTriggers(QTableWidget.NoEditTriggers)
+            item_type_shape.setFlags(item_split_number.flags() & ~Qt.ItemIsEditable)
+            item_value.setFlags(item_split_number.flags() & ~Qt.ItemIsEditable)
+            item_unit.setFlags(item_split_number.flags() & ~Qt.ItemIsEditable)
+
+
 
     def show_taxation_list_in_table(self) -> None:
-        # TODO
+
+        # TODO: Для реализации возможности внесения изменений в разделение номеров необходимо:
+        #  1. при неудачном определении регулярного выражения подсвечивать строку красным
+        #  2. добавить на строки таблицы контекстное меню "разделить строку & принудительная валидация".
+        #  3. ячейки столбца "номер" представляют listBox с возможностью написания номера (проверка на написание только
+        #     из имеющихся)
+        #  4. при разделении строки вставлять строку ниже, подсветить желтым
+        #  5. при нажатии "принудительная валидация" строку подсветить зеленым
+        #     и добавить данные в taxation_list.split_numbers и taxation_list.number_from_split_number
+
         table: QTableWidget = self.view.main_window.table
         table.setRowCount(0)
-        table.setColumnCount(6)
-        table.setHorizontalHeaderLabels(["Номер", "Наименование", "Количество", "Диаметр", "Высота", "Состояние"])
+        table.setColumnCount(7)
+        table.setHorizontalHeaderLabels(
+            ["Номер", "Исх.Номер", "Наименование", "Количество", "Диаметр", "Высота", "Состояние"])
 
-        for row in self.model.project.taxation_list.data:
-            number, name, quantity, height, diameter, quality = row
+        for row in self.model.project.taxation_list.table_data:
+            split_number, number, name, quantity, height, diameter, quality = row
+            item_split_number = QTableWidgetItem(split_number)
             item_number = QTableWidgetItem(number)
             item_name = QTableWidgetItem(name)
             item_quantity = QTableWidgetItem(quantity)
@@ -428,20 +464,60 @@ class Interface:
             row_position = table.rowCount()
             table.insertRow(row_position)
 
-            table.setItem(row_position, 0, item_number)
-            table.setItem(row_position, 1, item_name)
-            table.setItem(row_position, 2, item_quantity)
-            table.setItem(row_position, 3, item_height)
-            table.setItem(row_position, 4, item_diameter)
-            table.setItem(row_position, 5, item_quality)
+            table.setItem(row_position, 0, item_split_number)
+            table.setItem(row_position, 1, item_number)
+            table.setItem(row_position, 2, item_name)
+            table.setItem(row_position, 3, item_quantity)
+            table.setItem(row_position, 4, item_height)
+            table.setItem(row_position, 5, item_diameter)
+            table.setItem(row_position, 6, item_quality)
 
         table.setEditTriggers(QTableWidget.NoEditTriggers)
 
+    def table_context_menu(self, pos) -> None:
+        table: QTableWidget = self.view.main_window.table
+        # Определяем строку, где было вызвано меню
+        index = table.indexAt(pos)
+        if not index.isValid():
+            return  # Игнорируем, если клик был вне таблицы
 
-# class _TableCustomItem(QTableWidgetItem):
-#     dict_name: str
-#     dict_key: str|int
-#
-#     def set_dict_data(self, dict_name: str, dict_key: str|int) -> None:
-#         self.dict_name = dict_name
-#         self.dict_key = dict_key
+        row = index.row()
+
+        # Создаем контекстное меню
+        menu = QMenu(table)
+        split_row_action = menu.addAction("Разделить строку")
+        apply_action = menu.addAction("Подтвердить")
+
+        # Обработка нажатия на пункт меню
+        split_row_action.triggered.connect(lambda: self.split_table_row(row))
+        apply_action.triggered.connect(lambda: self.apply_table_row(row))
+
+        # Показываем меню
+        menu.exec_(table.viewport().mapToGlobal(pos))
+
+    def split_table_row(self, row):
+        table: QTableWidget = self.view.main_window.table
+        # Копируем данные из текущей строки
+        copied_data = [table.item(row, col).text() if table.item(row, col) else "" for col in range(table.columnCount())]
+        # Вставляем новую строку ниже текущей
+        table.insertRow(row + 1)
+
+        # Заполняем новую строку скопированными данными
+        for col, data in enumerate(copied_data):
+            new_item = QTableWidgetItem(data)
+            new_item.setForeground(QBrush(QColor(255, 255, 0)))  # Устанавливаем желтый цвет текста
+            table.setItem(row + 1, col, new_item)
+
+        tab_widget = self.view.main_window.tabWidget
+        if tab_widget.tabText(tab_widget.indexOf(tab_widget.currentWidget())) == "Чертеж таксации":
+            combobox_number = EditableComboBox(
+                self.model.project.taxation_plan.numbers.values(), table.cellWidget(row, 1).currentText())
+            table.setCellWidget(row + 1, 1, combobox_number)
+
+
+    def apply_table_row(self, row):
+        pass
+
+
+
+

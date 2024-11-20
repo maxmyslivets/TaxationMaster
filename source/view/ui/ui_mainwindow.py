@@ -16,12 +16,10 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QHeaderView,
-    QLabel, QLayout, QMainWindow, QMenu,
-    QMenuBar, QSizePolicy, QSplitter, QStatusBar,
-    QTabWidget, QTableWidget, QTableWidgetItem, QTextBrowser,
-    QToolBar, QTreeWidget, QTreeWidgetItem, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QDockWidget, QFrame, QHeaderView,
+    QMainWindow, QMenu, QMenuBar, QSizePolicy,
+    QStatusBar, QTextEdit, QToolBar, QTreeWidget,
+    QTreeWidgetItem, QVBoxLayout, QWidget)
 import source.view.ui.resources_rc
 
 class Ui_MainWindow(object):
@@ -107,100 +105,6 @@ class Ui_MainWindow(object):
         self.menu_project_import_taxation_list.setObjectName(u"menu_project_import_taxation_list")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.gridLayout = QGridLayout(self.centralwidget)
-        self.gridLayout.setObjectName(u"gridLayout")
-        self.splitter = QSplitter(self.centralwidget)
-        self.splitter.setObjectName(u"splitter")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-        sizePolicy.setHorizontalStretch(100)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.splitter.sizePolicy().hasHeightForWidth())
-        self.splitter.setSizePolicy(sizePolicy)
-        self.splitter.setOrientation(Qt.Orientation.Horizontal)
-        self.tree_manager = QTreeWidget(self.splitter)
-        QTreeWidgetItem(self.tree_manager)
-        QTreeWidgetItem(self.tree_manager)
-        self.tree_manager.setObjectName(u"tree_manager")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.tree_manager.sizePolicy().hasHeightForWidth())
-        self.tree_manager.setSizePolicy(sizePolicy1)
-        self.tree_manager.setAcceptDrops(False)
-        self.tree_manager.setAutoFillBackground(False)
-        self.tree_manager.setUniformRowHeights(False)
-        self.tree_manager.setItemsExpandable(True)
-        self.tree_manager.setSortingEnabled(False)
-        self.tree_manager.setHeaderHidden(False)
-        self.tree_manager.setExpandsOnDoubleClick(True)
-        self.splitter.addWidget(self.tree_manager)
-        self.splitter_2 = QSplitter(self.splitter)
-        self.splitter_2.setObjectName(u"splitter_2")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
-        sizePolicy2.setHorizontalStretch(1)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.splitter_2.sizePolicy().hasHeightForWidth())
-        self.splitter_2.setSizePolicy(sizePolicy2)
-        self.splitter_2.setFrameShadow(QFrame.Shadow.Sunken)
-        self.splitter_2.setOrientation(Qt.Orientation.Vertical)
-        self.splitter_2.setOpaqueResize(True)
-        self.tabWidget = QTabWidget(self.splitter_2)
-        self.tabWidget.setObjectName(u"tabWidget")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(1)
-        sizePolicy3.setHeightForWidth(self.tabWidget.sizePolicy().hasHeightForWidth())
-        self.tabWidget.setSizePolicy(sizePolicy3)
-        self.tab_table = QWidget()
-        self.tab_table.setObjectName(u"tab_table")
-        self.gridLayout_2 = QGridLayout(self.tab_table)
-        self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.table = QTableWidget(self.tab_table)
-        self.table.setObjectName(u"table")
-        self.table.verticalHeader().setVisible(False)
-        self.table.verticalHeader().setProperty(u"showSortIndicator", False)
-        self.table.verticalHeader().setStretchLastSection(False)
-
-        self.gridLayout_2.addWidget(self.table, 0, 0, 1, 1)
-
-        self.tabWidget.addTab(self.tab_table, "")
-        self.splitter_2.addWidget(self.tabWidget)
-        self.layoutWidget = QWidget(self.splitter_2)
-        self.layoutWidget.setObjectName(u"layoutWidget")
-        self.vl3 = QVBoxLayout(self.layoutWidget)
-        self.vl3.setObjectName(u"vl3")
-        self.vl3.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
-        self.vl3.setContentsMargins(0, 0, 0, 0)
-        self.label = QLabel(self.layoutWidget)
-        self.label.setObjectName(u"label")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
-        sizePolicy4.setHorizontalStretch(0)
-        sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
-        self.label.setSizePolicy(sizePolicy4)
-
-        self.vl3.addWidget(self.label)
-
-        self.console_log = QTextBrowser(self.layoutWidget)
-        self.console_log.setObjectName(u"console_log")
-        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        sizePolicy5.setHorizontalStretch(0)
-        sizePolicy5.setVerticalStretch(1)
-        sizePolicy5.setHeightForWidth(self.console_log.sizePolicy().hasHeightForWidth())
-        self.console_log.setSizePolicy(sizePolicy5)
-        font = QFont()
-        font.setPointSize(8)
-        self.console_log.setFont(font)
-        self.console_log.viewport().setProperty(u"cursor", QCursor(Qt.CursorShape.IBeamCursor))
-        self.console_log.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-
-        self.vl3.addWidget(self.console_log)
-
-        self.splitter_2.addWidget(self.layoutWidget)
-        self.splitter.addWidget(self.splitter_2)
-
-        self.gridLayout.addWidget(self.splitter, 0, 2, 1, 1)
-
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
@@ -230,6 +134,64 @@ class Ui_MainWindow(object):
         self.toolBar_3 = QToolBar(MainWindow)
         self.toolBar_3.setObjectName(u"toolBar_3")
         MainWindow.addToolBar(Qt.ToolBarArea.TopToolBarArea, self.toolBar_3)
+        self.dockWidget_1 = QDockWidget(MainWindow)
+        self.dockWidget_1.setObjectName(u"dockWidget_1")
+        self.dockWidget_1.setFeatures(QDockWidget.DockWidgetFeature.NoDockWidgetFeatures)
+        self.dockWidgetContents_2 = QWidget()
+        self.dockWidgetContents_2.setObjectName(u"dockWidgetContents_2")
+        self.verticalLayout_2 = QVBoxLayout(self.dockWidgetContents_2)
+        self.verticalLayout_2.setSpacing(0)
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.tree_manager = QTreeWidget(self.dockWidgetContents_2)
+        self.tree_manager.headerItem().setText(0, "")
+        QTreeWidgetItem(self.tree_manager)
+        QTreeWidgetItem(self.tree_manager)
+        self.tree_manager.setObjectName(u"tree_manager")
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.tree_manager.sizePolicy().hasHeightForWidth())
+        self.tree_manager.setSizePolicy(sizePolicy)
+        self.tree_manager.setAcceptDrops(False)
+        self.tree_manager.setAutoFillBackground(False)
+        self.tree_manager.setStyleSheet(u"porder: none;\n"
+"margin: 0;\n"
+"padding: 0;")
+        self.tree_manager.setFrameShape(QFrame.Shape.NoFrame)
+        self.tree_manager.setFrameShadow(QFrame.Shadow.Plain)
+        self.tree_manager.setLineWidth(0)
+        self.tree_manager.setUniformRowHeights(False)
+        self.tree_manager.setItemsExpandable(True)
+        self.tree_manager.setSortingEnabled(False)
+        self.tree_manager.setHeaderHidden(False)
+        self.tree_manager.setExpandsOnDoubleClick(True)
+
+        self.verticalLayout_2.addWidget(self.tree_manager)
+
+        self.dockWidget_1.setWidget(self.dockWidgetContents_2)
+        MainWindow.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.dockWidget_1)
+        self.dockWidget_2 = QDockWidget(MainWindow)
+        self.dockWidget_2.setObjectName(u"dockWidget_2")
+        self.dockWidget_2.setFloating(False)
+        self.dockWidget_2.setFeatures(QDockWidget.DockWidgetFeature.DockWidgetMovable)
+        self.dockWidgetContents_3 = QWidget()
+        self.dockWidgetContents_3.setObjectName(u"dockWidgetContents_3")
+        self.verticalLayout_3 = QVBoxLayout(self.dockWidgetContents_3)
+        self.verticalLayout_3.setSpacing(0)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.console_log = QTextEdit(self.dockWidgetContents_3)
+        self.console_log.setObjectName(u"console_log")
+        self.console_log.setFrameShape(QFrame.Shape.NoFrame)
+        self.console_log.setFrameShadow(QFrame.Shadow.Plain)
+        self.console_log.setLineWidth(0)
+        self.console_log.setReadOnly(True)
+
+        self.verticalLayout_3.addWidget(self.console_log)
+
+        self.dockWidget_2.setWidget(self.dockWidgetContents_3)
+        MainWindow.addDockWidget(Qt.DockWidgetArea.BottomDockWidgetArea, self.dockWidget_2)
 
         self.menubar.addAction(self.menu_project.menuAction())
         self.menubar.addAction(self.menu_processing_2.menuAction())
@@ -270,9 +232,6 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.tabWidget.setCurrentIndex(0)
-
-
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
 
@@ -306,19 +265,6 @@ class Ui_MainWindow(object):
 #if QT_CONFIG(tooltip)
         self.menu_project_import_taxation_list.setToolTip(QCoreApplication.translate("MainWindow", u"\u0418\u043c\u043f\u043e\u0440\u0442 \u0432\u0435\u0434\u043e\u043c\u043e\u0441\u0442\u0438 \u0442\u0430\u043a\u0441\u0430\u0446\u0438\u0438", None))
 #endif // QT_CONFIG(tooltip)
-        ___qtreewidgetitem = self.tree_manager.headerItem()
-        ___qtreewidgetitem.setText(0, QCoreApplication.translate("MainWindow", u"\u041c\u0435\u043d\u0435\u0434\u0436\u0435\u0440 \u043f\u0440\u043e\u0435\u043a\u0442\u0430", None));
-
-        __sortingEnabled = self.tree_manager.isSortingEnabled()
-        self.tree_manager.setSortingEnabled(False)
-        ___qtreewidgetitem1 = self.tree_manager.topLevelItem(0)
-        ___qtreewidgetitem1.setText(0, QCoreApplication.translate("MainWindow", u"\u0427\u0435\u0440\u0442\u0435\u0436 \u0442\u0430\u043a\u0441\u0430\u0446\u0438\u0438", None));
-        ___qtreewidgetitem2 = self.tree_manager.topLevelItem(1)
-        ___qtreewidgetitem2.setText(0, QCoreApplication.translate("MainWindow", u"\u0412\u0435\u0434\u043e\u043c\u043e\u0441\u0442\u044c \u0442\u0430\u043a\u0441\u0430\u0446\u0438\u0438", None));
-        self.tree_manager.setSortingEnabled(__sortingEnabled)
-
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_table), QCoreApplication.translate("MainWindow", u"\u0427\u0435\u0440\u0442\u0435\u0436 \u0442\u0430\u043a\u0441\u0430\u0446\u0438\u0438", None))
-        self.label.setText(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u043e\u0433\u0440\u0435\u0441\u0441", None))
         self.menu_project.setTitle(QCoreApplication.translate("MainWindow", u"\u041f\u0440\u043e\u0435\u043a\u0442", None))
         self.menu.setTitle(QCoreApplication.translate("MainWindow", u"\u0418\u043c\u043f\u043e\u0440\u0442", None))
         self.menu_database.setTitle(QCoreApplication.translate("MainWindow", u"\u0411\u0430\u0437\u044b \u0434\u0430\u043d\u043d\u044b\u0445", None))
@@ -328,5 +274,16 @@ class Ui_MainWindow(object):
         self.toolBar.setWindowTitle(QCoreApplication.translate("MainWindow", u"toolBar", None))
         self.toolBar_2.setWindowTitle(QCoreApplication.translate("MainWindow", u"toolBar_2", None))
         self.toolBar_3.setWindowTitle(QCoreApplication.translate("MainWindow", u"toolBar_3", None))
+        self.dockWidget_1.setWindowTitle(QCoreApplication.translate("MainWindow", u"\u041c\u0435\u043d\u0435\u0434\u0436\u0435\u0440 \u043f\u0440\u043e\u0435\u043a\u0442\u0430", None))
+
+        __sortingEnabled = self.tree_manager.isSortingEnabled()
+        self.tree_manager.setSortingEnabled(False)
+        ___qtreewidgetitem = self.tree_manager.topLevelItem(0)
+        ___qtreewidgetitem.setText(0, QCoreApplication.translate("MainWindow", u"\u0427\u0435\u0440\u0442\u0435\u0436 \u0442\u0430\u043a\u0441\u0430\u0446\u0438\u0438", None));
+        ___qtreewidgetitem1 = self.tree_manager.topLevelItem(1)
+        ___qtreewidgetitem1.setText(0, QCoreApplication.translate("MainWindow", u"\u0412\u0435\u0434\u043e\u043c\u043e\u0441\u0442\u044c \u0442\u0430\u043a\u0441\u0430\u0446\u0438\u0438", None));
+        self.tree_manager.setSortingEnabled(__sortingEnabled)
+
+        self.dockWidget_2.setWindowTitle(QCoreApplication.translate("MainWindow", u"\u041b\u043e\u0433\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435", None))
     # retranslateUi
 
