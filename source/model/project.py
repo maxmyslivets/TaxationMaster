@@ -135,16 +135,18 @@ class Project:
             self.numbers_from_tree = dict()                 # key: k_tree           value: k_number
             self.split_numbers = dict()                     # key: k_split_number   value: split_number
             self.number_from_split_number = dict()          # key: k_split_number   value: list[k_number]
-            self.table_data = list()                        # [[number, type_shape, value, unit],...]
+            self.table_data = list()                        # [[split_number, number, type_shape, value, unit],...]
+            self.bug_numbers = list()                       # list[number]
 
     class TaxationList:
         """Данные ведомости таксации"""
         def __init__(self):
             self.numbers = dict()                           # key: k_number         value: number
-            self.characteristics = dict()                   # key: k_number         value: characteristics
+            self.characteristics = dict()                   # key: k_number         value: list[characteristics]
             self.split_numbers = dict()                     # key: k_split_number   value: split_number
             self.number_from_split_number = dict()          # key: k_split_number   value: k_number
-            self.table_data = list()                        # [[number, name, quantity, height, diameter, quality],...]
+            self.table_data = list()                        # [[split_number, number, name, quantity, height, diameter, quality],...]
+            self.bug_numbers = list()                       # list[number]
 
     taxation_plan: TaxationPlan
     taxation_list: TaxationList

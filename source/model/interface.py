@@ -220,6 +220,12 @@ class Interface:
 
         self.set_taxation_plan_to_project_manager()
 
+        tab_widget: CustomTabWidget = self.view.main_window.tab_widget
+        tab_widget.open_tab("Чертеж таксации")
+        tab_widget.update_data_to_table(self.model.project.taxation_plan.table_data, "Чертеж таксации")
+
+        self.show_in_table("Чертеж таксации")
+
         self.view.main_window.log(f"[DEBUG]\tЧертеж таксации успешно импортирован.")
         shutil.rmtree(self.model.config.temp_path_convert_output)
 
@@ -277,6 +283,12 @@ class Interface:
             self.model.project.is_saved = False
 
         self.set_taxation_list_to_project_manager()
+
+        tab_widget: CustomTabWidget = self.view.main_window.tab_widget
+        tab_widget.open_tab("Ведомость таксации")
+        tab_widget.update_data_to_table(self.model.project.taxation_list.table_data, "Ведомость таксации")
+
+        self.show_in_table("Ведомость таксации")
 
         self.view.main_window.log(f"[DEBUG]\tВедомость таксации успешно импортирована.")
 
@@ -363,11 +375,11 @@ class Interface:
         # Действия при нажатии на "Чертеж таксации"
         if item and item.parent() is None and item.text(0).startswith("Чертеж таксации")\
                 and item.text(0) != "Чертеж таксации":
-            self.show_taxation_plan_in_table()
+            self.show_in_table("Чертеж таксации")
         # Действия при нажатии на "Ведомость таксации"
         elif item and item.parent() is None and item.text(0).startswith("Ведомость таксации")\
                 and item.text(0) != "Ведомость таксации":
-            self.show_taxation_list_in_table()
+            self.show_in_table("Ведомость таксации")
 
     def project_manager_context_menu(self, pos) -> None:
         manager_project: QTreeWidget = self.view.main_window.tree_manager
@@ -390,7 +402,7 @@ class Interface:
     # Управление виджетом таблицы
     ###################################################################################################################
 
-    def show_taxation_plan_in_table(self) -> None:
+    def show_in_table(self, tab_name: str) -> None:
 
         # TODO: Для реализации возможности внесения изменений в разделение номеров необходимо:
         #  1. при неудачном определении регулярного выражения подсвечивать строку красным
@@ -399,80 +411,9 @@ class Interface:
         #     из имеющихся)
         #  4. при разделении строки вставлять строку ниже, подсветить желтым
         #  5. при нажатии "принудительная валидация" строку подсветить зеленым
-        #     и добавить данные в taxation_plan.split_numbers и taxation_plan.number_from_split_number
-        tab_widget: CustomTabWidget = self.view.main_window.tab_widget
+        #     и добавить данные в split_numbers и number_from_split_number
 
-        if tab_widget.create_or_open_tab("Чертеж таксации"):
-            return
-
-        table = QTableWidget(0, 5)
-        tab_widget.add_table_to_tab(table)
-        # table.setRowCount(0)
-        # table.setColumnCount(5)
-        table.setHorizontalHeaderLabels(["Номер", "Исх.Номер", "Тип", "Значение", "Ед.изм."])
-        # table.setEditTriggers(QTableWidget.NoEditTriggers)
-
-        for split_number, number, type_shape, value, unit in self.model.project.taxation_plan.table_data:
-            item_split_number = QTableWidgetItem(split_number)
-            combobox_number = EditableComboBox(self.model.project.taxation_plan.numbers.values(), number)
-            item_type_shape = QTableWidgetItem(type_shape)
-            item_value = QTableWidgetItem(value)
-            item_unit = QTableWidgetItem(unit)
-
-            row_position = table.rowCount()
-            table.insertRow(row_position)
-
-            table.setItem(row_position, 0, item_split_number)
-            table.setCellWidget(row_position, 1, combobox_number)
-            table.setItem(row_position, 2, item_type_shape)
-            table.setItem(row_position, 3, item_value)
-            table.setItem(row_position, 4, item_unit)
-
-            item_type_shape.setFlags(item_split_number.flags() & ~Qt.ItemIsEditable)
-            item_value.setFlags(item_split_number.flags() & ~Qt.ItemIsEditable)
-            item_unit.setFlags(item_split_number.flags() & ~Qt.ItemIsEditable)
-
-
-
-    def show_taxation_list_in_table(self) -> None:
-
-        # TODO: Для реализации возможности внесения изменений в разделение номеров необходимо:
-        #  1. при неудачном определении регулярного выражения подсвечивать строку красным
-        #  2. добавить на строки таблицы контекстное меню "разделить строку & принудительная валидация".
-        #  3. ячейки столбца "номер" представляют listBox с возможностью написания номера (проверка на написание только
-        #     из имеющихся)
-        #  4. при разделении строки вставлять строку ниже, подсветить желтым
-        #  5. при нажатии "принудительная валидация" строку подсветить зеленым
-        #     и добавить данные в taxation_list.split_numbers и taxation_list.number_from_split_number
-
-        table: QTableWidget = self.view.main_window.table
-        table.setRowCount(0)
-        table.setColumnCount(7)
-        table.setHorizontalHeaderLabels(
-            ["Номер", "Исх.Номер", "Наименование", "Количество", "Диаметр", "Высота", "Состояние"])
-
-        for row in self.model.project.taxation_list.table_data:
-            split_number, number, name, quantity, height, diameter, quality = row
-            item_split_number = QTableWidgetItem(split_number)
-            item_number = QTableWidgetItem(number)
-            item_name = QTableWidgetItem(name)
-            item_quantity = QTableWidgetItem(quantity)
-            item_height = QTableWidgetItem(height)
-            item_diameter = QTableWidgetItem(diameter)
-            item_quality = QTableWidgetItem(quality)
-
-            row_position = table.rowCount()
-            table.insertRow(row_position)
-
-            table.setItem(row_position, 0, item_split_number)
-            table.setItem(row_position, 1, item_number)
-            table.setItem(row_position, 2, item_name)
-            table.setItem(row_position, 3, item_quantity)
-            table.setItem(row_position, 4, item_height)
-            table.setItem(row_position, 5, item_diameter)
-            table.setItem(row_position, 6, item_quality)
-
-        table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.view.main_window.tab_widget.open_tab(tab_name)
 
     def table_context_menu(self, pos) -> None:
         table: QTableWidget = self.view.main_window.table

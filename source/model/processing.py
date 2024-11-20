@@ -132,8 +132,8 @@ class Processing(QtCore.QObject):
                      f"Исправьте файл чертежа таксации и импортируйте его заново.")
             return None
 
-        taxation_plan.split_numbers, taxation_plan.number_from_split_number = self.splitting_numbers(
-            taxation_plan.numbers)
+        taxation_plan.split_numbers, taxation_plan.number_from_split_number, taxation_plan.bug_numbers = (
+            self.splitting_numbers(taxation_plan.numbers))
 
         self.log(f"[DEBUG]\tКомпоновка данных для табличного представления...")
         # Собираем данные в table_data
@@ -160,7 +160,6 @@ class Processing(QtCore.QObject):
                                 break
                 taxation_plan.table_data.append(taxation_plan_object)
 
-
         return taxation_plan
 
     def create_taxation_list(self, taxation_list_data: list[list[str]]) -> Project.TaxationList | None:
@@ -173,10 +172,16 @@ class Processing(QtCore.QObject):
             taxation_list.numbers[k_number] = number
             taxation_list.characteristics[k_number] = characteristics
 
-        taxation_list.split_numbers, taxation_list.number_from_split_number = self.splitting_numbers(
-            taxation_list.numbers)
+        taxation_list.split_numbers, taxation_list.number_from_split_number, taxation_list.bug_numbers = (
+            self.splitting_numbers(taxation_list.numbers))
 
-        # TODO: Добавить компоновщик таблицы
+        # [[split_number, number, name, quantity, height, diameter, quality]]
+        for k_split_number, split_number in taxation_list.split_numbers.items():
+            for k_number in taxation_list.number_from_split_number[k_split_number]:
+                taxation_list_object = [split_number, taxation_list.numbers[k_split_number]]
+                characteristics = taxation_list.characteristics[k_number]
+                taxation_list_object.extend(characteristics)
+                taxation_list.table_data.append(taxation_list_object)
 
         return taxation_list
 
@@ -376,13 +381,14 @@ class Processing(QtCore.QObject):
     #     del self.project.number_from_split_number
     #     del self.project.intersects_shapes_in_zones
 
-    def splitting_numbers(self, numbers: dict) -> tuple[dict, dict]:
+    def splitting_numbers(self, numbers: dict) -> tuple[dict, dict, list]:
         """
         Разделение составных номеров.
         """
 
         split_numbers = dict()
         number_from_split_number = dict()
+        bug_numbers = list()
 
         k_split_number = -1
         split_numbers_temp_list = []
@@ -435,13 +441,13 @@ class Processing(QtCore.QObject):
 
                 # Все остальные непредусмотренные случаи
                 else:
-                    # TODO: Предусмотреть изменение через графический интерфейс
-                    #  split_numbers[k_split_number] = number
-                    #  number_from_split_number[k_split_number].append(k_number)
+                    split_numbers[k_split_number] = number
+                    number_from_split_number[k_split_number].append(k_number)
+                    bug_numbers.append(number)
                     self.log(f"[WARNING]\tНе удалось подобрать регулярное выражения для номера `{number}`."
-                             f"Предлагается ввести значения вручную через табличную форму.")
+                             f"Предлагается изменить значения вручную через табличную форму Чертежа таксации.")
 
-        return split_numbers, number_from_split_number
+        return split_numbers, number_from_split_number, bug_numbers
 
     # def calculate_intersects_shapes_in_zones(self) -> None:
     #     """
