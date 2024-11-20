@@ -169,7 +169,7 @@ class Processing(QtCore.QObject):
         for k_number, data in enumerate(taxation_list_data):
             number = data.pop(0)
             characteristics = data
-            taxation_list.numbers[k_number] = number
+            taxation_list.numbers[k_number] = str(number)
             taxation_list.characteristics[k_number] = characteristics
 
         taxation_list.split_numbers, taxation_list.number_from_split_number, taxation_list.bug_numbers = (
@@ -395,7 +395,6 @@ class Processing(QtCore.QObject):
         for k_number, source_number in numbers.items():
             items = [item.strip() for item in source_number.split(",")]
             for number in items:
-
                 if number in split_numbers_temp_list:
                     exist_k_split_number = next(k for k, v in split_numbers.items() if v == number)
                     number_from_split_number[exist_k_split_number].append(k_number)

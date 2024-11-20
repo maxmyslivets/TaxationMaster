@@ -415,49 +415,7 @@ class Interface:
 
         self.view.main_window.tab_widget.open_tab(tab_name)
 
-    def table_context_menu(self, pos) -> None:
-        table: QTableWidget = self.view.main_window.table
-        # Определяем строку, где было вызвано меню
-        index = table.indexAt(pos)
-        if not index.isValid():
-            return  # Игнорируем, если клик был вне таблицы
 
-        row = index.row()
-
-        # Создаем контекстное меню
-        menu = QMenu(table)
-        split_row_action = menu.addAction("Разделить строку")
-        apply_action = menu.addAction("Подтвердить")
-
-        # Обработка нажатия на пункт меню
-        split_row_action.triggered.connect(lambda: self.split_table_row(row))
-        apply_action.triggered.connect(lambda: self.apply_table_row(row))
-
-        # Показываем меню
-        menu.exec_(table.viewport().mapToGlobal(pos))
-
-    def split_table_row(self, row):
-        table: QTableWidget = self.view.main_window.table
-        # Копируем данные из текущей строки
-        copied_data = [table.item(row, col).text() if table.item(row, col) else "" for col in range(table.columnCount())]
-        # Вставляем новую строку ниже текущей
-        table.insertRow(row + 1)
-
-        # Заполняем новую строку скопированными данными
-        for col, data in enumerate(copied_data):
-            new_item = QTableWidgetItem(data)
-            new_item.setForeground(QBrush(QColor(255, 255, 0)))  # Устанавливаем желтый цвет текста
-            table.setItem(row + 1, col, new_item)
-
-        tab_widget = self.view.main_window.tabWidget
-        if tab_widget.tabText(tab_widget.indexOf(tab_widget.currentWidget())) == "Чертеж таксации":
-            combobox_number = EditableComboBox(
-                self.model.project.taxation_plan.numbers.values(), table.cellWidget(row, 1).currentText())
-            table.setCellWidget(row + 1, 1, combobox_number)
-
-
-    def apply_table_row(self, row):
-        pass
 
 
 

@@ -1,5 +1,6 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QComboBox, QTabWidget, QWidget, QVBoxLayout, QLabel, QTableWidget, QTableWidgetItem
+from PySide6.QtGui import QBrush, QColor
+from PySide6.QtWidgets import QComboBox, QTabWidget, QWidget, QVBoxLayout, QLabel, QTableWidget, QTableWidgetItem, QMenu
 
 
 class EditableComboBox(QComboBox):
@@ -67,9 +68,14 @@ class CustomTabWidget(QTabWidget):
             layout.setContentsMargins(0, 0, 0, 0)
             self.addTab(tab, title)
             layout.addWidget(table)
+            table.setContextMenuPolicy(Qt.CustomContextMenu)
+            table.customContextMenuRequested.connect(self.table_context_menu)
 
         for index in range(self.count()):
             self.hide_tab(0)
+
+        self.all_numbers_taxation_plan = []
+        self.all_numbers_taxation_list = []
 
     def open_tab(self, title: str) -> None:
         """Создает таб с указанным названием или открывает его, если он уже существует."""
@@ -111,11 +117,11 @@ class CustomTabWidget(QTabWidget):
             return
 
         if tab is self.tab_taxation_plan:
-            numbers = [number for _, number, _, _, _ in data]
+            self.all_numbers_taxation_plan = [number for _, number, _, _, _ in data]
             self.table_taxation_plan.setRowCount(0)
             for split_number, number, type_shape, value, unit in data:
                 item_split_number = QTableWidgetItem(split_number)
-                cell_widget_number = EditableComboBox(numbers, number)
+                cell_widget_number = EditableComboBox(self.all_numbers_taxation_plan, number)
                 item_type_shape = QTableWidgetItem(type_shape)
                 item_value = QTableWidgetItem(value)
                 item_unit = QTableWidgetItem(unit)
@@ -134,10 +140,10 @@ class CustomTabWidget(QTabWidget):
                 item_unit.setFlags(item_unit.flags() & ~Qt.ItemIsEditable)
 
         elif tab is self.tab_taxation_list:
-            numbers = [number for _, number, _, _, _, _, _ in data]
+            self.all_numbers_taxation_list = [number for _, number, _, _, _, _, _ in data]
             for split_number, number, name, quantity, height, diameter, quality in data:
                 item_split_number = QTableWidgetItem(split_number)
-                cell_widget_number = EditableComboBox(numbers, number)
+                cell_widget_number = EditableComboBox(self.all_numbers_taxation_list, number)
                 item_name = QTableWidgetItem(name)
                 item_quantity = QTableWidgetItem(quantity)
                 item_height = QTableWidgetItem(height)
@@ -160,3 +166,67 @@ class CustomTabWidget(QTabWidget):
                 item_height.setFlags(item_height.flags() & ~Qt.ItemIsEditable)
                 item_diameter.setFlags(item_diameter.flags() & ~Qt.ItemIsEditable)
                 item_quality.setFlags(item_quality.flags() & ~Qt.ItemIsEditable)
+
+    def current_table(self) -> QTableWidget | None:
+        if self.currentWidget() is self.tab_taxation_plan:
+            return self.table_taxation_plan
+        elif self.currentWidget() is self.tab_taxation_list:
+            return self.table_taxation_list
+        else:
+            return
+
+    def table_context_menu(self, pos) -> None:
+        table = self.current_table()
+        if table is None:
+            return
+        # Определяем строку, где было вызвано меню
+        index = table.indexAt(pos)
+        if not index.isValid():
+            return  # Игнорируем, если клик был вне таблицы
+
+        row = index.row()
+
+        # Создаем контекстное меню
+        menu = QMenu(table)
+        split_row_action = menu.addAction("Разделить строку")
+        delete_row_action = menu.addAction("Удалить строку")
+        apply_action = menu.addAction("Подтвердить")
+
+        # Обработка нажатия на пункт меню
+        split_row_action.triggered.connect(lambda: self.split_table_row(row))
+        delete_row_action.triggered.connect(lambda: self.delete_table_row(row))
+        apply_action.triggered.connect(lambda: self.apply_table_row(row))
+
+        # Показываем меню
+        menu.exec_(table.viewport().mapToGlobal(pos))
+
+    def split_table_row(self, row):
+        table = self.current_table()
+        if table is None:
+            return
+        # Копируем данные из текущей строки
+        copied_data = [table.item(row, col).text() if table.item(row, col) else "" for col in range(table.columnCount())]
+        # Вставляем новую строку ниже текущей
+        table.insertRow(row + 1)
+
+        # Заполняем новую строку скопированными данными
+        for col, data in enumerate(copied_data):
+            new_item = QTableWidgetItem(data)
+            new_item.setForeground(QBrush(QColor(255, 255, 0)))  # Устанавливаем желтый цвет текста
+            table.setItem(row + 1, col, new_item)
+
+        if self.currentWidget() is self.tab_taxation_plan:
+            combobox_number = EditableComboBox(
+                self.all_numbers_taxation_plan, table.cellWidget(row, 1).currentText())
+            table.setCellWidget(row + 1, 1, combobox_number)
+
+        elif self.currentWidget() is self.tab_taxation_list:
+            combobox_number = EditableComboBox(
+                self.all_numbers_taxation_list, table.cellWidget(row, 1).currentText())
+            table.setCellWidget(row + 1, 1, combobox_number)
+
+    def delete_table_row(self, row):
+        pass
+
+    def apply_table_row(self, row):
+        pass

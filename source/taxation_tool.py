@@ -47,11 +47,6 @@ class TaxationTool:
         manager_project.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         manager_project.customContextMenuRequested.connect(self.model.interface.project_manager_context_menu)
 
-        # Таблица
-        # table = self.view.main_window.table
-        # table.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        # table.customContextMenuRequested.connect(self.model.interface.table_context_menu)
-
 
 def run():
     app = QtWidgets.QApplication(sys.argv)
