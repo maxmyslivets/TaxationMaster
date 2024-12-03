@@ -5,7 +5,7 @@ import pandas as pd
 from ezdxf.entities import MText
 from shapely import LineString, Polygon, Point
 
-from src.processing.splitting_numbers import split_number
+from src.processing.splitting import split_number
 
 
 def create_topographic_plan(dxf_path: Path, numbers_layers: list[str],

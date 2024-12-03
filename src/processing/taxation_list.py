@@ -3,29 +3,31 @@ from pathlib import Path
 import pandas as pd
 from docx import Document as DocxDocument
 
-from src.processing.splitting_numbers import split_number
-
-
-def _create_taxation_list(table_data: list[list[str]]) -> pd.DataFrame:
-    """Создание ведомости таксации из табличных данных"""
-
-    taxation_list = []
-
-    # Создаем DataFrame из исходных данных
-    table_data_df = pd.DataFrame(
-        table_data,
-        columns=['origin_number', 'name', 'quantity', 'height', 'diameter', 'quality']
-    )
-
-    # TODO
-
-    return table_data_df
+from src.processing.splitting import split_number
 
 
 def create_taxation_list(file_path: Path,
                          is_import_first_row: bool = False,
                          column_mapping: dict = None) -> pd.DataFrame:
-    """Создание ведомости таксации из файла docx/xlsx"""
+    """Создание ведомости таксации из табличных данных"""
+
+    table_data_df = _open_file_taxation_list(file_path, is_import_first_row, column_mapping)
+    taxation_list = []  # TODO
+
+    return table_data_df
+
+
+def _open_file_taxation_list(file_path: Path,
+                             is_import_first_row: bool = False,
+                             column_mapping: dict = None) -> pd.DataFrame:
+    """
+    Чтение docx/xlsx файла ведомости таксации
+
+    :param file_path:
+    :param is_import_first_row:
+    :param column_mapping:
+    :return:
+    """
 
     if column_mapping is None:
         column_mapping = {
@@ -67,4 +69,7 @@ def create_taxation_list(file_path: Path,
                 processed_row.append(row[col_idx] if col_idx < len(row) else '')
             processed_data.append(processed_row)
 
-    return _create_taxation_list(processed_data)
+    processed_data_df = pd.DataFrame(processed_data,
+                                     columns=['origin_number', 'name', 'quantity', 'height', 'diameter', 'quality'])
+
+    return processed_data_df

@@ -2,7 +2,11 @@ import re
 
 
 def split_number(number: str) -> list[str] | None:
-    """Вспомогательный метод для разделения номеров"""
+    """
+    Разделение номеров
+    :param number: Строка объединенных номеров
+    :return: Список разделенных номеров
+    """
 
     if re.match(r'^\d+$', number):
         return [number]
@@ -20,3 +24,13 @@ def split_number(number: str) -> list[str] | None:
         return [f"{num}{chr(i)}" for i in range(ord(start_letter), ord(end_letter) + 1)]
 
     return None
+
+
+def split_tree_size(tree_size: str) -> list[str]:
+    """
+    Разделение высот или диаметров деревьев/стволов
+    :param tree_size: Строка объединенных размеров деревьев/стволов
+    :return: Список разделенных размеров деревьев/стволов
+    """
+
+    pass    # TODO
