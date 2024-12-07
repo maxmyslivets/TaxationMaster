@@ -1,7 +1,7 @@
 import re
 
 
-def split_number(number: str) -> list[str] | None:
+def split_number(number: str) -> list[str | None]:
     """
     Разделение номеров
     :param number: Строка объединенных номеров
@@ -23,7 +23,7 @@ def split_number(number: str) -> list[str] | None:
         start_letter, end_letter = re.findall(r'[а-я]', number)
         return [f"{num}{chr(i)}" for i in range(ord(start_letter), ord(end_letter) + 1)]
 
-    return None
+    return [None]
 
 
 def split_tree_size(tree_size: str) -> list[str]:
