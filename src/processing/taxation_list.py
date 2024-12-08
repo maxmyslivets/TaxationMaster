@@ -72,4 +72,4 @@ def _open_file_taxation_list(file_path: Path,
     processed_data_df = pd.DataFrame(processed_data,
                                      columns=['origin_number', 'name', 'quantity', 'height', 'diameter', 'quality'])
 
-    return processed_data_df
+    return processed_data_df.astype(str)
