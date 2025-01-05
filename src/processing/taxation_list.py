@@ -3,8 +3,6 @@ from pathlib import Path
 import pandas as pd
 from docx import Document as DocxDocument
 
-from src.processing.splitting import split_number
-
 
 def create_taxation_list(file_path: Path,
                          is_import_first_row: bool = False,

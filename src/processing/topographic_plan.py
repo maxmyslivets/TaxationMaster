@@ -5,7 +5,7 @@ import pandas as pd
 from ezdxf.entities import MText
 from shapely import LineString, Polygon, Point
 
-from src.processing.splitting import split_number
+from src.parsing.splitting import Splitter
 
 
 def create_topographic_plan(dxf_path: Path, numbers_layers: list[str],
@@ -128,7 +128,7 @@ def create_topographic_plan(dxf_path: Path, numbers_layers: list[str],
     topographic_plan_data = []
 
     for number_id in trees_df['number_id']:
-        for _split_number in split_number(numbers_df.iloc[number_id]['number']):
+        for _split_number in Splitter.number(numbers_df.iloc[number_id]['number']):
             topographic_plan_data.append(
                 {
                     'origin_number': numbers_df.iloc[number_id]['number'],
@@ -147,7 +147,7 @@ def create_topographic_plan(dxf_path: Path, numbers_layers: list[str],
         shape: LineString | Polygon = shapes_df.iloc[shape_id]['geometry']
         shape_type = shapes_df.iloc[shape_id]['type']
 
-        for _split_number in split_number(numbers_df.iloc[number_id]['number']):
+        for _split_number in Splitter.number(numbers_df.iloc[number_id]['number']):
             topographic_plan_data.append(
                 {
                     'origin_number': numbers_df.iloc[number_id]['number'],
