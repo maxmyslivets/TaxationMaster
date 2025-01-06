@@ -12,42 +12,32 @@ from src.validation import SearchAmbiguity
 @xw.sub
 def insert_word_taxation_list():
     """Вставка Word ведомости таксации"""
-    app = xw.apps.active
-
     file_path = askopenfilename(filetypes=[("Word files", "*.docx *.doc"), ("All files", "*.*")])
     if not file_path:
         return
 
-    app.status_bar = 'Чтение ведомости таксации... 0%'
-
     doc = DocxDocument(file_path)
     data = []
-
-    count_row = 0
-    for table in doc.tables:
-        count_row += len(table.rows)
-    i_row = 0
 
     for table in doc.tables:
         for row in table.rows:
             row_data = [cell.text.strip() for cell in row.cells]
             data.append(row_data)
 
-            progress = int(((i_row + 1) / count_row) * 100)
-            app.status_bar = f"Чтение ведомости таксации... {progress}%"
-            i_row += 1
-
     df = pd.DataFrame(data)
+    df.index = df.index - 1
 
     sheet = xw.sheets.active
-    sheet['A1'].value = "Порядок колонок:"
-    sheet['A1'].font.bold = True
-    sheet['A2'].value = ['Индекс', 'Номер', 'Наименование', 'Количество', 'Высота', 'Диаметр', 'Состояние', 'Кустарник',
-                         'Неоднозначность', 'Пень']
-    sheet['A3'].options(index=True, header=False).value = df
-    sheet.tables.add(source=sheet['A3'].expand(), name='ВедомостьТаксации')
+    sheet['A1'].value = ['Индекс', 'Номер точки', 'Наименование', 'Количество', 'Высота', 'Толщина', 'Состояние',
+                         'Кустарник', 'Неоднозначность', 'Пень']
+    sheet['A2'].options(index=True, header=False).value = df
 
-    app.status_bar = 'Готово'
+
+@xw.sub
+def create_table():
+    """Преобразовать ведомость таксации в таблицу"""
+    selected_cells = xw.apps.active.selection
+    xw.sheets.active.tables.add(source=selected_cells, name='ВедомостьТаксации', table_style_name='TableStyleMedium9')
 
 
 @xw.sub
