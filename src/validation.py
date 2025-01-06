@@ -49,7 +49,7 @@ class SearchAmbiguity:
 
         max_count = max([count_numbers, count_height, count_diameter, count_quantity])
 
-        if not is_shrub and diameter == '-':
+        if (not is_shrub and diameter == '-') or (is_shrub and diameter != '-'):
             return False
 
         if not match_contour and not match_line and not match_trunk:
