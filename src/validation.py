@@ -23,16 +23,16 @@ class SearchAmbiguity:
             bool: False, если неоднозначность найдена
         """
 
-        if None in Splitter.number(number):
-            return False
-        if None in Splitter.size(height):
-            return False
-        if None in Splitter.size(diameter):
+        split_numbers = Splitter.number(number)
+        split_height = Splitter.size(height)
+        split_diameter = Splitter.size(diameter)
+
+        if (None in split_numbers) or (None in split_height) or (None in split_diameter):
             return False
 
-        count_numbers = len(Splitter.number(number))
-        count_height = len(Splitter.size(height))
-        count_diameter = len(Splitter.size(diameter))
+        count_numbers = len(split_numbers)
+        count_height = len(split_height)
+        count_diameter = len(split_diameter)
 
         match_trunk = re.search(Templates.TRUNKS, quantity)
         match_contour = re.search(Templates.CONTOUR, quantity)
@@ -48,29 +48,35 @@ class SearchAmbiguity:
             count_quantity = int(float(quantity))
 
         max_count = max([count_numbers, count_height, count_diameter, count_quantity])
-        # FIXME: Переписать все условия
+
         if not is_shrub and diameter == '-':
             return False
-        if match_trunk and count_numbers == 1:
-            if count_quantity == count_height == count_diameter:
-                return True
-            elif 1 == count_height == count_diameter:
-                return True
-        elif match_contour and count_numbers == 1:
-            if count_quantity == count_height == count_diameter == 1:
-                return True
-            elif (count_quantity == count_height == 1) and (diameter == '-'):
-                return True
-        elif match_line and count_numbers == 1:
-            if count_quantity == count_height == count_diameter == 1:
-                return True
-            elif (count_quantity == count_height == 1) and (diameter == '-'):
-                return True
-        elif not match_contour and not match_line and not match_trunk:
-            if count_numbers == count_quantity == count_height == count_diameter:
-                return True
-            elif (count_height == 1 or count_height == max_count) and (count_diameter == 1 or count_diameter == max_count):
-                if (count_numbers == 1 or count_numbers == max_count) and (count_quantity == max_count):
-                    return True
 
-        return False
+        if not match_contour and not match_line and not match_trunk:
+            if (count_numbers == 1 or count_numbers == max_count) and count_quantity == max_count:
+                if (count_diameter == 1 or count_diameter == max_count) and (count_height == 1 or count_height == max_count):
+                    return True
+                else:
+                    return False
+            else:
+                return False
+        elif match_trunk:
+            if count_numbers == 1 and count_quantity == max_count:
+                if (count_diameter == 1 or count_diameter == max_count) and (count_height == 1 or count_height == max_count):
+                    return True
+                else:
+                    return False
+            else:
+                return False
+        elif match_contour:
+            if count_numbers == 1 and count_quantity == 1 and count_height == 1 and count_diameter == 1:
+                return True
+            else:
+                return False
+        elif match_line:
+            if count_numbers == 1 and count_quantity == 1 and count_height == 1 and count_diameter == 1:
+                return True
+            else:
+                return False
+        else:
+            return False
