@@ -237,6 +237,25 @@ class Parser:
             raise ValueError(f'Некорректное значение количества: {text}.')
 
     @staticmethod
-    def quantify_count_trunks(series: pd.Series) -> int:
-        pass
+    def identification_stump(height: str | float, diameter: str | float, is_shrub: bool) -> bool:
+        """
+        Определение пня.
+        Args:
+            height (str | float): Высота
+            diameter (str | float): Диаметр
+            is_shrub (bool): Кустарник
+
+        Returns:
+            (bool): True, если пень
+        """
+        if is_shrub:
+            return False
+        split_height = Splitter.size(str(height))
+        split_diameter = Splitter.size(str(diameter))
+        is_stump = True
+        for h, d in zip(split_height, split_diameter):
+            if not (float(h) < 0.7 and float(d) / float(h) > 0.1):
+                is_stump = False
+                break
+        return is_stump
 

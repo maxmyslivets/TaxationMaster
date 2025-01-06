@@ -42,7 +42,8 @@ def insert_word_taxation_list():
     sheet = xw.sheets.active
     sheet['A1'].value = "Порядок колонок:"
     sheet['A1'].font.bold = True
-    sheet['A2'].value = ['индекс', 'номер', 'наименование', 'количество', 'высота', 'диаметр', 'состояние']
+    sheet['A2'].value = ['Индекс', 'Номер', 'Наименование', 'Количество', 'Высота', 'Диаметр', 'Состояние', 'Кустарник',
+                         'Неоднозначность', 'Пень']
     sheet['A3'].options(index=True, header=False).value = df
     sheet.tables.add(source=sheet['A3'].expand(), name='ВедомостьТаксации')
 
@@ -93,10 +94,10 @@ def replace_dot_comma_to_comma():
 
 
 @xw.func
-def get_is_shrub(name: str) -> bool:
+def get_is_shrub(name: str) -> int:
     """Определить кустарник"""
     is_shrub = Parser.get_specie(name).is_shrub
-    return is_shrub
+    return int(is_shrub)
 
 
 @xw.sub
@@ -108,11 +109,11 @@ def get_is_shrub_sub():
 
 
 @xw.func
-def check_ambiguity(number, quantity, height, diameter, is_shrub) -> bool:
+def check_ambiguity(number, quantity, height, diameter, is_shrub) -> int:
     """Поиск неоднозначностей в количественных характеристиках"""
     number, quantity, height, diameter = str(number), str(quantity), str(height), str(diameter)
     result = SearchAmbiguity.check_in_row_from_taxation_list(number, quantity, height, diameter, is_shrub)
-    return result
+    return int(not result)
 
 
 @xw.sub
@@ -121,6 +122,21 @@ def check_ambiguity_sub():
     selected_cells = xw.apps.active.selection
     for cell in selected_cells:
         cell.value = "=check_ambiguity()"
+
+
+@xw.func
+def identification_stump(height, diameter, is_shrub) -> int:
+    """Определить пень"""
+    is_stump = Parser.identification_stump(height, diameter, is_shrub)
+    return int(is_stump)
+
+
+@xw.sub
+def identification_stump_sub():
+    """Вставка формулы: Определить пень"""
+    selected_cells = xw.apps.active.selection
+    for cell in selected_cells:
+        cell.value = "=identification_stump()"
 
 
 # def main():
