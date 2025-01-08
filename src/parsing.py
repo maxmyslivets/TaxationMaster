@@ -58,7 +58,7 @@ class Templates:
     DIGIT_X_DIGIT = re.compile(r'^\d+x\d+$')
     FLOAT_X_DIGIT = re.compile(r'^\d+\.\d+x\d+$')
     TRUNKS = re.compile(r'(\d+)\s*ствол', re.IGNORECASE)
-    CONTOUR = re.compile(r'^\d+\s*м\s*(2|кв\.?)$', re.IGNORECASE)
+    CONTOUR = re.compile(r'^\d+\.?\d+\s*м\s*(2|кв\.?)$', re.IGNORECASE)
     LINE = re.compile(r'^\d+\s*м\.?\s*п\.?$', re.IGNORECASE)
 
 
@@ -130,16 +130,7 @@ class Splitter:
 
         text = text.strip().replace(' ', '')
 
-        if ';' in text:
-            parts = [_.replace(',', '.') for _ in text.split(';')]
-
-        elif ',' in text:
-            parts = text.split(',')
-
-        else:
-            parts = [text]
-
-        for part in parts:
+        for part in text.split(','):
             part = part.replace('х', 'x').replace('Х', 'x').replace('X', 'x')
 
             if re.match(Templates.DIGIT, part):

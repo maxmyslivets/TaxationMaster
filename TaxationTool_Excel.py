@@ -29,7 +29,7 @@ def insert_word_taxation_list():
 
     sheet = xw.sheets.active
     sheet['A1'].value = ['Индекс', 'Номер точки', 'Наименование', 'Количество', 'Высота', 'Толщина', 'Состояние',
-                         'Кустарник', 'Неоднозначность', 'Пень']
+                         'Кустарник', 'Неоднозначность', 'Пень', 'Наименование (пень)']
     sheet['A2'].options(index=True, header=False).value = df
 
 
@@ -68,11 +68,9 @@ def get_count_tree():
 @xw.sub
 def replace_comma_to_dot():
     """Замена запятой на точку"""
-    app = xw.apps.active
-    with app.properties(status_bar='Замена знака пунктуации...'):
-        selected_cells = xw.apps.active.selection
-        for cell in selected_cells:
-            cell.value = str(cell.value).replace(',', '.')
+    selected_cells = xw.apps.active.selection
+    for cell in selected_cells:
+        cell.value = str(cell.value).replace(',', '.')
 
 
 @xw.sub
@@ -93,9 +91,7 @@ def get_is_shrub(name: str) -> int:
 @xw.sub
 def get_is_shrub_sub():
     """Вставка формулы: Определить кустарник"""
-    selected_cells = xw.apps.active.selection
-    for cell in selected_cells:
-        cell.value = "=get_is_shrub()"
+    xw.apps.active.selection.formula = "=get_is_shrub([@Наименование])"
 
 
 @xw.func
@@ -109,9 +105,8 @@ def check_ambiguity(number, quantity, height, diameter, is_shrub) -> int:
 @xw.sub
 def check_ambiguity_sub():
     """Вставка формулы: Поиск неоднозначностей в количественных характеристиках"""
-    selected_cells = xw.apps.active.selection
-    for cell in selected_cells:
-        cell.value = "=check_ambiguity()"
+    xw.apps.active.selection.formula = ("=check_ambiguity([@Номер точки],[@Количество],[@Высота],[@Толщина],"
+                                        "[@Кустарник])")
 
 
 @xw.func
@@ -124,9 +119,23 @@ def identification_stump(height, diameter, is_shrub) -> int:
 @xw.sub
 def identification_stump_sub():
     """Вставка формулы: Определить пень"""
-    selected_cells = xw.apps.active.selection
-    for cell in selected_cells:
-        cell.value = "=identification_stump()"
+    xw.apps.active.selection.formula = "=identification_stump([@Высота],[@Толщина],[@Кустарник])"
+
+
+@xw.func
+def insert_stump(name, is_stump) -> str:
+    """Вставить пень"""
+    assert "пень" not in name.lower()
+    if is_stump:
+        return name + " (пень)"
+    else:
+        return name
+
+
+@xw.sub
+def insert_stump_sub():
+    """Вставка формулы: Вставить пень"""
+    xw.apps.active.selection.formula = "=insert_stump([@Наименование],[@Пень])"
 
 
 # def main():
