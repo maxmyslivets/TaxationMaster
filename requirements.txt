@@ -4,3 +4,5 @@ shapely~=2.0.6
 python-docx~=1.1.2
 pandas~=2.2.3
 xlwings~=0.33.5
+pyautocad~=0.2.0
+future~=1.0.0
