@@ -2,6 +2,7 @@ import pandas as pd
 from pyautocad import Autocad
 from pyautocad.utils import mtext_to_string
 from shapely import Point, LineString, Polygon
+from shapely.geometry.multipolygon import MultiPolygon
 
 from src.parsing import Splitter
 
@@ -176,3 +177,60 @@ class AutocadWorker:
                 lambda geom: geom.wkt if geom else None)
             topographic_plan['geometry'] = topographic_plan['geometry'].apply(lambda geom: geom.wkt if geom else None)
             return topographic_plan
+
+    @staticmethod
+    def get_df_zones(zones_layers: list[str], min_distance: float = 0.01, wkt_convert: bool = False) -> pd.DataFrame:
+        """
+        Получить датафрейм зон из чертежа Autocad
+
+        Args:
+            zones_layers (list[str]): Имена слоёв, содержащих границы зон
+            min_distance (float): буфер для привязки названия к полигону
+            wkt_convert (bool): Преобразование геометрии в wkt
+
+        Returns:
+            pd.DataFrame: Датафрейм названий и геометрии зон
+        """
+        acad = Autocad()
+
+        names_data = []
+        for obj in acad.iter_objects(['AcDbText', 'AcDbMText']):
+            if obj.ObjectName == 'AcDbText' and obj.Layer in zones_layers:
+                x, y, _ = obj.InsertionPoint
+                names_data.append((obj.TextString, Point(x, y)))
+            elif obj.ObjectName == 'AcDbMText' and obj.Layer in zones_layers:
+                x, y, _ = obj.InsertionPoint
+                names_data.append((mtext_to_string(obj.TextString).replace('\n', ' '), Point(x, y)))
+
+        zones_shapes_data = []
+        for obj in acad.iter_objects('AcDbPolyline'):
+            if obj.Layer in zones_layers:
+                acad_polygon_vertexes = [vertex for vertex in obj.Coordinates]
+                shape = Polygon(
+                    [(acad_polygon_vertexes[i], acad_polygon_vertexes[i + 1])
+                     for i in range(0, len(acad_polygon_vertexes), 2)])
+                zones_shapes_data.append(shape)
+
+        zones_data = {name: [] for name, shape in names_data}
+        for shape in zones_shapes_data:
+            for name, point in names_data:
+                if point.distance(shape.exterior) < min_distance:
+                    zones_data[name].append(shape)
+
+        zones = []
+        for name, shapes in zones_data.items():
+            zones.append({
+                'name': name,
+                'geometry': MultiPolygon(shapes) if len(shapes) > 1 else shapes[0],
+            })
+
+        zones_df = pd.DataFrame(zones)
+        zones_df.index.name = 'index'
+
+        if not wkt_convert:
+            return zones_df
+        else:
+            zones_df.index = zones_df.index.astype(str)
+            zones_df['geometry'] = zones_df['geometry'].apply(lambda geom: geom.wkt if geom else None)
+            return zones_df
+

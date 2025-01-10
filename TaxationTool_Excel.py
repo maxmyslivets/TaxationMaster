@@ -23,23 +23,27 @@ def insert_word_taxation_list():
 
     for table in doc.tables:
         for row in table.rows:
-            row_data = ["'"+cell.text.strip() for cell in row.cells]
+            row_data = [cell.text.strip() for cell in row.cells]
             data.append(row_data)
 
     df = pd.DataFrame(data)
+    df.index.name = 'index'
     df.index = df.index - 1
+    df.index = df.index.astype(str)
 
-    sheet = xw.sheets.active
+    sheet = xw.sheets['Ведомость']
     sheet['A1'].value = ['Индекс', 'Номер точки', 'Наименование', 'Количество', 'Высота', 'Толщина', 'Состояние',
                          'Кустарник', 'Неоднозначность', 'Пень', 'Наименование (пень)']
+    for l in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
+        sheet[f'{l}:{l}'].number_format = '@'
     sheet['A2'].options(index=True, header=False).value = df
 
 
-@xw.sub
-def create_table_taxation_list():
-    """Преобразовать ведомость таксации в таблицу"""
-    selected_cells = xw.apps.active.selection
-    xw.sheets.active.tables.add(source=selected_cells, name='ВедомостьТаксации', table_style_name='TableStyleMedium9')
+# @xw.sub
+# def create_table_taxation_list():
+#     """Преобразовать ведомость таксации в таблицу"""
+#     selected_cells = xw.apps.active.selection
+#     xw.sheets.active.tables.add(source=selected_cells, name='ВедомостьТаксации', table_style_name='TableStyleMedium9')
 
 
 @xw.sub
@@ -68,7 +72,8 @@ def replace_comma_to_dot():
     """Замена запятой на точку"""
     selected_cells = xw.apps.active.selection
     for cell in selected_cells:
-        cell.value = str(cell.value).replace(',', '.')
+        if not xw.sheets.active.api.Rows(cell.row).Hidden and ',' in str(cell.value):
+            cell.value = str(cell.value).replace(',', '.')
 
 
 @xw.sub
@@ -76,7 +81,8 @@ def replace_dot_comma_to_comma():
     """Замена точки с запятой на запятую"""
     selected_cells = xw.apps.active.selection
     for cell in selected_cells:
-        cell.value = str(cell.value).replace(';', ',')
+        if not xw.sheets.active.api.Rows(cell.row).Hidden and ';' in str(cell.value):
+            cell.value = str(cell.value).replace(';', ',')
 
 
 @xw.func
@@ -139,7 +145,7 @@ def insert_stump_sub():
 @xw.sub
 def compare_numbers():
     """Сравнить наличие номеров в Excel и Autocad"""
-    sheet = xw.sheets.active
+    sheet = xw.sheets['Ведомость']
     table_range = sheet['A1'].expand('table')
     data = table_range.value
     headers = data[0]
@@ -181,8 +187,7 @@ def compare_numbers():
 @xw.sub
 def insert_taxation_data_from_autocad():
     """Чтение таксационных данных из топографического плана Autocad в буфер обмена"""
-    topographic_plan = AutocadWorker.get_df_topographic_plan(["номера"], ["полосы"], ["контуры"], 0.01,
-                                                             wkt_convert=True)
+    topographic_plan = AutocadWorker.get_df_topographic_plan(["номера"], ["полосы"], ["контуры"], wkt_convert=True)
     sheet = xw.sheets['Автокад']
     for l in ['A', 'B', 'D']:
         sheet[f'{l}:{l}'].number_format = '@'
@@ -190,12 +195,21 @@ def insert_taxation_data_from_autocad():
     sheet["A1"].value = ['index']
 
 
+# @xw.sub
+# def create_table_taxation_plan():
+#     """Преобразовать таксационные данные из топографического плана в таблицу"""
+#     sheet = xw.sheets['Автокад']
+#     sheet_range = sheet["A1"].expand()
+#     xw.sheets.active.tables.add(source=sheet_range, name='ТаксацияАвтокад', table_style_name='TableStyleMedium9')
+
+
 @xw.sub
-def create_table_taxation_plan():
-    """Преобразовать таксационные данные из топографического плана в таблицу"""
-    sheet = xw.sheets['Автокад']
-    sheet_range = sheet["A1"].expand()
-    xw.sheets.active.tables.add(source=sheet_range, name='ТаксацияАвтокад', table_style_name='TableStyleMedium9')
+def insert_zones_from_autocad():
+    """Вставить зоны из топографического плана в таблицу"""
+    zones = AutocadWorker.get_df_zones(['зоны'], wkt_convert=True)
+    sheet = xw.sheets['Зоны']
+    sheet.range('A1').value = zones
+    sheet["A1"].value = ['index']
 
 
 # def main():
