@@ -115,7 +115,7 @@ class Splitter:
         return split_numbers if len(split_numbers) > 0 else [None]
 
     @staticmethod
-    def size(text: str) -> list[str | None]:
+    def size(text: str) -> list[int | float | None]:
         """
         Разделяет объединенные размеры на отдельные элементы.
 

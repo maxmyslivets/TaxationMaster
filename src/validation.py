@@ -29,6 +29,8 @@ class SearchAmbiguity:
 
         if (None in split_numbers) or (None in split_height) or (None in split_diameter):
             return False
+        if (0 in split_height) or (0 in split_diameter):
+            return False
 
         count_numbers = len(split_numbers)
         count_height = len(split_height)
