@@ -7,6 +7,7 @@ import xlwings as xw
 from docx import Document as DocxDocument
 
 from src.autocad import AutocadWorker
+from src.excel import ExcelWorker
 from src.parsing import Templates, Parser, Splitter
 from src.validation import SearchAmbiguity
 
@@ -145,12 +146,7 @@ def insert_stump_sub():
 @xw.sub
 def compare_numbers():
     """Сравнить наличие номеров в Excel и Autocad"""
-    sheet = xw.sheets['Ведомость']
-    table_range = sheet['A1'].expand('table')
-    data = table_range.value
-    headers = data[0]
-    col_index = headers.index("Номер точки")
-    numbers_from_excel = [row[col_index] for row in data[1:]]
+    numbers_from_excel = ExcelWorker.get_numbers(xw.sheets['Ведомость'], 'Номер точки')
     numbers_from_acad = AutocadWorker.get_numbers('номера')
     split_numbers_from_excel = []
     for number_excel in numbers_from_excel:
@@ -210,6 +206,18 @@ def insert_zones_from_autocad():
     sheet = xw.sheets['Зоны']
     sheet.range('A1').value = zones
     sheet["A1"].value = ['index']
+
+
+@xw.func
+def insert_zone_objects(zone_name) -> str:
+    """Вставить объекты для зоны"""
+    pass
+
+
+@xw.sub
+def insert_zone_objects_sub():
+    """Вставка формулы: Вставить объекты для зоны"""
+    xw.apps.active.selection.formula = "=insert_zone_objects(Зоны!B2)"
 
 
 # def main():
