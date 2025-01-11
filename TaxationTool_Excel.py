@@ -204,20 +204,21 @@ def insert_zones_from_autocad():
     """Вставить зоны из топографического плана в таблицу"""
     zones = AutocadWorker.get_df_zones(['зоны'], wkt_convert=True)
     sheet = xw.sheets['Зоны']
+    for l in ['A', 'B']:
+        sheet[f'{l}:{l}'].number_format = '@'
     sheet.range('A1').value = zones
     sheet["A1"].value = ['index']
 
 
-@xw.func
-def insert_zone_objects(zone_name) -> str:
-    """Вставить объекты для зоны"""
-    pass
-
-
 @xw.sub
 def insert_zone_objects_sub():
-    """Вставка формулы: Вставить объекты для зоны"""
-    xw.apps.active.selection.formula = "=insert_zone_objects(Зоны!B2)"
+    """Вставить объекты для зоны"""
+    sheet = xw.sheets.active
+    objects_in_zone = AutocadWorker.get_objects_from_zone(sheet.name, wkt_convert=True)
+    for l in ['A', 'B']:
+        sheet[f'{l}:{l}'].number_format = '@'
+    sheet.range('A1').value = objects_in_zone
+    sheet["A1"].value = ['index']
 
 
 # def main():
