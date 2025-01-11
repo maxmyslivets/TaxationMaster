@@ -214,7 +214,7 @@ def insert_zones_from_autocad():
 def insert_zone_objects_sub():
     """Вставить объекты для зоны"""
     sheet = xw.sheets.active
-    objects_in_zone = AutocadWorker.get_objects_from_zone(sheet.name, wkt_convert=True)
+    objects_in_zone = ExcelWorker.get_objects_from_zone(sheet.name, wkt_convert=True)
     for l in ['A', 'B']:
         sheet[f'{l}:{l}'].number_format = '@'
     sheet.range('A1').value = objects_in_zone
