@@ -299,6 +299,7 @@ class AutocadWorker:
             if intersection:
                 intersections_shapes.append({
                     'split_number': series['split_number'],
+                    'number_position': series['number_position'],
                     'type': geometry_type,
                     'geometry': intersection,
                     'size': size
@@ -310,6 +311,7 @@ class AutocadWorker:
             return intersections_shapes_df
         else:
             intersections_shapes_df.index = intersections_shapes_df.index.astype(str)
+            intersections_shapes_df['number_position'] = intersections_shapes_df['number_position'].apply(lambda geom: geom.wkt if geom else None)
             intersections_shapes_df['geometry'] = intersections_shapes_df['geometry'].apply(lambda geom: geom.wkt if geom else None)
             return intersections_shapes_df
 
