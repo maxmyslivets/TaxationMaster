@@ -157,6 +157,30 @@ class Splitter:
 
         return split_values
 
+    @staticmethod
+    def quality(quality: str) -> list[str]:
+        values = quality.lower().replace(' ', '').replace(';', ',').split(',')
+        patterns = {
+            r'хор': 'Хорошее',
+            r'плох': 'Плохое',
+            r'неуд': 'Неудовлетворительное'
+        }
+        result = []
+        for value in values:
+            numbers = [int(num) for num in re.findall(r'\d+', value)]
+            assert len(numbers) <= 1, \
+                f"В строке Состояние {quality} содержится более одного численного значения. {numbers}"
+            count = 1 if len(numbers) == 0 else numbers[0]
+            is_found = False
+            for pattern, word in patterns.items():
+                if re.search(pattern, value):
+                    result.extend([word] * count)
+                    is_found = True
+                    break
+            if not is_found:
+                result.extend([value] * count)
+        return result
+
 
 class Parser:
     """
@@ -239,14 +263,14 @@ class Parser:
         Returns:
             (bool): True, если пень
         """
+        is_stump = False
         if is_shrub:
-            return False
+            return is_stump
         split_height = Splitter.size(str(height))
         split_diameter = Splitter.size(str(diameter))
-        is_stump = True
         for h, d in zip(split_height, split_diameter):
-            if not (float(h) < 0.7 and float(d) / float(h) > 0.1):
-                is_stump = False
+            if float(h) < 0.7 and float(d) / float(h) > 0.1:
+                is_stump = True
                 break
         return is_stump
 

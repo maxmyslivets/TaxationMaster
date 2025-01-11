@@ -22,7 +22,7 @@ class SearchAmbiguity:
         Returns:
             bool: False, если неоднозначность найдена
         """
-
+        # FIXME: проверка количества состояний
         split_numbers = Splitter.number(number)
         split_height = Splitter.size(height)
         split_diameter = Splitter.size(diameter)
