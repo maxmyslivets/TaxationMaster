@@ -1,7 +1,11 @@
+import re
+
 import xlwings as xw
 import pandas as pd
 from shapely.wkt import loads
 from win32com.universal import com_error
+
+from src.parsing import Splitter, Parser, Templates
 
 
 class ExcelWorker:
@@ -13,6 +17,122 @@ class ExcelWorker:
         headers = data[0]
         col_index = headers.index(column_name)
         return [row[col_index] for row in data[1:]]
+
+    @staticmethod
+    def orm_from_taxation_list_item(series: pd.Series) -> list[dict]:
+        """
+        Получение строки ОРМ из строки таблицы Ведомости
+
+        Args:
+            series (pd.Series): Строка таблицы
+
+        Returns:
+            list[dict]: Список словарей ОРМ для датафрейма
+        """
+        match_trunk = re.search(Templates.TRUNKS, series['Количество'])
+        match_contour = re.search(Templates.CONTOUR, series['Количество'])
+        match_line = re.search(Templates.LINE, series['Количество'])
+        if not match_contour and not match_line and not match_trunk:
+            split_numbers = Splitter.number(series['Номер точки'])
+            split_height = Splitter.size(series['Высота'])
+            split_diameter = Splitter.size(series['Толщина'])
+            split_quality = Splitter.quality(series['Состояние'])
+            is_stump = Parser.identification_stump(series['Высота'], series['Толщина'], bool(series['Кустарник']))
+            if len(split_numbers) == 1:
+                if (not is_stump or "пень" in series['Наименование'].lower()) and len(split_quality) == 1:
+                    return [series.to_dict()]
+            else:
+                if (not is_stump or "пень" in series['Наименование'].lower()) and len(split_quality) == 1:
+                    return [series.to_dict()]
+                if len(split_height) == 1:
+                    split_height = split_height * int(series['Количество'])
+                if len(split_diameter) == 1:
+                    split_diameter = split_diameter * int(series['Количество'])
+                if len(split_quality) == 1:
+                    split_quality = split_quality * int(series['Количество'])
+                series_data = []
+                for idx in range(len(split_numbers)):
+                    if "пень" not in series['Наименование'].lower():
+                        is_stump = Parser.identification_stump(split_height[idx], split_diameter[idx],
+                                                               bool(series['Кустарник']))
+                        name = series['Наименование'] + " (пень)" if is_stump else series['Наименование']
+                    else:
+                        name = series['Наименование']
+                    series_data.append({
+                        'Номер точки': split_numbers[idx],
+                        'Наименование': name,
+                        'Количество': 1,
+                        'Высота': split_height[idx],
+                        'Толщина': split_diameter[idx],
+                        'Состояние': split_quality[idx],
+                        'Кустарник': series['Кустарник']
+                    })
+                return series_data
+        else:
+            return [series.to_dict()]
+
+    @staticmethod
+    def get_shapes_from_autocad_df(df: pd.DataFrame, number: str) -> dict:
+        """
+        Получение геометрии из датафрейма "Автокад" по номеру точки
+        Args:
+            df (pd.DataFrame): Датафрейм "Автокад"
+            number (str): Номер точки
+
+        Returns:
+            dict: Словарь двух колонок для датафрейма со списками позиций номеров и геометрий
+        """
+        number_positions, geometries = [], []
+        split_numbers = Splitter.number(number)
+        df = df.set_index('split_number')
+        for split_number in split_numbers:
+            shapes = df.loc[split_number][['number_position', 'geometry']].to_dict()
+            number_positions.append(shapes['number_position'])
+            geometries.append(shapes['geometry'])
+        return {'number_positions': number_positions, 'geometries': geometries}
+
+    @staticmethod
+    def get_taxation_list_orm(wkt_convert: bool = False) -> pd.DataFrame:
+        """
+        Получение датафрейма "Ведомости ОРМ" из таблиц "Ведомость" и "Автокад"
+
+        Args:
+            wkt_convert (bool): Преобразование геометрии в wkt
+
+        Returns:
+            pd.DataFrame: Датафрейм ведомости ОРМ
+        """
+        sheet_taxation_list = xw.sheets['Ведомость']
+        taxation_list_df = sheet_taxation_list.range('A1').expand().options(pd.DataFrame, header=1).value
+        taxation_list_df = taxation_list_df[
+            ['Номер точки', 'Наименование', 'Количество', 'Высота', 'Толщина', 'Состояние', 'Кустарник']]
+
+        taxation_list_orm = []
+        for _, series in taxation_list_df.iterrows():
+            taxation_list_orm.extend(ExcelWorker.orm_from_taxation_list_item(series))
+
+        taxation_list_orm_df = pd.DataFrame(taxation_list_orm)
+
+        sheet_autocad = xw.sheets['Автокад']
+        autocad_df = sheet_autocad.range('A1').expand().options(pd.DataFrame, header=1, index=False).value
+        autocad_df['number_position'] = autocad_df['number_position'].apply(lambda x: loads(x))
+        autocad_df['geometry'] = autocad_df['geometry'].apply(lambda x: loads(x))
+
+        assert autocad_df['split_number'].is_unique
+
+        taxation_list_orm_df[['number_positions', 'geometries']] = taxation_list_orm_df['Номер точки'].apply(
+            lambda x: pd.Series(ExcelWorker.get_shapes_from_autocad_df(autocad_df, x)))
+        taxation_list_orm_df.index.name = 'index'
+
+        if not wkt_convert:
+            return taxation_list_orm_df
+        else:
+            taxation_list_orm_df.index = taxation_list_orm_df.index.astype(str)
+            taxation_list_orm_df['number_positions'] = taxation_list_orm_df['number_positions'].apply(
+                lambda geom: str([g.wkt for g in geom]))
+            taxation_list_orm_df['geometries'] = taxation_list_orm_df['geometries'].apply(
+                lambda geom: str([g.wkt for g in geom]))
+            return taxation_list_orm_df
 
     @staticmethod
     def get_objects_from_zone(zone_result: str, wkt_convert: bool = False) -> pd.DataFrame:

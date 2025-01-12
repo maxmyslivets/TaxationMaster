@@ -182,12 +182,23 @@ def compare_numbers():
 
 @xw.sub
 def insert_taxation_data_from_autocad():
-    """Чтение таксационных данных из топографического плана Autocad в буфер обмена"""
+    """Вставка таксационных данных из топографического плана Autocad в лист"""
     topographic_plan = AutocadWorker.get_df_topographic_plan(["номера"], ["полосы"], ["контуры"], wkt_convert=True)
     sheet = xw.sheets['Автокад']
     for l in ['A', 'B', 'D']:
         sheet[f'{l}:{l}'].number_format = '@'
     sheet.range('A1').value = topographic_plan
+    sheet["A1"].value = ['index']
+
+
+@xw.sub
+def insert_taxation_list_orm():
+    """Вставка ведомости ОРМ"""
+    taxation_list_orm = ExcelWorker.get_taxation_list_orm(wkt_convert=True)
+    sheet = xw.sheets['Ведомость ОРМ']
+    for l in ['A', 'B', 'D', 'E', 'F']:
+        sheet[f'{l}:{l}'].number_format = '@'
+    sheet.range('A1').value = taxation_list_orm
     sheet["A1"].value = ['index']
 
 
