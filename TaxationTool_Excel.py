@@ -1,10 +1,8 @@
 import re
 from collections import Counter
-from tkinter.filedialog import askopenfilename
 
 import pandas as pd
 import xlwings as xw
-from docx import Document as DocxDocument
 
 from src.autocad import AutocadWorker
 from src.excel import ExcelWorker
@@ -15,36 +13,15 @@ from src.validation import SearchAmbiguity
 @xw.sub
 def insert_word_taxation_list():
     """Вставка Word ведомости таксации"""
-    file_path = askopenfilename(filetypes=[("Word files", "*.docx *.doc"), ("All files", "*.*")])
-    if not file_path:
-        return
-
-    doc = DocxDocument(file_path)
-    data = []
-
-    for table in doc.tables:
-        for row in table.rows:
-            row_data = [cell.text.strip() for cell in row.cells]
-            data.append(row_data)
-
-    df = pd.DataFrame(data)
-    df.index.name = 'index'
-    df.index = df.index - 1
-    df.index = df.index.astype(str)
+    taxation_list = ExcelWorker.get_taxation_list()
 
     sheet = xw.sheets['Ведомость']
     sheet['A1'].value = ['Индекс', 'Номер точки', 'Наименование', 'Количество', 'Высота', 'Толщина', 'Состояние',
-                         'Кустарник', 'Неоднозначность', 'Пень', 'Наименование (пень)']
-    for l in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
+                         'Кустарник', 'Валидация']
+    for l in ['A', 'B', 'D', 'E', 'F']:
         sheet[f'{l}:{l}'].number_format = '@'
-    sheet['A2'].options(index=True, header=False).value = df
-
-
-# @xw.sub
-# def create_table_taxation_list():
-#     """Преобразовать ведомость таксации в таблицу"""
-#     selected_cells = xw.apps.active.selection
-#     xw.sheets.active.tables.add(source=selected_cells, name='ВедомостьТаксации', table_style_name='TableStyleMedium9')
+    sheet.range('A2').value = taxation_list
+    sheet["A1"].value = ['Индекс']
 
 
 @xw.sub
@@ -66,24 +43,6 @@ def get_count_tree():
     df_count = df['Количество'].apply(get_count)
 
     app.alert(f"Найдено деревьев: {df_count.sum()}", "Подсчёт количества деревьев")
-
-
-@xw.sub
-def replace_comma_to_dot():
-    """Замена запятой на точку"""
-    selected_cells = xw.apps.active.selection
-    for cell in selected_cells:
-        if not xw.sheets.active.api.Rows(cell.row).Hidden and ',' in str(cell.value):
-            cell.value = str(cell.value).replace(',', '.')
-
-
-@xw.sub
-def replace_dot_comma_to_comma():
-    """Замена точки с запятой на запятую"""
-    selected_cells = xw.apps.active.selection
-    for cell in selected_cells:
-        if not xw.sheets.active.api.Rows(cell.row).Hidden and ';' in str(cell.value):
-            cell.value = str(cell.value).replace(';', ',')
 
 
 @xw.func
@@ -114,33 +73,22 @@ def check_ambiguity_sub():
                                         "[@Кустарник])")
 
 
-@xw.func
-def identification_stump(height, diameter, is_shrub) -> int:
-    """Определить пень"""
-    is_stump = Parser.identification_stump(height, diameter, is_shrub)
-    return int(is_stump)
+@xw.sub
+def replace_comma_to_dot():
+    """Замена запятой на точку"""
+    selected_cells = xw.apps.active.selection
+    for cell in selected_cells:
+        if not xw.sheets.active.api.Rows(cell.row).Hidden and ',' in str(cell.value):
+            cell.value = str(cell.value).replace(',', '.')
 
 
 @xw.sub
-def identification_stump_sub():
-    """Вставка формулы: Определить пень"""
-    xw.apps.active.selection.formula = "=identification_stump([@Высота],[@Толщина],[@Кустарник])"
-
-
-@xw.func
-def insert_stump(name, is_stump) -> str:
-    """Вставить пень"""
-    assert "пень" not in name.lower()
-    if is_stump:
-        return name + " (пень)"
-    else:
-        return name
-
-
-@xw.sub
-def insert_stump_sub():
-    """Вставка формулы: Вставить пень"""
-    xw.apps.active.selection.formula = "=insert_stump([@Наименование],[@Пень])"
+def replace_dot_comma_to_comma():
+    """Замена точки с запятой на запятую"""
+    selected_cells = xw.apps.active.selection
+    for cell in selected_cells:
+        if not xw.sheets.active.api.Rows(cell.row).Hidden and ';' in str(cell.value):
+            cell.value = str(cell.value).replace(';', ',')
 
 
 @xw.sub
@@ -185,10 +133,10 @@ def insert_taxation_data_from_autocad():
     """Вставка таксационных данных из топографического плана Autocad в лист"""
     topographic_plan = AutocadWorker.get_df_topographic_plan(["номера"], ["полосы"], ["контуры"], wkt_convert=True)
     sheet = xw.sheets['Автокад']
-    for l in ['A', 'B', 'D']:
+    for l in ['A', 'B', 'C']:
         sheet[f'{l}:{l}'].number_format = '@'
     sheet.range('A1').value = topographic_plan
-    sheet["A1"].value = ['index']
+    sheet["A1"].value = ['Индекс']
 
 
 @xw.sub
@@ -199,15 +147,7 @@ def insert_taxation_list_orm():
     for l in ['A', 'B', 'D', 'E', 'F']:
         sheet[f'{l}:{l}'].number_format = '@'
     sheet.range('A1').value = taxation_list_orm
-    sheet["A1"].value = ['index']
-
-
-# @xw.sub
-# def create_table_taxation_plan():
-#     """Преобразовать таксационные данные из топографического плана в таблицу"""
-#     sheet = xw.sheets['Автокад']
-#     sheet_range = sheet["A1"].expand()
-#     xw.sheets.active.tables.add(source=sheet_range, name='ТаксацияАвтокад', table_style_name='TableStyleMedium9')
+    sheet["A1"].value = ['Индекс']
 
 
 @xw.sub
@@ -215,10 +155,9 @@ def insert_zones_from_autocad():
     """Вставить зоны из топографического плана в таблицу"""
     zones = AutocadWorker.get_df_zones(['зоны'], wkt_convert=True)
     sheet = xw.sheets['Зоны']
-    for l in ['A', 'B']:
-        sheet[f'{l}:{l}'].number_format = '@'
+    sheet[f'A:A'].number_format = '@'
     sheet.range('A1').value = zones
-    sheet["A1"].value = ['index']
+    sheet["A1"].value = ['Индекс']
 
 
 @xw.sub
@@ -229,13 +168,4 @@ def insert_zone_objects_sub():
     for l in ['A', 'B']:
         sheet[f'{l}:{l}'].number_format = '@'
     sheet.range('A1').value = objects_in_zone
-    sheet["A1"].value = ['index']
-
-
-# def main():
-#     wb = xw.Book.caller()
-#
-#
-# if __name__ == "__main__":
-#     xw.Book("proj1.xlsm").set_mock_caller()
-#     main()
+    sheet["A1"].value = ['Индекс']

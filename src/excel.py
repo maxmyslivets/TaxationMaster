@@ -1,4 +1,6 @@
 import re
+from tkinter.filedialog import askopenfilename
+from docx import Document as DocxDocument
 
 import xlwings as xw
 import pandas as pd
@@ -9,6 +11,28 @@ from src.parsing import Splitter, Parser, Templates
 
 
 class ExcelWorker:
+
+    @staticmethod
+    def get_taxation_list() -> pd.DataFrame:
+        """
+        Получение ведомости таксации из Word
+
+        Returns:
+            pd.DataFrame: ведомость таксации
+        """
+        file_path = askopenfilename(filetypes=[("Word files", "*.docx *.doc"), ("All files", "*.*")])
+
+        assert file_path is not None
+
+        doc = DocxDocument(file_path)
+        data = []
+
+        for table in doc.tables:
+            for row in table.rows:
+                row_data = [cell.text.strip() for cell in row.cells]
+                data.append(row_data)
+
+        return pd.DataFrame(data)
 
     @staticmethod
     def get_numbers(sheet: xw.Sheet, column_name: str) -> list[str]:
@@ -84,12 +108,12 @@ class ExcelWorker:
         """
         number_positions, geometries = [], []
         split_numbers = Splitter.number(number)
-        df = df.set_index('split_number')
+        df = df.set_index('Разделенный номер')
         for split_number in split_numbers:
-            shapes = df.loc[split_number][['number_position', 'geometry']].to_dict()
-            number_positions.append(shapes['number_position'])
-            geometries.append(shapes['geometry'])
-        return {'number_positions': number_positions, 'geometries': geometries}
+            shapes = df.loc[split_number][['Позиция номера', 'Геометрия']].to_dict()
+            number_positions.append(shapes['Позиция номера'])
+            geometries.append(shapes['Геометрия'])
+        return {'Список позиций номеров': number_positions, 'Список геометрии': geometries}
 
     @staticmethod
     def get_taxation_list_orm(wkt_convert: bool = False) -> pd.DataFrame:
@@ -115,22 +139,20 @@ class ExcelWorker:
 
         sheet_autocad = xw.sheets['Автокад']
         autocad_df = sheet_autocad.range('A1').expand().options(pd.DataFrame, header=1, index=False).value
-        autocad_df['number_position'] = autocad_df['number_position'].apply(lambda x: loads(x))
-        autocad_df['geometry'] = autocad_df['geometry'].apply(lambda x: loads(x))
+        autocad_df['Позиция номера'] = autocad_df['Позиция номера'].apply(lambda x: loads(x))
+        autocad_df['Геометрия'] = autocad_df['Геометрия'].apply(lambda x: loads(x))
 
-        assert autocad_df['split_number'].is_unique
+        assert autocad_df['Разделенный номер'].is_unique
 
-        taxation_list_orm_df[['number_positions', 'geometries']] = taxation_list_orm_df['Номер точки'].apply(
+        taxation_list_orm_df[['Список позиций номеров', 'Список геометрии']] = taxation_list_orm_df['Номер точки'].apply(
             lambda x: pd.Series(ExcelWorker.get_shapes_from_autocad_df(autocad_df, x)))
-        taxation_list_orm_df.index.name = 'index'
 
         if not wkt_convert:
             return taxation_list_orm_df
         else:
-            taxation_list_orm_df.index = taxation_list_orm_df.index.astype(str)
-            taxation_list_orm_df['number_positions'] = taxation_list_orm_df['number_positions'].apply(
+            taxation_list_orm_df['Список позиций номеров'] = taxation_list_orm_df['Список позиций номеров'].apply(
                 lambda geom: str([g.wkt for g in geom]))
-            taxation_list_orm_df['geometries'] = taxation_list_orm_df['geometries'].apply(
+            taxation_list_orm_df['Список геометрии'] = taxation_list_orm_df['Список геометрии'].apply(
                 lambda geom: str([g.wkt for g in geom]))
             return taxation_list_orm_df
 

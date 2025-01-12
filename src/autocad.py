@@ -139,12 +139,11 @@ class AutocadWorker:
             for _split_number in Splitter.number(numbers_df.iloc[number_id]['number']):
                 topographic_plan_data.append(
                     {
-                        'origin_number': numbers_df.iloc[number_id]['number'],
-                        'number_position': numbers_df.iloc[number_id]['position'],
-                        'split_number': _split_number,
-                        'type': 'Point',
-                        'geometry': numbers_df.iloc[number_id]['position'],
-                        'size': None
+                        'Номер точки': numbers_df.iloc[number_id]['number'],
+                        'Разделенный номер': _split_number,
+                        'Позиция номера': numbers_df.iloc[number_id]['position'],
+                        'Геометрия': numbers_df.iloc[number_id]['position'],
+                        'Размер': None
                     }
                 )
 
@@ -158,27 +157,24 @@ class AutocadWorker:
             for _split_number in Splitter.number(numbers_df.iloc[number_id]['number']):
                 topographic_plan_data.append(
                     {
-                        'origin_number': numbers_df.iloc[number_id]['number'],
-                        'number_position': numbers_df.iloc[number_id]['position'],
-                        'split_number': _split_number,
-                        'type': shape_type,
-                        'geometry': shape,
-                        'size': shape.length if isinstance(shape, LineString) else shape.area
+                        'Номер точки': numbers_df.iloc[number_id]['number'],
+                        'Разделенный номер': _split_number,
+                        'Позиция номера': numbers_df.iloc[number_id]['position'],
+                        'Геометрия': shape,
+                        'Размер': shape.length if isinstance(shape, LineString) else shape.area
                     }
                 )
 
         topographic_plan = pd.DataFrame(topographic_plan_data)
-        topographic_plan.drop_duplicates(subset=['split_number', 'geometry'], keep='last',
+        topographic_plan.drop_duplicates(subset=['Разделенный номер', 'Геометрия'], keep='last',
                                          inplace=True, ignore_index=True)
-        topographic_plan.index.name = 'index'
 
         if not wkt_convert:
             return topographic_plan
         else:
-            topographic_plan.index = topographic_plan.index.astype(str)
-            topographic_plan['number_position'] = topographic_plan['number_position'].apply(
+            topographic_plan['Позиция номера'] = topographic_plan['Позиция номера'].apply(
                 lambda geom: geom.wkt if geom else None)
-            topographic_plan['geometry'] = topographic_plan['geometry'].apply(lambda geom: geom.wkt if geom else None)
+            topographic_plan['Геометрия'] = topographic_plan['Геометрия'].apply(lambda geom: geom.wkt if geom else None)
             return topographic_plan
 
     @staticmethod
@@ -231,14 +227,12 @@ class AutocadWorker:
             if name + '_' in list(zones.keys()):
                 zones[name] = geometry.difference(zones[name + '_'])
             if not name.endswith('_'):
-                zones_for_df.append({'name': name, 'geometry': zones[name]})
+                zones_for_df.append({'Наименование': name, 'Геометрия': zones[name]})
 
         zones_df = pd.DataFrame(zones_for_df)
-        zones_df.index.name = 'index'
 
         if not wkt_convert:
             return zones_df
         else:
-            zones_df.index = zones_df.index.astype(str)
-            zones_df['geometry'] = zones_df['geometry'].apply(lambda geom: geom.wkt if geom else None)
+            zones_df['Геометрия'] = zones_df['Геометрия'].apply(lambda geom: geom.wkt if geom else None)
             return zones_df
