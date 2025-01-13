@@ -161,6 +161,16 @@ def insert_zones_from_autocad():
 
 
 @xw.sub
+def insert_protected_zones_from_autocad():
+    """Вставить охранные зоны из топографического плана в таблицу"""
+    zones = AutocadWorker.get_df_protection_zones(['охранные зоны'], wkt_convert=True)
+    sheet = xw.sheets['Охранные зоны']
+    sheet[f'A:A'].number_format = '@'
+    sheet.range('A1').value = zones
+    sheet["A1"].value = ['Индекс']
+
+
+@xw.sub
 def insert_zone_objects_sub():
     """Вставить объекты для зоны"""
     sheet = xw.sheets.active

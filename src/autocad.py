@@ -236,3 +236,35 @@ class AutocadWorker:
         else:
             zones_df['Геометрия'] = zones_df['Геометрия'].apply(lambda geom: geom.wkt if geom else None)
             return zones_df
+
+    @staticmethod
+    def get_df_protection_zones(zones_layers: list[str], wkt_convert: bool = False) -> (
+            pd.DataFrame):
+        """
+        Получить датафрейм охранных зон из чертежа Autocad
+
+        Args:
+            zones_layers (list[str]): Имена слоёв, содержащих границы зон
+            wkt_convert (bool): Преобразование геометрии в wkt
+
+        Returns:
+            pd.DataFrame: Датафрейм геометрии зон
+        """
+        acad = Autocad()
+
+        zones_shapes_data = []
+        for obj in acad.iter_objects('AcDbPolyline'):
+            if obj.Layer in zones_layers:
+                acad_polygon_vertexes = [vertex for vertex in obj.Coordinates]
+                shape = Polygon(
+                    [(acad_polygon_vertexes[i], acad_polygon_vertexes[i + 1])
+                     for i in range(0, len(acad_polygon_vertexes), 2)])
+                zones_shapes_data.append({"Геометрия": shape})
+
+        zones_df = pd.DataFrame(zones_shapes_data)
+
+        if not wkt_convert:
+            return zones_df
+        else:
+            zones_df['Геометрия'] = zones_df['Геометрия'].apply(lambda geom: geom.wkt if geom else None)
+            return zones_df
