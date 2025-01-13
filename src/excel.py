@@ -1,9 +1,15 @@
+import ast
 import re
 from tkinter.filedialog import askopenfilename
 from docx import Document as DocxDocument
 
 import xlwings as xw
 import pandas as pd
+from shapely.geometry.linestring import LineString
+from shapely.geometry.multilinestring import MultiLineString
+from shapely.geometry.multipolygon import MultiPolygon
+from shapely.geometry.point import Point
+from shapely.geometry.polygon import Polygon
 from shapely.wkt import loads
 from win32com.universal import com_error
 
@@ -168,6 +174,19 @@ class ExcelWorker:
             return taxation_list_orm_df
 
     @staticmethod
+    def get_size_text(geometry: Point | Polygon | MultiPolygon | LineString | MultiLineString, quantity: str) -> str:
+        if isinstance(geometry, Polygon) or isinstance(geometry, MultiPolygon):
+            return f"{round(geometry.area, 1)} м.кв."
+        elif isinstance(geometry, LineString) or isinstance(geometry, MultiLineString):
+            return f"{round(geometry.length, 1)} м.п."
+        else:
+            try:
+                assert int(quantity) % 1 == 0
+                return str(int(float(quantity)))
+            except:
+                return quantity
+
+    @staticmethod
     def get_objects_from_zone(zone_result: str, wkt_convert: bool = False) -> pd.DataFrame:
         """
         Получить датафрейм объектов, входящих в указанную зону
@@ -179,18 +198,19 @@ class ExcelWorker:
         Returns:
             pd.DataFrame: Датафрейм объектов, входящих в зону
         """
-        sheet_autocad = xw.sheets['Автокад']
-        autocad_df = sheet_autocad.range('A1').expand().options(pd.DataFrame, header=1, index=False).value
-        autocad_df['number_position'] = autocad_df['number_position'].apply(lambda x: loads(x))
-        autocad_df['geometry'] = autocad_df['geometry'].apply(lambda x: loads(x))
+        sheet_autocad = xw.sheets['Ведомость ОРМ']
+        taxation_list_orm_df = sheet_autocad.range('A1').expand().options(pd.DataFrame, header=1, index=False).value
+        taxation_list_orm_df['Позиция номера'] = taxation_list_orm_df['Позиция номера'].apply(lambda x: loads(x))
+        taxation_list_orm_df['Геометрия'] = taxation_list_orm_df['Геометрия'].apply(lambda x: loads(x))
 
         sheet_zones = xw.sheets['Зоны']
         zones_df = sheet_zones.range('A1').expand().options(pd.DataFrame, header=1, index=False).value
 
-        zone_names = zones_df.name.tolist()
+        zone_names = zones_df['Наименование'].tolist()
         zone_names.remove(zone_result)
 
-        used_split_numbers_df = pd.DataFrame(columns=['split_number', 'type'])
+        used_split_numbers_df = pd.DataFrame(columns=['Исх.номер', 'Список геометрии'])
+
         for zone_name in zone_names:
             try:
                 sheet_zone = xw.sheets[zone_name]
@@ -199,42 +219,64 @@ class ExcelWorker:
             if sheet_zone.range('A1').value is None:
                 continue
             _used_split_numbers_df = sheet_zone.range('A1').expand().options(pd.DataFrame, header=1, index=False).value[
-                ['split_number', 'type']]
+                ['Исх.номер', 'Геометрия']]
+            _used_split_numbers_df['Геометрия'] = _used_split_numbers_df['Геометрия'].apply(lambda x: loads(x))
             used_split_numbers_df = pd.concat([used_split_numbers_df, _used_split_numbers_df])
-        used_split_numbers = used_split_numbers_df[used_split_numbers_df['type'] == 'Point']['split_number'].tolist()
 
-        autocad_df_not_used = autocad_df[~autocad_df['split_number'].isin(used_split_numbers)]
+        if len(used_split_numbers_df) != 0:
+            used_split_numbers_df['type'] = used_split_numbers_df['Геометрия'].apply(lambda x: isinstance(x, Point))
+            used_split_numbers = used_split_numbers_df[used_split_numbers_df['type']]['Исх.номер'].tolist()
+        else:
+            used_split_numbers = []
 
-        zone_shape = loads(zones_df[zones_df['name'] == zone_result]['geometry'].tolist()[0])
+        taxation_list_orm_df_not_used = taxation_list_orm_df[~taxation_list_orm_df['Номер точки'].isin(used_split_numbers)]
+
+        zone_shape = loads(zones_df[zones_df['Наименование'] == zone_result]['Геометрия'].tolist()[0])
 
         intersections_shapes = []
-        for _, series in autocad_df_not_used.iterrows():
-            geometry = series['geometry']
-            geometry_type = series['type']
+        for _, series in taxation_list_orm_df_not_used.iterrows():
+            geometry = series['Геометрия']
             intersection = zone_shape.intersection(geometry)
-            if geometry_type == 'Polygon' or geometry_type == 'MultiPolygon':
-                size = intersection.area
-            elif geometry_type == 'LineString' or geometry_type == 'MultiLineString':
-                size = intersection.length
-            else:
-                size = None
             if intersection:
-                intersections_shapes.append({
-                    'split_number': series['split_number'],
-                    'number_position': series['number_position'],
-                    'type': geometry_type,
-                    'geometry': intersection,
-                    'size': size
-                })
+                if isinstance(intersection, Point) or isinstance(intersection, Polygon) or isinstance(intersection,
+                                                                                                      LineString):
+                    intersections_shapes.append({
+                        'Исх.номер': series['Номер точки'],
+                        'Номер': None,
+                        'Наименование': series['Наименование'],
+                        'Количество': ExcelWorker.get_size_text(intersection, series['Количество']),
+                        'Высота': series['Высота'],
+                        'Толщина': series['Толщина'],
+                        'Состояние': series['Состояние'],
+                        'Кустарник': series['Кустарник'],
+                        'Позиция номера': intersection.centroid,
+                        'Геометрия': intersection
+                    })
+                elif isinstance(intersection, MultiPolygon) or isinstance(intersection, MultiLineString):
+                    number_suffix = 0
+                    for intersection_part in intersection.geoms:
+                        number_suffix += 1
+                        intersections_shapes.append({
+                            'Исх.номер': series['Номер точки'] + '_' + str(number_suffix),
+                            'Номер': None,
+                            'Наименование': series['Наименование'],
+                            'Количество': ExcelWorker.get_size_text(intersection_part, series['Количество']),
+                            'Высота': series['Высота'],
+                            'Толщина': series['Толщина'],
+                            'Состояние': series['Состояние'],
+                            'Кустарник': series['Кустарник'],
+                            'Позиция номера': intersection_part.centroid,
+                            'Геометрия': intersection_part
+                        })
+
         intersections_shapes_df = pd.DataFrame(intersections_shapes)
-        intersections_shapes_df.index.name = 'index'
 
         if not wkt_convert:
             return intersections_shapes_df
         else:
             intersections_shapes_df.index = intersections_shapes_df.index.astype(str)
-            intersections_shapes_df['number_position'] = intersections_shapes_df['number_position'].apply(
+            intersections_shapes_df['Позиция номера'] = intersections_shapes_df['Позиция номера'].apply(
                 lambda geom: geom.wkt if geom else None)
-            intersections_shapes_df['geometry'] = intersections_shapes_df['geometry'].apply(
+            intersections_shapes_df['Геометрия'] = intersections_shapes_df['Геометрия'].apply(
                 lambda geom: geom.wkt if geom else None)
             return intersections_shapes_df

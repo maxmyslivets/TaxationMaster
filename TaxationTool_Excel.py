@@ -171,11 +171,11 @@ def insert_protected_zones_from_autocad():
 
 
 @xw.sub
-def insert_zone_objects_sub():
+def insert_zone_objects():
     """Вставить объекты для зоны"""
     sheet = xw.sheets.active
     objects_in_zone = ExcelWorker.get_objects_from_zone(sheet.name, wkt_convert=True)
-    for l in ['A', 'B']:
+    for l in ['A', 'B', 'C', 'E', 'F', 'G']:
         sheet[f'{l}:{l}'].number_format = '@'
     sheet.range('A1').value = objects_in_zone
     sheet["A1"].value = ['Индекс']
