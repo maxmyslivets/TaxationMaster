@@ -43,11 +43,12 @@ class ExcelWorker:
         return [row[col_index] for row in data[1:]]
 
     @staticmethod
-    def orm_from_taxation_list_item(series: pd.Series) -> list[dict]:
+    def split_taxation_list_item(df: pd.DataFrame, series: pd.Series) -> list[dict]:
         """
         Получение строки ОРМ из строки таблицы Ведомости
 
         Args:
+            df (pd.DataFrame): Датафрейм листа Автокад
             series (pd.Series): Строка таблицы
 
         Returns:
@@ -56,6 +57,8 @@ class ExcelWorker:
         match_trunk = re.search(Templates.TRUNKS, series['Количество'])
         match_contour = re.search(Templates.CONTOUR, series['Количество'])
         match_line = re.search(Templates.LINE, series['Количество'])
+        shapes = ExcelWorker.get_shapes_from_autocad_df(df, series['Номер точки'])
+        numbers_positions, geometries = shapes['Список позиций номеров'], shapes['Список геометрии']
         if not match_contour and not match_line and not match_trunk:
             split_numbers = Splitter.number(series['Номер точки'])
             split_height = Splitter.size(series['Высота'])
@@ -63,11 +66,19 @@ class ExcelWorker:
             split_quality = Splitter.quality(series['Состояние'])
             is_stump = Parser.identification_stump(series['Высота'], series['Толщина'], bool(series['Кустарник']))
             if len(split_numbers) == 1:
-                if (not is_stump or "пень" in series['Наименование'].lower()) and len(split_quality) == 1:
-                    return [series.to_dict()]
+                if (not is_stump or "пень" in series['Наименование'].lower()) and len(split_quality) == 1 and len(
+                        numbers_positions) == 1 and len(geometries) == 1:
+                    series_dict = series.to_dict()
+                    series_dict['Позиция номера'] = numbers_positions[0]
+                    series_dict['Геометрия'] = geometries[0]
+                    return [series_dict]
             else:
-                if (not is_stump or "пень" in series['Наименование'].lower()) and len(split_quality) == 1:
-                    return [series.to_dict()]
+                if (not is_stump or "пень" in series['Наименование'].lower()) and len(split_quality) == 1 and len(
+                        numbers_positions) == 1 and len(geometries) == 1:
+                    series_dict = series.to_dict()
+                    series_dict['Позиция номера'] = numbers_positions[0]
+                    series_dict['Геометрия'] = geometries[0]
+                    return [series_dict]
                 if len(split_height) == 1:
                     split_height = split_height * int(series['Количество'])
                 if len(split_diameter) == 1:
@@ -89,11 +100,16 @@ class ExcelWorker:
                         'Высота': split_height[idx],
                         'Толщина': split_diameter[idx],
                         'Состояние': split_quality[idx],
-                        'Кустарник': series['Кустарник']
+                        'Кустарник': series['Кустарник'],
+                        'Позиция номера': numbers_positions[idx],
+                        'Геометрия': geometries[idx]
                     })
                 return series_data
         else:
-            return [series.to_dict()]
+            series_dict = series.to_dict()
+            series_dict['Позиция номера'] = numbers_positions[0]
+            series_dict['Геометрия'] = geometries[0]
+            return [series_dict]
 
     @staticmethod
     def get_shapes_from_autocad_df(df: pd.DataFrame, number: str) -> dict:
@@ -131,12 +147,6 @@ class ExcelWorker:
         taxation_list_df = taxation_list_df[
             ['Номер точки', 'Наименование', 'Количество', 'Высота', 'Толщина', 'Состояние', 'Кустарник']]
 
-        taxation_list_orm = []
-        for _, series in taxation_list_df.iterrows():
-            taxation_list_orm.extend(ExcelWorker.orm_from_taxation_list_item(series))
-
-        taxation_list_orm_df = pd.DataFrame(taxation_list_orm)
-
         sheet_autocad = xw.sheets['Автокад']
         autocad_df = sheet_autocad.range('A1').expand().options(pd.DataFrame, header=1, index=False).value
         autocad_df['Позиция номера'] = autocad_df['Позиция номера'].apply(lambda x: loads(x))
@@ -144,16 +154,17 @@ class ExcelWorker:
 
         assert autocad_df['Разделенный номер'].is_unique
 
-        taxation_list_orm_df[['Список позиций номеров', 'Список геометрии']] = taxation_list_orm_df['Номер точки'].apply(
-            lambda x: pd.Series(ExcelWorker.get_shapes_from_autocad_df(autocad_df, x)))
+        taxation_list_orm = []
+        for _, series in taxation_list_df.iterrows():
+            taxation_list_orm.extend(ExcelWorker.split_taxation_list_item(autocad_df, series))
+
+        taxation_list_orm_df = pd.DataFrame(taxation_list_orm)
 
         if not wkt_convert:
             return taxation_list_orm_df
         else:
-            taxation_list_orm_df['Список позиций номеров'] = taxation_list_orm_df['Список позиций номеров'].apply(
-                lambda geom: str([g.wkt for g in geom]))
-            taxation_list_orm_df['Список геометрии'] = taxation_list_orm_df['Список геометрии'].apply(
-                lambda geom: str([g.wkt for g in geom]))
+            taxation_list_orm_df['Позиция номера'] = taxation_list_orm_df['Позиция номера'].apply(lambda geom: geom.wkt)
+            taxation_list_orm_df['Геометрия'] = taxation_list_orm_df['Геометрия'].apply(lambda geom: geom.wkt)
             return taxation_list_orm_df
 
     @staticmethod
