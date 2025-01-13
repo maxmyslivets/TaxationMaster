@@ -214,7 +214,7 @@ class Parser:
             raise ValueError(f'Некорректное название породы: {text}. Ожидается 1 или 2 значения, принято {len(breeds)}.')
 
         # TODO: Исправить после создания БД
-        shrub_species, wood_species = Database(Path(__file__).parent.parent/"species.json").get_species()
+        shrub_species, wood_species = Database(Path(__file__).parent.parent/"data"/"species.json").get_species()
 
         if breed_genus in shrub_species:
             is_shrub = True

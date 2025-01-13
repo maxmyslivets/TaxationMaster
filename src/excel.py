@@ -1,5 +1,5 @@
-import ast
 import re
+import string
 from tkinter.filedialog import askopenfilename
 from docx import Document as DocxDocument
 
@@ -17,6 +17,32 @@ from src.parsing import Splitter, Parser, Templates
 
 
 class ExcelWorker:
+
+    @staticmethod
+    def index_from_cell(cell: xw.main.Range) -> str:
+        sheet = xw.sheets.active
+        return sheet.range(f'A{cell.row}').value
+
+    @staticmethod
+    def selected_cells() -> list[xw.main.Range]:
+        selected_cells = xw.apps.active.selection
+        not_hidden_cells = []
+        for cell in selected_cells:
+            if not xw.sheets.active.api.Rows(cell.row).Hidden:
+                not_hidden_cells.append(cell)
+        return not_hidden_cells
+
+    @staticmethod
+    def column_from_title(sheet: xw.Sheet) -> dict[str: str]:
+        titles: list[str] = sheet.range('A1').expand('right').value
+        letters: list[str] = list(string.ascii_uppercase)
+        return {title: letter for title, letter in zip(titles, letters)}
+
+    @staticmethod
+    def set_text_format(sheet: xw.Sheet, num_columns: list[int]) -> None:
+        letters = list(string.ascii_uppercase)
+        for i in num_columns:
+            sheet[f'{letters[i-1]}:{letters[i-1]}'].number_format = '@'
 
     @staticmethod
     def get_taxation_list() -> pd.DataFrame:
