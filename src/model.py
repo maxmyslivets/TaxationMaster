@@ -114,7 +114,7 @@ class Model:
         progress.total = len(selected_cells)
         for cell in selected_cells:
             if ';' in str(cell.value):
-                cell.value = str(cell.value).replace(';', '.')
+                cell.value = str(cell.value).replace(';', ',')
             progress.next()
 
     @staticmethod
