@@ -3,13 +3,13 @@ import re
 from src.parsing import Splitter, Templates
 
 
-class SearchAmbiguity:
+class Validate:
     """
     Поиск неоднозначности данных
     """
 
     @staticmethod
-    def check_in_row_from_taxation_list(number: str, quantity: str, height: str, diameter: str, is_shrub: bool) -> bool:
+    def check_taxation_list_row(number: str, quantity: str, height: str, diameter: str, quality: str, is_shrub: bool) -> bool:
         """
         Поиск неоднозначности в количестве численных характеристик объекта растительности
         Args:
@@ -17,15 +17,16 @@ class SearchAmbiguity:
             quantity (str): Количество объектов растительности
             height (str): Высоты объекта растительности
             diameter (str): Диаметры объекта растительности
-            is_shrub (bool): Тип объекта растительности (дерево/куст)
+            quality (str): Состояния объекта растительности
+            is_shrub (bool): Тип объекта растительности - True, если кустарник.
 
         Returns:
             bool: False, если неоднозначность найдена
         """
-        # FIXME: проверка количества состояний
         split_numbers = Splitter.number(number)
         split_height = Splitter.size(height)
         split_diameter = Splitter.size(diameter)
+        split_quality = Splitter.quality(quality)
 
         if (None in split_numbers) or (None in split_height) or (None in split_diameter):
             return False
@@ -52,6 +53,8 @@ class SearchAmbiguity:
         max_count = max([count_numbers, count_height, count_diameter, count_quantity])
 
         if (not is_shrub and diameter == '-') or (is_shrub and diameter != '-'):
+            return False
+        if len(split_quality) != 1 and len(split_quality) != max_count:
             return False
 
         if not match_contour and not match_line and not match_trunk:

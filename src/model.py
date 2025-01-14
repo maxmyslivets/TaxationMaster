@@ -8,7 +8,7 @@ import xlwings as xw
 from src.autocad import AutocadWorker
 from src.excel import ExcelWorker
 from src.parsing import Templates, Parser, Splitter
-from src.validation import SearchAmbiguity
+from src.validation import Validate
 
 
 class Model:
@@ -72,7 +72,8 @@ class Model:
             height = sheet.range(f"{col['Высота']}{cell.row}").value
             diameter = sheet.range(f"{col['Толщина']}{cell.row}").value
             is_shrub = bool(sheet.range(f"{col['Кустарник']}{cell.row}").value)
-            problem = SearchAmbiguity.check_in_row_from_taxation_list(number, quantity, height, diameter, is_shrub)
+            quality = sheet.range(f"{col['Состояние']}{cell.row}").value
+            problem = Validate.check_taxation_list_row(number, quantity, height, diameter, quality, is_shrub)
             sheet.range(f"{col['Валидация']}{cell.row}").value = int(not problem)
 
     @staticmethod
