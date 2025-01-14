@@ -19,7 +19,7 @@ def replace(directory: str):
 
                 # Замена строки
                 updated_content = content.replace(
-                    "import resources_rc", "import source.view.ui.resources_rc"
+                    "import resources_rc", "import src.ui.resources_rc"
                 )
 
                 # Проверка, была ли выполнена замена

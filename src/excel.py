@@ -14,6 +14,7 @@ from shapely.wkt import loads
 from win32com.universal import com_error
 
 from src.parsing import Splitter, Parser, Templates
+from src.ui.additional import Progress
 
 
 class ExcelWorker:
@@ -24,12 +25,20 @@ class ExcelWorker:
         return sheet.range(f'A{cell.row}').value
 
     @staticmethod
-    def selected_cells() -> list[xw.main.Range]:
+    def selected_cells(progress, all: bool = False) -> list[xw.main.Range]:
+        progress.status = "Сбор выделенных ячеек ..."
         selected_cells = xw.apps.active.selection
+        progress.total = len(selected_cells)
         not_hidden_cells = []
-        for cell in selected_cells:
-            if not xw.sheets.active.api.Rows(cell.row).Hidden:
+        if all:
+            for cell in selected_cells:
                 not_hidden_cells.append(cell)
+                progress.next()
+        else:
+            for cell in selected_cells:
+                if not xw.sheets.active.api.Rows(cell.row).Hidden:
+                    not_hidden_cells.append(cell)
+                progress.next()
         return not_hidden_cells
 
     @staticmethod
@@ -45,7 +54,7 @@ class ExcelWorker:
             sheet[f'{letters[i-1]}:{letters[i-1]}'].number_format = '@'
 
     @staticmethod
-    def get_taxation_list() -> pd.DataFrame:
+    def get_taxation_list(progress: Progress) -> pd.DataFrame:
         """
         Получение ведомости таксации из Word
 
@@ -58,11 +67,14 @@ class ExcelWorker:
 
         doc = DocxDocument(file_path)
         data = []
-
+        progress.total = len(doc.tables)
         for table in doc.tables:
+            progress.progress.total = len(table.rows)
             for row in table.rows:
                 row_data = [cell.text.strip() for cell in row.cells]
                 data.append(row_data)
+                progress.progress.next()
+            progress.next()
 
         return pd.DataFrame(data)
 
@@ -164,16 +176,18 @@ class ExcelWorker:
         return {'Список позиций номеров': number_positions, 'Список геометрии': geometries}
 
     @staticmethod
-    def get_taxation_list_orm(wkt_convert: bool = False) -> pd.DataFrame:
+    def get_taxation_list_orm(wkt_convert: bool = False, progress: Progress = None) -> pd.DataFrame:
         """
         Получение датафрейма "Ведомости ОРМ" из таблиц "Ведомость" и "Автокад"
 
         Args:
             wkt_convert (bool): Преобразование геометрии в wkt
+            progress (Progress): Прогресс бар
 
         Returns:
             pd.DataFrame: Датафрейм ведомости ОРМ
         """
+        progress.total = 100
         sheet_taxation_list = xw.sheets['Ведомость']
         taxation_list_df = sheet_taxation_list.range('A1').expand().options(pd.DataFrame, header=1).value
         taxation_list_df = taxation_list_df[
@@ -186,9 +200,13 @@ class ExcelWorker:
 
         assert autocad_df['Разделенный номер'].is_unique
 
+        progress.update(50)
+        progress.progress.total = len(taxation_list_df)
+
         taxation_list_orm = []
         for _, series in taxation_list_df.iterrows():
             taxation_list_orm.extend(ExcelWorker.split_taxation_list_item(autocad_df, series))
+            progress.progress.next()
 
         taxation_list_orm_df = pd.DataFrame(taxation_list_orm)
 
@@ -213,13 +231,14 @@ class ExcelWorker:
                 return quantity
 
     @staticmethod
-    def get_objects_from_zone(zone_result: str, wkt_convert: bool = False) -> pd.DataFrame:
+    def get_objects_from_zone(zone_result: str, wkt_convert: bool = False, progress: Progress = None) -> pd.DataFrame:
         """
         Получить датафрейм объектов, входящих в указанную зону
 
         Args:
             zone_result (str): Название зоны
             wkt_convert (bool): Преобразование геометрии в wkt
+            progress (Progress): Прогресс бар
 
         Returns:
             pd.DataFrame: Датафрейм объектов, входящих в зону
@@ -237,17 +256,22 @@ class ExcelWorker:
 
         used_split_numbers_df = pd.DataFrame(columns=['Исх.номер', 'Список геометрии'])
 
+        progress.update(30)
+        progress.progress.total = len(zone_names)
         for zone_name in zone_names:
             try:
                 sheet_zone = xw.sheets[zone_name]
             except com_error:
+                progress.progress.next()
                 continue
             if sheet_zone.range('A1').value is None:
+                progress.progress.next()
                 continue
             _used_split_numbers_df = sheet_zone.range('A1').expand().options(pd.DataFrame, header=1, index=False).value[
                 ['Исх.номер', 'Геометрия']]
             _used_split_numbers_df['Геометрия'] = _used_split_numbers_df['Геометрия'].apply(lambda x: loads(x))
             used_split_numbers_df = pd.concat([used_split_numbers_df, _used_split_numbers_df])
+            progress.progress.next()
 
         if len(used_split_numbers_df) != 0:
             used_split_numbers_df['type'] = used_split_numbers_df['Геометрия'].apply(lambda x: isinstance(x, Point))
@@ -258,6 +282,9 @@ class ExcelWorker:
         taxation_list_orm_df_not_used = taxation_list_orm_df[~taxation_list_orm_df['Номер точки'].isin(used_split_numbers)]
 
         zone_shape = loads(zones_df[zones_df['Наименование'] == zone_result]['Геометрия'].tolist()[0])
+
+        progress.update(60)
+        progress.progress.total = len(taxation_list_orm_df_not_used)
 
         intersections_shapes = []
         for _, series in taxation_list_orm_df_not_used.iterrows():
@@ -294,8 +321,10 @@ class ExcelWorker:
                             'Позиция номера': intersection_part.centroid,
                             'Геометрия': intersection_part
                         })
+            progress.progress.next()
 
         intersections_shapes_df = pd.DataFrame(intersections_shapes)
+        progress.update(90)
 
         if not wkt_convert:
             return intersections_shapes_df

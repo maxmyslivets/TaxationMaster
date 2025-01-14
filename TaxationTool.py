@@ -1,34 +1,69 @@
+import sys
+import traceback
+
 from PySide6.QtWidgets import QApplication, QMainWindow
 
 from src.model import Model
-from src.ui.ui_mainwindow import Ui_MainWindow
-
-import sys
+from src.ui.additional import ConsoleOutputRedirector, Progress
+from src.ui.ui_mainwindow import Ui_TaxationTool
 
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
-        self.ui = Ui_MainWindow()
+        self.ui = Ui_TaxationTool()
         self.ui.setupUi(self)
 
+        self.setup_console()
         self.setup_toolbars()
 
-    def setup_toolbars(self):
-        self.ui.action_open_excel_template.triggered.connect(Model.open_excel_template)
-        self.ui.action_import_taxation_list.triggered.connect(Model.insert_word_taxation_list)
-        self.ui.action_import_topographic_plan.triggered.connect(Model.insert_taxation_data_from_autocad)
-        self.ui.action_get_count_tree.triggered.connect(Model.get_count_tree)
-        self.ui.action_identification_shrub.triggered.connect(Model.identification_shrub)
-        self.ui.action_validation.triggered.connect(Model.validation)
-        self.ui.action_replace_comma_to_dot.triggered.connect(Model.replace_comma_to_dot)
-        self.ui.action_replace_dot_comma_to_comma.triggered.connect(Model.replace_dot_comma_to_comma)
-        self.ui.action_compare_numbers.triggered.connect(Model.compare_numbers)
-        self.ui.action_insert_taxation_list_orm.triggered.connect(Model.insert_taxation_list_orm)
-        self.ui.action_insert_zones.triggered.connect(Model.insert_zones_from_autocad)
-        self.ui.action_insert_protected_zones.triggered.connect(Model.insert_protected_zones_from_autocad)
-        self.ui.action_insert_zone_objects.triggered.connect(Model.insert_zone_objects)
+        self.progress = Progress(self.ui.progressBar.setValue, self.ui.progressBar2.setValue, self.ui.statusBar)
+
+
+    def setup_toolbars(self) -> None:
+        self.ui.action_open_excel_template.triggered.connect(lambda x: Model.open_excel_template(self.progress))
+        self.ui.action_import_taxation_list.triggered.connect(lambda x: Model.insert_word_taxation_list(self.progress))
+        self.ui.action_import_topographic_plan.triggered.connect(lambda x: Model.insert_taxation_data_from_autocad(self.progress))
+        self.ui.action_get_count_tree.triggered.connect(lambda x: Model.get_count_tree(self.progress))
+        self.ui.action_identification_shrub.triggered.connect(lambda x: Model.identification_shrub(self.progress))
+        self.ui.action_validation.triggered.connect(lambda x: Model.validation(self.progress))
+        self.ui.action_replace_comma_to_dot.triggered.connect(lambda x: Model.replace_comma_to_dot(self.progress))
+        self.ui.action_replace_dot_comma_to_comma.triggered.connect(lambda x: Model.replace_dot_comma_to_comma(self.progress))
+        self.ui.action_compare_numbers.triggered.connect(lambda x: Model.compare_numbers(self.progress))
+        self.ui.action_insert_taxation_list_orm.triggered.connect(lambda x: Model.insert_taxation_list_orm(self.progress))
+        self.ui.action_insert_zones.triggered.connect(lambda x: Model.insert_zones_from_autocad(self.progress))
+        self.ui.action_insert_protected_zones.triggered.connect(lambda x: Model.insert_protected_zones_from_autocad(self.progress))
+        self.ui.action_insert_zone_objects.triggered.connect(lambda x: Model.insert_zone_objects(self.progress))
+
+    def closeEvent(self, event) -> None:
+        """
+        Восстанавливает стандартный вывод при закрытии приложения.
+        """
+        sys.stdout = sys.__stdout__
+        sys.stderr = sys.__stderr__
+        super().closeEvent(event)
+
+    def setup_console(self):
+        """
+        Перенаправляет вывод консоли
+        """
+        sys.stdout = ConsoleOutputRedirector(self.ui.textEdit, 'info')
+        sys.excepthook = self.global_exception_handler
+
+    def global_exception_handler(self, exctype, value, tb):
+        """
+        Глобальный обработчик необработанных исключений.
+        Выводит traceback в QTextEdit.
+        """
+        # Форматируем traceback
+        error_text = "".join(traceback.format_exception(exctype, value, tb))
+        # Добавляем текст в QTextEdit
+        self.ui.textEdit.setTextColor("red")
+        self.ui.textEdit.append(error_text)
+        self.ui.textEdit.setTextColor("white")
+        # Также отправляем исключение в стандартный вывод ошибок
+        sys.__excepthook__(exctype, value, tb)
 
 
 if __name__ == "__main__":
