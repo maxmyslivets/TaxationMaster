@@ -16,11 +16,11 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QHBoxLayout,
-    QHeaderView, QMainWindow, QProgressBar, QPushButton,
-    QSizePolicy, QSpacerItem, QSplitter, QStatusBar,
-    QTabWidget, QTableView, QTextEdit, QToolBar,
-    QToolBox, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QGridLayout,
+    QHBoxLayout, QHeaderView, QLayout, QMainWindow,
+    QPushButton, QSizePolicy, QSpacerItem, QSplitter,
+    QStatusBar, QTabWidget, QTableView, QTextEdit,
+    QToolBar, QToolBox, QVBoxLayout, QWidget)
 import src.ui.resources_rc
 
 class Ui_TaxationTool(object):
@@ -96,11 +96,19 @@ class Ui_TaxationTool(object):
         self.toolBox.setMidLineWidth(0)
         self.page = QWidget()
         self.page.setObjectName(u"page")
-        self.page.setGeometry(QRect(0, 0, 780, 200))
+        self.page.setGeometry(QRect(0, 0, 780, 54))
+        self.gridLayout_5 = QGridLayout(self.page)
+        self.gridLayout_5.setObjectName(u"gridLayout_5")
+        self.checkBox_skip_hidden_cells = QCheckBox(self.page)
+        self.checkBox_skip_hidden_cells.setObjectName(u"checkBox_skip_hidden_cells")
+        self.checkBox_skip_hidden_cells.setChecked(False)
+
+        self.gridLayout_5.addWidget(self.checkBox_skip_hidden_cells, 0, 0, 1, 1)
+
         self.toolBox.addItem(self.page, u"\u0412\u0432\u043e\u0434 \u0434\u0430\u043d\u043d\u044b\u0445")
         self.page_2 = QWidget()
         self.page_2.setObjectName(u"page_2")
-        self.page_2.setGeometry(QRect(0, 0, 780, 200))
+        self.page_2.setGeometry(QRect(0, 0, 768, 144))
         self.gridLayout_2 = QGridLayout(self.page_2)
         self.gridLayout_2.setSpacing(0)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
@@ -189,20 +197,12 @@ class Ui_TaxationTool(object):
 
         self.verticalLayout.addWidget(self.splitter)
 
-        self.progressBar = QProgressBar(self.centralwidget)
-        self.progressBar.setObjectName(u"progressBar")
-        self.progressBar.setValue(0)
-        self.progressBar.setTextVisible(False)
-        self.progressBar.setOrientation(Qt.Orientation.Horizontal)
+        self.progress_layout = QVBoxLayout()
+        self.progress_layout.setSpacing(0)
+        self.progress_layout.setObjectName(u"progress_layout")
+        self.progress_layout.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
 
-        self.verticalLayout.addWidget(self.progressBar)
-
-        self.progressBar2 = QProgressBar(self.centralwidget)
-        self.progressBar2.setObjectName(u"progressBar2")
-        self.progressBar2.setValue(0)
-        self.progressBar2.setTextVisible(False)
-
-        self.verticalLayout.addWidget(self.progressBar2)
+        self.verticalLayout.addLayout(self.progress_layout)
 
 
         self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
@@ -243,7 +243,7 @@ class Ui_TaxationTool(object):
 
         self.retranslateUi(TaxationTool)
 
-        self.toolBox.setCurrentIndex(1)
+        self.toolBox.setCurrentIndex(0)
         self.tabWidget.setCurrentIndex(1)
 
 
@@ -303,6 +303,7 @@ class Ui_TaxationTool(object):
 #if QT_CONFIG(tooltip)
         self.action_open_excel_template.setToolTip(QCoreApplication.translate("TaxationTool", u"\u041e\u0442\u043a\u0440\u044b\u0442\u044c \u0448\u0430\u0431\u043b\u043e\u043d Excel \u0444\u0430\u0439\u043b\u0430", None))
 #endif // QT_CONFIG(tooltip)
+        self.checkBox_skip_hidden_cells.setText(QCoreApplication.translate("TaxationTool", u"\u041d\u0435 \u043e\u0431\u0440\u0430\u0431\u0430\u0442\u044b\u0432\u0430\u0442\u044c \u0441\u043a\u0440\u044b\u0442\u044b\u0435 \u044f\u0447\u0435\u0439\u043a\u0438", None))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page), QCoreApplication.translate("TaxationTool", u"\u0412\u0432\u043e\u0434 \u0434\u0430\u043d\u043d\u044b\u0445", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("TaxationTool", u"\u0422\u0438\u043f\u044b, \u043f\u043e\u0440\u043e\u0434\u044b", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("TaxationTool", u"\u041f\u043b\u043e\u0442\u043d\u043e\u0441\u0442\u044c \u0434\u0440\u0435\u0432\u0438\u0441\u0438\u043d\u044b", None))

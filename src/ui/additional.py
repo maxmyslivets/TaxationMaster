@@ -1,8 +1,5 @@
-import traceback
-from typing import Callable, Optional
-
-from PySide6.QtGui import QTextCursor
-from PySide6.QtWidgets import QStatusBar, QTextEdit
+from PySide6.QtWidgets import QTextEdit, QHBoxLayout, QLabel, QProgressBar, QBoxLayout, QVBoxLayout, QWidget
+from PySide6 import QtGui
 
 
 class ConsoleOutputRedirector:
@@ -22,57 +19,87 @@ class ConsoleOutputRedirector:
         pass
 
 
-class Progress:
+class ProgressWidget(QWidget):
+    """
+    Виджет прогресса
+    """
+
+    def __init__(self, parent: QVBoxLayout, info: str, maximum: int = 100) -> None:
+        """
+        Args:
+            parent (QBoxLayout): Родительский слой
+            info (str): Текст прогресса
+            maximum (int): Максимальное значение прогресса
+        """
+        super().__init__()
+        self.parent_layout = parent
+        self.maximum = maximum
+
+        self.progress_layout = QHBoxLayout()
+        self.progress_layout.setContentsMargins(0, 0, 0, 0)
+
+        self.progress_layout.addWidget(QLabel(info))
+
+        self.progress = QProgressBar()
+        self.progress.setMaximum(self.maximum)
+        self.progress.setValue(0)
+        self.progress.setTextVisible(True)
+        self.progress.setFormat(u"%v/%m")
+
+        self.progress_layout.addWidget(self.progress)
+
+        self.parent_layout.addLayout(self.progress_layout)
+
+    def next(self) -> None:
+        """
+        Обновляет текущий шаг на 1.
+        """
+        self.set_value(self.progress.value() + 1)
+
+    def set_value(self, value: int) -> None:
+        """
+        Обновляет текущий шаг.
+
+        Args:
+            value (int): Значение от 0 до maximum.
+        """
+        # assert 0 <= value <= self.progress.maximum(), (f"Ошибка ProgressBar, указанное значение {value}. "
+        #                                                f"Значение должно находиться между 0 и "
+        #                                                f"{self.progress.maximum()}.")
+        self.progress.setValue(value)
+        if self.progress.value() == self.progress.maximum():
+            self.delete()
+        QtGui.QGuiApplication.processEvents()
+
+    def delete(self) -> None:
+        """
+        Удаляет виджет прогресса.
+        """
+        for i in reversed(range(self.progress_layout.count())):
+            widget = self.progress_layout.itemAt(i).widget()
+            if widget:
+                widget.setParent(None)
+        self.progress_layout.setParent(None)
+        self.setParent(None)
+
+
+class ProgressManager:
     """
     Класс для управления прогрессом.
     Принимает общее количество шагов и рассчитывает прогресс в процентах.
     """
 
-    def __init__(self, callback: Callable, callback2: Optional[Callable] = None,
-                 status_bar: Optional[QStatusBar] = None) -> None:
-        self.callback = callback
-        self._total = 0
-        self._current = 0
-        self._status_bar = status_bar
-        self.progress = None
-        if callback2 is not None:
-            self.progress = Progress(callback2)
+    def __init__(self, parent: QVBoxLayout) -> None:
+        self.parent_layout = parent
 
-    @property
-    def total(self) -> int:
-        return self._total
-
-    @total.setter
-    def total(self, value: int) -> None:
-        self._total = value
-        self._current = 0
-
-    @property
-    def status(self) -> None:
-        return
-
-    @status.setter
-    def status(self, text: str) -> None:
-        print(text)
-        self._status_bar.showMessage(text)
-
-    def next(self) -> None:
+    def new(self, info: str, maximum: int = 100) -> ProgressWidget:
         """
-        Обновляет текущий шаг на 1 и вычисляет прогресс.
-        """
-        self.update(self._current + 1)
-
-    def update(self, value: int | float) -> None:
-        """
-        Обновляет текущий шаг и вычисляет прогресс.
-
+        Создать новый прогресс.
         Args:
-            value (int | float): Текущий значение (от 0 до total_steps).
+            info (str): Текст прогресса
+            maximum (int): Максимальное значение прогресса
+
+        Returns:
+            ProgressWidget: Виджет прогресса
         """
-        assert 0 <= value <= self._total, (f"Ошибка ProgressBar, указанное значение {value}. Значение должно "
-                                           f"находиться между 0 и {self._total}.")
-        assert self._total != 0, f"Ошибка ProgressBar, указано максимальное значение: {self._total}."
-        self._current = value
-        self.callback((self._current / self._total) * 100)
-        if (self._current / self._total) * 100 == 100 and self._status_bar is not None:
-            self.status = 'Готово'
+        return ProgressWidget(self.parent_layout, info, maximum)

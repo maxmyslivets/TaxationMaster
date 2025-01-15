@@ -78,7 +78,7 @@
             <x>0</x>
             <y>0</y>
             <width>780</width>
-            <height>200</height>
+            <height>54</height>
            </rect>
           </property>
           <attribute name="label">
@@ -86,9 +86,12 @@
           </attribute>
           <layout class="QGridLayout" name="gridLayout_5">
            <item row="0" column="0">
-            <widget class="QCheckBox" name="checkBox_ignor_hidden_cells">
+            <widget class="QCheckBox" name="checkBox_skip_hidden_cells">
              <property name="text">
-              <string>Игнорировать скрытые ячейки</string>
+              <string>Не обрабатывать скрытые ячейки</string>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -99,8 +102,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>780</width>
-            <height>200</height>
+            <width>768</width>
+            <height>144</height>
            </rect>
           </property>
           <attribute name="label">
@@ -289,27 +292,14 @@ li.checked::marker { content: &quot;\2612&quot;; }
        </widget>
       </item>
       <item>
-       <widget class="QProgressBar" name="progressBar">
-        <property name="value">
+       <layout class="QVBoxLayout" name="progress_layout">
+        <property name="spacing">
          <number>0</number>
         </property>
-        <property name="textVisible">
-         <bool>false</bool>
+        <property name="sizeConstraint">
+         <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
         </property>
-        <property name="orientation">
-         <enum>Qt::Orientation::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QProgressBar" name="progressBar2">
-        <property name="value">
-         <number>0</number>
-        </property>
-        <property name="textVisible">
-         <bool>false</bool>
-        </property>
-       </widget>
+       </layout>
       </item>
      </layout>
     </item>

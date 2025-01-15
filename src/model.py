@@ -9,26 +9,23 @@ from src.autocad import AutocadWorker
 from src.excel import ExcelWorker
 from src.parsing import Templates, Parser, Splitter
 from src.validation import Validate
-from src.ui.additional import Progress
 
 
 class Model:
 
     @staticmethod
-    def open_excel_template(progress: Progress) -> None:
+    def open_excel_template(app) -> None:
         """Открытие шаблона"""
-        progress.total = 1
-        progress.status = "Открытие шаблона ..."
+        progress = app.progress_manager.new("Открытие шаблона", 1)
         app = xw.App(visible=True, add_book=False)
         app.books.open(Path(__file__).parent.parent/"data"/"template_excel.xlsx")
         progress.next()
 
     @staticmethod
-    def insert_word_taxation_list(progress: Progress) -> None:
+    def insert_word_taxation_list(app) -> None:
         """Вставка Word ведомости таксации"""
-        progress.status = "Вставка Word ведомости таксации ..."
-        taxation_list = ExcelWorker.get_taxation_list(progress)
-        progress.total = 1
+        progress = app.progress_manager.new("Вставка ведомости таксации", 1)
+        taxation_list = ExcelWorker.get_taxation_list(app)
         sheet = xw.sheets['Ведомость']
         sheet['A1'].value = ['Индекс', 'Номер точки', 'Наименование', 'Количество', 'Высота', 'Толщина', 'Состояние',
                              'Кустарник', 'Валидация']
@@ -38,10 +35,9 @@ class Model:
         progress.next()
 
     @staticmethod
-    def get_count_tree(progress: Progress) -> None:
+    def get_count_tree(app) -> None:
         """Подсчёт количества деревьев"""
-        progress.status = "Подсчёт количества деревьев ..."
-        progress.total = 1
+        progress = app.progress_manager.new("Подсчёт количества деревьев", 1)
         selected_cells = xw.apps.active.selection
         df = pd.DataFrame(data=selected_cells.value, columns=['Количество'], dtype=str)
 
@@ -59,13 +55,13 @@ class Model:
         progress.next()
 
     @staticmethod
-    def identification_shrub(progress: Progress) -> None:
+    def identification_shrub(app) -> None:
         """Определить кустарник"""
+        progress = app.progress_manager.new("Определение кустарников", 1)
         sheet = xw.sheets['Ведомость']
         col = ExcelWorker.column_from_title(sheet)
-        selected_cells = ExcelWorker.selected_cells(progress)
-        progress.status = "Определение кустарников ..."
-        progress.total = len(selected_cells)
+        selected_cells = ExcelWorker.selected_cells(app)
+        progress.progress.setMaximum(len(selected_cells))
         for cell in selected_cells:
             name = sheet.range(f"{col['Наименование']}{cell.row}").value
             try:
@@ -73,16 +69,17 @@ class Model:
                 sheet.range(f"{col['Кустарник']}{cell.row}").value = int(is_shrub)
             except ValueError as e:
                 sheet.range(f"{col['Кустарник']}{cell.row}").value = str(e)
+                print(e)
             progress.next()
 
     @staticmethod
-    def validation(progress: Progress) -> None:
+    def validation(app) -> None:
         """Поиск неоднозначностей в количественных характеристиках"""
+        progress = app.progress_manager.new("Валидация", 1)
         sheet = xw.sheets['Ведомость']
         col = ExcelWorker.column_from_title(sheet)
-        selected_cells = ExcelWorker.selected_cells(progress)
-        progress.status = "Валидация количественных и качественных характеристик ..."
-        progress.total = len(selected_cells)
+        selected_cells = ExcelWorker.selected_cells(app)
+        progress.progress.setMaximum(len(selected_cells))
         for cell in selected_cells:
             number = sheet.range(f"{col['Номер точки']}{cell.row}").value
             quantity = sheet.range(f"{col['Количество']}{cell.row}").value
@@ -95,11 +92,11 @@ class Model:
             progress.next()
 
     @staticmethod
-    def replace_comma_to_dot(progress: Progress) -> None:
+    def replace_comma_to_dot(app) -> None:
         """Замена запятой на точку"""
-        selected_cells = ExcelWorker.selected_cells(progress)
-        progress.status = "Замена запятой на точку ..."
-        progress.total = len(selected_cells)
+        progress = app.progress_manager.new("Замена запятой на точку", 1)
+        selected_cells = ExcelWorker.selected_cells(app)
+        progress.progress.setMaximum(len(selected_cells))
         print(f"Замена пунктуации в {len(selected_cells)} ячейках ...")
         for cell in selected_cells:
             if ',' in str(cell.value):
@@ -107,24 +104,24 @@ class Model:
             progress.next()
 
     @staticmethod
-    def replace_dot_comma_to_comma(progress: Progress) -> None:
+    def replace_dot_comma_to_comma(app) -> None:
         """Замена точки с запятой на запятую"""
-        selected_cells = ExcelWorker.selected_cells(progress)
-        progress.status = "Замена точки с запятой на запятую ..."
-        progress.total = len(selected_cells)
+        progress = app.progress_manager.new("Замена запятой на точку", 1)
+        selected_cells = ExcelWorker.selected_cells(app)
+        progress.progress.setMaximum(len(selected_cells))
+        print(f"Замена пунктуации в {len(selected_cells)} ячейках ...")
         for cell in selected_cells:
             if ';' in str(cell.value):
                 cell.value = str(cell.value).replace(';', ',')
             progress.next()
 
     @staticmethod
-    def compare_numbers(progress: Progress):
+    def compare_numbers(app):
         """Сравнить наличие номеров в Excel и Autocad"""
-        progress.status = "Сравнение номеров в Excel и Autocad ..."
-        progress.total = 100
+        progress = app.progress_manager.new("Сравнение номеров в Excel и Autocad", 100)
         numbers_from_excel = ExcelWorker.get_numbers(xw.sheets['Ведомость'], 'Номер точки')
         numbers_from_acad = AutocadWorker.get_numbers('номера')
-        progress.update(5)
+        progress.set_value(75)
 
         split_numbers_from_excel = []
         for number_excel in numbers_from_excel:
@@ -132,66 +129,64 @@ class Model:
         split_numbers_from_acad = []
         for number_acad in numbers_from_acad:
             split_numbers_from_acad.extend(Splitter.number(str(number_acad)))
-        progress.update(20)
+        progress.set_value(80)
 
         counter_split_numbers_from_excel = Counter(split_numbers_from_excel)
         duplicates_split_numbers_from_excel = [key for key, value in counter_split_numbers_from_excel.items() if value > 1]
         print(f"Дубликаты Excel: {duplicates_split_numbers_from_excel}")
-        progress.update(40)
+        progress.set_value(85)
 
         counter_split_numbers_from_acad = Counter(split_numbers_from_acad)
         duplicates_split_numbers_from_acad = [key for key, value in counter_split_numbers_from_acad.items() if value > 1]
         print(f"Дубликаты Autocad: {duplicates_split_numbers_from_acad}")
-        progress.update(60)
+        progress.set_value(90)
 
         unique_in_excel = list(set(split_numbers_from_excel) - set(split_numbers_from_acad))
         print(f"Только в Excel: {unique_in_excel}")
-        progress.update(80)
+        progress.set_value(95)
 
         unique_in_acad = list(set(split_numbers_from_acad) - set(split_numbers_from_excel))
         print(f"Только в Autocad: {unique_in_acad}")
-        progress.update(100)
-
+        progress.set_value(100)
 
     @staticmethod
-    def insert_taxation_data_from_autocad(progress: Progress):
+    def insert_taxation_data_from_autocad(app):
         """Вставка таксационных данных из топографического плана Autocad в лист"""
-        progress.status = "Вставка таксационных данных из топографического плана Autocad в лист ..."
+        progress = app.progress_manager.new("Вставка таксации из Autocad в лист", 100)
         topographic_plan = AutocadWorker.get_df_topographic_plan(["номера"], ["полосы"], ["контуры"],
-                                                                 wkt_convert=True, progress=progress)
+                                                                 wkt_convert=True, app=app)
         sheet = xw.sheets['Автокад']
         ExcelWorker.set_text_format(sheet, [1, 2, 3])
         sheet.range('A1').value = topographic_plan
         sheet["A1"].value = ['Индекс']
-        progress.update(100)
+        progress.set_value(100)
 
     @staticmethod
-    def insert_taxation_list_orm(progress: Progress):
+    def insert_taxation_list_orm(app):
         """Вставка ведомости ОРМ"""
-        progress.status = "Создание ведомости ОРМ ..."
-        taxation_list_orm = ExcelWorker.get_taxation_list_orm(wkt_convert=True, progress=progress)
+        progress = app.progress_manager.new("Создание ведомости ОРМ", 100)
+        taxation_list_orm = ExcelWorker.get_taxation_list_orm(wkt_convert=True, app=app)
         sheet = xw.sheets['Ведомость ОРМ']
         ExcelWorker.set_text_format(sheet, [1, 2, 3])
         sheet.range('A1').value = taxation_list_orm
         sheet["A1"].value = ['Индекс']
-        progress.update(100)
+        progress.set_value(100)
 
     @staticmethod
-    def insert_zones_from_autocad(progress: Progress):
+    def insert_zones_from_autocad(app):
         """Вставить зоны из топографического плана в таблицу"""
-        progress.status = "Создание ведомости ОРМ ..."
+        progress = app.progress_manager.new("Вставка зон из Autocad", 100)
         zones = AutocadWorker.get_df_zones(['зоны'], wkt_convert=True, progress=progress)
         sheet = xw.sheets['Зоны']
         ExcelWorker.set_text_format(sheet, [1])
         sheet.range('A1').value = zones
         sheet["A1"].value = ['Индекс']
-        progress.update(100)
+        progress.set_value(100)
 
     @staticmethod
-    def insert_protected_zones_from_autocad(progress: Progress):
+    def insert_protected_zones_from_autocad(app):
         """Вставить охранные зоны из топографического плана в таблицу"""
-        progress.total = 100
-        progress.status = "Вставка охранных зон из топографического плана в таблицу ..."
+        progress = app.progress_manager.new("Вставка охранных зон из Autocad", 100)
         zones = AutocadWorker.get_df_protection_zones(['охранные зоны'], wkt_convert=True, progress=progress)
         sheet = xw.sheets['Охранные зоны']
         ExcelWorker.set_text_format(sheet, [1])
@@ -200,10 +195,9 @@ class Model:
         progress.update(100)
 
     @staticmethod
-    def insert_zone_objects(progress: Progress):
+    def insert_zone_objects(app):
         """Вставить объекты для зоны"""
-        progress.total = 100
-        progress.status = "Вставка ОРМ в лист зоны ..."
+        progress = app.progress_manager.new("Вставка ОРМ в лист зоны", 100)
         sheet = xw.sheets.active
         objects_in_zone = ExcelWorker.get_objects_from_zone(sheet.name, wkt_convert=True, progress=progress)
         ExcelWorker.set_text_format(sheet, [1, 2, 3, 5, 6, 7])

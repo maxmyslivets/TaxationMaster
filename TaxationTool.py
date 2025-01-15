@@ -4,7 +4,7 @@ import traceback
 from PySide6.QtWidgets import QApplication, QMainWindow
 
 from src.model import Model
-from src.ui.additional import ConsoleOutputRedirector, Progress
+from src.ui.additional import ConsoleOutputRedirector, ProgressManager
 from src.ui.ui_mainwindow import Ui_TaxationTool
 
 
@@ -18,23 +18,22 @@ class MainWindow(QMainWindow):
         self.setup_console()
         self.setup_toolbars()
 
-        self.progress = Progress(self.ui.progressBar.setValue, self.ui.progressBar2.setValue, self.ui.statusBar)
-
+        self.progress_manager = ProgressManager(self.ui.progress_layout)
 
     def setup_toolbars(self) -> None:
-        self.ui.action_open_excel_template.triggered.connect(lambda x: Model.open_excel_template(self.progress))
-        self.ui.action_import_taxation_list.triggered.connect(lambda x: Model.insert_word_taxation_list(self.progress))
-        self.ui.action_import_topographic_plan.triggered.connect(lambda x: Model.insert_taxation_data_from_autocad(self.progress))
-        self.ui.action_get_count_tree.triggered.connect(lambda x: Model.get_count_tree(self.progress))
-        self.ui.action_identification_shrub.triggered.connect(lambda x: Model.identification_shrub(self.progress))
-        self.ui.action_validation.triggered.connect(lambda x: Model.validation(self.progress))
-        self.ui.action_replace_comma_to_dot.triggered.connect(lambda x: Model.replace_comma_to_dot(self.progress))
-        self.ui.action_replace_dot_comma_to_comma.triggered.connect(lambda x: Model.replace_dot_comma_to_comma(self.progress))
-        self.ui.action_compare_numbers.triggered.connect(lambda x: Model.compare_numbers(self.progress))
-        self.ui.action_insert_taxation_list_orm.triggered.connect(lambda x: Model.insert_taxation_list_orm(self.progress))
-        self.ui.action_insert_zones.triggered.connect(lambda x: Model.insert_zones_from_autocad(self.progress))
-        self.ui.action_insert_protected_zones.triggered.connect(lambda x: Model.insert_protected_zones_from_autocad(self.progress))
-        self.ui.action_insert_zone_objects.triggered.connect(lambda x: Model.insert_zone_objects(self.progress))
+        self.ui.action_open_excel_template.triggered.connect(lambda x: Model.open_excel_template(self))
+        self.ui.action_import_taxation_list.triggered.connect(lambda x: Model.insert_word_taxation_list(self))
+        self.ui.action_import_topographic_plan.triggered.connect(lambda x: Model.insert_taxation_data_from_autocad(self))
+        self.ui.action_get_count_tree.triggered.connect(lambda x: Model.get_count_tree(self))
+        self.ui.action_identification_shrub.triggered.connect(lambda x: Model.identification_shrub(self))
+        self.ui.action_validation.triggered.connect(lambda x: Model.validation(self))
+        self.ui.action_replace_comma_to_dot.triggered.connect(lambda x: Model.replace_comma_to_dot(self))
+        self.ui.action_replace_dot_comma_to_comma.triggered.connect(lambda x: Model.replace_dot_comma_to_comma(self))
+        self.ui.action_compare_numbers.triggered.connect(lambda x: Model.compare_numbers(self))
+        self.ui.action_insert_taxation_list_orm.triggered.connect(lambda x: Model.insert_taxation_list_orm(self))
+        self.ui.action_insert_zones.triggered.connect(lambda x: Model.insert_zones_from_autocad(self))
+        self.ui.action_insert_protected_zones.triggered.connect(lambda x: Model.insert_protected_zones_from_autocad(self))
+        self.ui.action_insert_zone_objects.triggered.connect(lambda x: Model.insert_zone_objects(self))
 
     def closeEvent(self, event) -> None:
         """

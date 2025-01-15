@@ -6,7 +6,6 @@ from shapely.geometry.multipolygon import MultiPolygon
 
 
 from src.parsing import Splitter
-from src.ui.additional import Progress
 
 
 class AutocadWorker:
@@ -32,7 +31,7 @@ class AutocadWorker:
 
     @staticmethod
     def get_df_topographic_plan(numbers_layers, lines_layers: list[str], contours_layers: list[str],
-                                min_distance: float = 0.01, wkt_convert: bool = False, progress: Progress = None) -> pd.DataFrame:
+                                min_distance: float = 0.01, wkt_convert: bool = False, app=None) -> pd.DataFrame:
         """
         Получить датафрейм таксационных данных из чертежа Autocad
 
@@ -42,16 +41,17 @@ class AutocadWorker:
             contours_layers (list[str]): Имена слоёв, содержащих объекты контуров растительности
             min_distance (float): буфер для привязки номеров к линейным объектам
             wkt_convert (bool): Преобразование геометрии в wkt
-            progress (Progress): Прогресс бар
+            app: Прогресс бар
 
         Returns:
             pd.DataFrame: Датафрейм таксационных данных
         """
         acad = Autocad()
         numbers_data = []
-        progress.total = 100
 
-        progress.progress.total = len(list(acad.iter_objects(['AcDbText', 'AcDbMText'])))
+        progress_1 = app.progress_manager.new("Получение датафрейма", 100)
+        progress_2 = app.progress_manager.new("Чтение текстовых объектов Autocad", len(list(acad.iter_objects(['AcDbText', 'AcDbMText']))))
+
         for obj in acad.iter_objects(['AcDbText', 'AcDbMText']):
             if obj.ObjectName == 'AcDbText' and obj.Layer in numbers_layers:
                 x, y, _ = obj.InsertionPoint
@@ -65,12 +65,12 @@ class AutocadWorker:
                     'number': mtext_to_string(obj.TextString).replace('\n', ' '),
                     'position': Point(x, y)
                 })
-            progress.progress.next()
+            progress_2.next()
 
         numbers_df = pd.DataFrame(numbers_data)
-        progress.update(15)
 
-        progress.progress.total = len(list(acad.iter_objects(['AcDbLine', 'AcDbPolyline', 'AcDbPolygon'])))
+        progress_1.set_value(15)
+        progress_2 = app.progress_manager.new("Чтение линейных объектов Autocad", len(list(acad.iter_objects(['AcDbLine', 'AcDbPolyline', 'AcDbPolygon']))))
         shapes_data = []
         for obj in acad.iter_objects(['AcDbLine', 'AcDbPolyline', 'AcDbPolygon']):
             if obj.ObjectName == 'AcDbLine' and obj.Layer in lines_layers:
@@ -98,10 +98,10 @@ class AutocadWorker:
                     'geometry': shape,
                     'type': 'Polygon'
                 })
-            progress.progress.next()
+            progress_2.next()
 
         shapes_df = pd.DataFrame(shapes_data)
-        progress.update(30)
+        progress_1.set_value(30)
 
         # Связывание номеров и фигур
         numbers_shapes_data = []
@@ -109,7 +109,7 @@ class AutocadWorker:
             # Создаем геометрические точки для всех номеров
             number_points = numbers_df.apply(lambda row: row['position'], axis=1)
 
-            progress.progress.total = len(shapes_df)
+            progress_2 = app.progress_manager.new("Связывание номеров и фигур", len(shapes_df))
             # Для каждой фигуры проверяем все номера
             for shape_id, shape_row in shapes_df.iterrows():
                 shape_type = shape_row['type']
@@ -129,10 +129,10 @@ class AutocadWorker:
                         'number_id': number_id,
                         'shape_id': shape_id
                     })
-                progress.progress.next()
+                progress_2.next()
 
         numbers_shapes_df = pd.DataFrame(numbers_shapes_data)
-        progress.update(45)
+        progress_1.set_value(45)
 
         # Сбор деревьев (точечных объектов)
         unassigned_numbers = numbers_df.index.difference(numbers_shapes_df['number_id'])
@@ -144,10 +144,10 @@ class AutocadWorker:
             })
 
         trees_df = pd.DataFrame(trees_data)
-        progress.update(60)
+        progress_1.set_value(60)
 
         topographic_plan_data = []
-        progress.progress.total = len(trees_df['number_id'])
+        progress_2 = app.progress_manager.new("Фильтрация точечных объектов", len(trees_df['number_id']))
         for number_id in trees_df['number_id']:
             for _split_number in Splitter.number(numbers_df.iloc[number_id]['number']):
                 topographic_plan_data.append(
@@ -159,17 +159,17 @@ class AutocadWorker:
                         'Размер': None
                     }
                 )
-            progress.progress.next()
+            progress_2.next()
 
-        progress.update(75)
+        progress_1.set_value(75)
 
-        progress.progress.total = len(numbers_shapes_df.index)
+        progress_2 = app.progress_manager.new("Сбор итогового датафрейма", len(numbers_shapes_df.index))
         for numbers_shapes_id in numbers_shapes_df.index:
 
             number_id = numbers_shapes_df.iloc[numbers_shapes_id]['number_id']
             shape_id = numbers_shapes_df.iloc[numbers_shapes_id]['shape_id']
             shape: LineString | Polygon = shapes_df.iloc[shape_id]['geometry']
-            shape_type = shapes_df.iloc[shape_id]['type']
+            # shape_type = shapes_df.iloc[shape_id]['type']
 
             for _split_number in Splitter.number(numbers_df.iloc[number_id]['number']):
                 topographic_plan_data.append(
@@ -181,12 +181,12 @@ class AutocadWorker:
                         'Размер': shape.length if isinstance(shape, LineString) else shape.area
                     }
                 )
-            progress.progress.next()
+            progress_2.next()
 
         topographic_plan = pd.DataFrame(topographic_plan_data)
         topographic_plan.drop_duplicates(subset=['Разделенный номер', 'Геометрия'], keep='last',
                                          inplace=True, ignore_index=True)
-        progress.update(90)
+        progress_1.set_value(100)
 
         if not wkt_convert:
             return topographic_plan
@@ -198,7 +198,7 @@ class AutocadWorker:
 
     @staticmethod
     def get_df_zones(zones_layers: list[str], min_distance: float = 0.01, wkt_convert: bool = False,
-                     progress: Progress = None) -> pd.DataFrame:
+                     app=None) -> pd.DataFrame:
         """
         Получить датафрейм зон из чертежа Autocad
 
@@ -212,8 +212,8 @@ class AutocadWorker:
             pd.DataFrame: Датафрейм названий и геометрии зон
         """
         acad = Autocad()
-        progress.total = 100
-        progress.progress.total = len(list(acad.iter_objects(['AcDbText', 'AcDbMText'])))
+        progress_1 = app.progress_manager.new("Получение датафрейма", 100)
+        progress_2 = app.progress_manager.new("Чтение текстовых объектов Autocad", len(list(acad.iter_objects(['AcDbText', 'AcDbMText']))))
 
         names_data = []
         for obj in acad.iter_objects(['AcDbText', 'AcDbMText']):
@@ -223,10 +223,10 @@ class AutocadWorker:
             elif obj.ObjectName == 'AcDbMText' and obj.Layer in zones_layers:
                 x, y, _ = obj.InsertionPoint
                 names_data.append((mtext_to_string(obj.TextString).replace('\n', ' '), Point(x, y)))
-            progress.progress.next()
+            progress_2.next()
 
-        progress.update(20)
-        progress.progress.total = len(list(acad.iter_objects('AcDbPolyline')))
+        progress_1.set_value(20)
+        progress_2 = app.progress_manager.new("Чтение линейных объектов Autocad", len(list(acad.iter_objects('AcDbPolyline'))))
 
         zones_shapes_data = []
         for obj in acad.iter_objects('AcDbPolyline'):
@@ -236,28 +236,28 @@ class AutocadWorker:
                     [(acad_polygon_vertexes[i], acad_polygon_vertexes[i + 1])
                      for i in range(0, len(acad_polygon_vertexes), 2)])
                 zones_shapes_data.append(shape)
-            progress.progress.next()
+            progress_2.next()
 
-        progress.update(40)
-        progress.progress.total = len(zones_shapes_data)
+        progress_1.set_value(40)
+        progress_2 = app.progress_manager.new("Определение названий зон", len(zones_shapes_data))
 
         zones_data = {name: [] for name, shape in names_data}
         for shape in zones_shapes_data:
             for name, point in names_data:
                 if point.distance(shape.exterior) < min_distance:
                     zones_data[name].append(shape)
-            progress.progress.next()
+            progress_2.next()
 
-        progress.update(60)
-        progress.progress.total = len(zones_data)
+        progress_1.set_value(60)
+        progress_2 = app.progress_manager.new("Объединение одноименных зон", len(zones_data))
 
         zones = {}
         for name, shapes in zones_data.items():
             zones[name] = MultiPolygon(shapes) if len(shapes) > 1 else shapes[0]
-            progress.progress.next()
+            progress_2.next()
 
-        progress.update(80)
-        progress.progress.total = len(zones)
+        progress_1.set_value(80)
+        progress_2 = app.progress_manager.new("Вычитание внутренних полигонов", len(zones))
 
         zones_for_df = []
         for name, geometry in zones.items():
@@ -265,10 +265,10 @@ class AutocadWorker:
                 zones[name] = geometry.difference(zones[name + '_'])
             if not name.endswith('_'):
                 zones_for_df.append({'Наименование': name, 'Геометрия': zones[name]})
-            progress.progress.next()
+            progress_2.next()
 
         zones_df = pd.DataFrame(zones_for_df)
-        progress.update(90)
+        progress_1.set_value(100)
 
         if not wkt_convert:
             return zones_df
@@ -277,21 +277,20 @@ class AutocadWorker:
             return zones_df
 
     @staticmethod
-    def get_df_protection_zones(zones_layers: list[str], wkt_convert: bool = False,
-                     progress: Progress = None) -> pd.DataFrame:
+    def get_df_protection_zones(zones_layers: list[str], wkt_convert: bool = False, app=None) -> pd.DataFrame:
         """
         Получить датафрейм охранных зон из чертежа Autocad
 
         Args:
             zones_layers (list[str]): Имена слоёв, содержащих границы зон
             wkt_convert (bool): Преобразование геометрии в wkt
-            progress (Progress): Прогресс бар
+            app: Прогресс бар
 
         Returns:
             pd.DataFrame: Датафрейм геометрии зон
         """
         acad = Autocad()
-        progress.progress.total = len(list(acad.iter_objects('AcDbPolyline')))
+        progress = app.progress_manager.new("Получение линейных объектов Autocad", len(list(acad.iter_objects('AcDbPolyline'))))
 
         zones_shapes_data = []
         for obj in acad.iter_objects('AcDbPolyline'):
@@ -301,7 +300,7 @@ class AutocadWorker:
                     [(acad_polygon_vertexes[i], acad_polygon_vertexes[i + 1])
                      for i in range(0, len(acad_polygon_vertexes), 2)])
                 zones_shapes_data.append({"Геометрия": shape})
-            progress.progress.next()
+            progress.next()
 
         zones_df = pd.DataFrame(zones_shapes_data)
 
