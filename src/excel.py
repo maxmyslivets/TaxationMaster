@@ -25,7 +25,7 @@ class ExcelWorker:
 
     @staticmethod
     def selected_cells(app) -> list[xw.main.Range]:
-        if app.ui.checkBox_skip_hidden_cells.isChecked():
+        if not app.ui.checkBox_skip_hidden_cells.isChecked():
             return xw.apps.active.selection
         else:
             selected_cells = xw.apps.active.selection
@@ -334,3 +334,50 @@ class ExcelWorker:
             intersections_shapes_df['Геометрия'] = intersections_shapes_df['Геометрия'].apply(
                 lambda geom: geom.wkt if geom else None)
             return intersections_shapes_df
+
+    @staticmethod
+    def generate_numeration_from_zone(wkt_convert=True, app=None) -> pd.DataFrame:
+        """
+        Нумерует
+        Args:
+            wkt_convert:
+            app:
+
+        Returns:
+
+        """
+        # TODO: Добавить проверку имеется ли на листе current_number
+        current_number = app.ui.lineEdit_start_number.text()
+        start_numeration = int(app.ui.lineEdit_start_numeration.text())
+        sheet = xw.sheets.active
+        zone_df = sheet.range('A1').expand().options(pd.DataFrame, header=1, index=False).value
+        zone_df['Геометрия'] = zone_df['Геометрия'].apply(loads)
+        zone_df['Позиция номера'] = zone_df['Позиция номера'].apply(loads)
+        # TODO: Добавить проверку имеется ли на других листах номера из
+        #  list(range(start_numeration, start_numeration + len(zone_df['Исх.номер'])))
+
+        current_point = zone_df['Позиция номера'][zone_df['Исх.номер'] == current_number].iloc[0]
+        points = zone_df['Позиция номера'].tolist()
+        progress = app.progress_manager.new("Сортировка по ближайшим", len(points))
+        visited = []
+        while len(visited) < len(points):
+            distances = [(idx, current_point.distance(pt)) for idx, pt in enumerate(points) if idx not in visited]
+            nearest_idx = min(distances, key=lambda x: x[1])[0]
+            visited.append(nearest_idx)
+            current_point = points[nearest_idx]
+            progress.next()
+        zone_df['Очередь'] = [visited.index(idx) + 1 for idx in range(len(points))]
+
+        zone_df['Номер'] = zone_df['Очередь'].apply(lambda x: start_numeration + x - 1)
+
+        zone_df = zone_df.drop(columns=['Индекс', 'Очередь'])
+
+        if not wkt_convert:
+            return zone_df
+        else:
+            zone_df.index = zone_df.index.astype(str)
+            zone_df['Позиция номера'] = zone_df['Позиция номера'].apply(
+                lambda geom: geom.wkt if geom else None)
+            zone_df['Геометрия'] = zone_df['Геометрия'].apply(
+                lambda geom: geom.wkt if geom else None)
+            return zone_df

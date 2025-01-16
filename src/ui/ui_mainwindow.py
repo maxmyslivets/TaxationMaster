@@ -17,17 +17,18 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QGridLayout,
-    QHBoxLayout, QHeaderView, QLayout, QMainWindow,
-    QPushButton, QSizePolicy, QSpacerItem, QSplitter,
-    QStatusBar, QTabWidget, QTableView, QTextEdit,
-    QToolBar, QToolBox, QVBoxLayout, QWidget)
+    QHBoxLayout, QHeaderView, QLabel, QLayout,
+    QLineEdit, QMainWindow, QPushButton, QSizePolicy,
+    QSpacerItem, QSplitter, QStatusBar, QTabWidget,
+    QTableView, QTextEdit, QToolBar, QToolBox,
+    QVBoxLayout, QWidget)
 import src.ui.resources_rc
 
 class Ui_TaxationTool(object):
     def setupUi(self, TaxationTool):
         if not TaxationTool.objectName():
             TaxationTool.setObjectName(u"TaxationTool")
-        TaxationTool.resize(786, 587)
+        TaxationTool.resize(786, 569)
         icon = QIcon()
         icon.addFile(u":/window/taxation_tool.ico", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         TaxationTool.setWindowIcon(icon)
@@ -40,8 +41,6 @@ class Ui_TaxationTool(object):
         self.action_get_count_tree = QAction(TaxationTool)
         self.action_get_count_tree.setObjectName(u"action_get_count_tree")
         self.action_get_count_tree.setMenuRole(QAction.MenuRole.NoRole)
-        self.action_species_and_types = QAction(TaxationTool)
-        self.action_species_and_types.setObjectName(u"action_species_and_types")
         self.action_identification_shrub = QAction(TaxationTool)
         self.action_identification_shrub.setObjectName(u"action_identification_shrub")
         self.action_identification_shrub.setMenuRole(QAction.MenuRole.NoRole)
@@ -72,6 +71,9 @@ class Ui_TaxationTool(object):
         self.action_open_excel_template = QAction(TaxationTool)
         self.action_open_excel_template.setObjectName(u"action_open_excel_template")
         self.action_open_excel_template.setMenuRole(QAction.MenuRole.NoRole)
+        self.action_kmean_numeration = QAction(TaxationTool)
+        self.action_kmean_numeration.setObjectName(u"action_kmean_numeration")
+        self.action_kmean_numeration.setMenuRole(QAction.MenuRole.NoRole)
         self.centralwidget = QWidget(TaxationTool)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout = QGridLayout(self.centralwidget)
@@ -90,22 +92,68 @@ class Ui_TaxationTool(object):
         self.splitter.setChildrenCollapsible(True)
         self.toolBox = QToolBox(self.splitter)
         self.toolBox.setObjectName(u"toolBox")
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.toolBox.sizePolicy().hasHeightForWidth())
+        self.toolBox.setSizePolicy(sizePolicy)
         self.toolBox.setFrameShape(QFrame.Shape.Box)
         self.toolBox.setFrameShadow(QFrame.Shadow.Raised)
         self.toolBox.setLineWidth(1)
         self.toolBox.setMidLineWidth(0)
         self.page = QWidget()
         self.page.setObjectName(u"page")
-        self.page.setGeometry(QRect(0, 0, 780, 54))
+        self.page.setGeometry(QRect(0, 0, 780, 103))
         self.gridLayout_5 = QGridLayout(self.page)
         self.gridLayout_5.setObjectName(u"gridLayout_5")
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setSpacing(6)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.label = QLabel(self.page)
+        self.label.setObjectName(u"label")
+
+        self.horizontalLayout.addWidget(self.label)
+
+        self.lineEdit_start_number = QLineEdit(self.page)
+        self.lineEdit_start_number.setObjectName(u"lineEdit_start_number")
+        self.lineEdit_start_number.setMaximumSize(QSize(80, 16777215))
+        self.lineEdit_start_number.setInputMethodHints(Qt.InputMethodHint.ImhDigitsOnly)
+
+        self.horizontalLayout.addWidget(self.lineEdit_start_number)
+
+        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer_3)
+
+        self.label_2 = QLabel(self.page)
+        self.label_2.setObjectName(u"label_2")
+
+        self.horizontalLayout.addWidget(self.label_2)
+
+        self.lineEdit_start_numeration = QLineEdit(self.page)
+        self.lineEdit_start_numeration.setObjectName(u"lineEdit_start_numeration")
+        self.lineEdit_start_numeration.setMaximumSize(QSize(80, 16777215))
+
+        self.horizontalLayout.addWidget(self.lineEdit_start_numeration)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer)
+
+
+        self.gridLayout_5.addLayout(self.horizontalLayout, 2, 0, 1, 1)
+
         self.checkBox_skip_hidden_cells = QCheckBox(self.page)
         self.checkBox_skip_hidden_cells.setObjectName(u"checkBox_skip_hidden_cells")
         self.checkBox_skip_hidden_cells.setChecked(False)
 
-        self.gridLayout_5.addWidget(self.checkBox_skip_hidden_cells, 0, 0, 1, 1)
+        self.gridLayout_5.addWidget(self.checkBox_skip_hidden_cells, 1, 0, 1, 1)
 
-        self.toolBox.addItem(self.page, u"\u0412\u0432\u043e\u0434 \u0434\u0430\u043d\u043d\u044b\u0445")
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.gridLayout_5.addItem(self.verticalSpacer, 3, 0, 1, 1)
+
+        self.toolBox.addItem(self.page, u"\u041d\u0430\u0434\u0441\u0442\u0440\u043e\u0439\u043a\u0438")
         self.page_2 = QWidget()
         self.page_2.setObjectName(u"page_2")
         self.page_2.setGeometry(QRect(0, 0, 768, 144))
@@ -118,6 +166,7 @@ class Ui_TaxationTool(object):
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.tabWidget = QTabWidget(self.page_2)
         self.tabWidget.setObjectName(u"tabWidget")
+        self.tabWidget.setMinimumSize(QSize(0, 0))
         self.tabWidget.setTabPosition(QTabWidget.TabPosition.North)
         self.tabWidget.setTabShape(QTabWidget.TabShape.Triangular)
         self.tabWidget.setElideMode(Qt.TextElideMode.ElideLeft)
@@ -179,9 +228,6 @@ class Ui_TaxationTool(object):
         self.splitter.addWidget(self.toolBox)
         self.textEdit = QTextEdit(self.splitter)
         self.textEdit.setObjectName(u"textEdit")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.textEdit.sizePolicy().hasHeightForWidth())
         self.textEdit.setSizePolicy(sizePolicy)
         font = QFont()
@@ -197,15 +243,31 @@ class Ui_TaxationTool(object):
 
         self.verticalLayout.addWidget(self.splitter)
 
+
+        self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
+
+        self.frame = QFrame(self.centralwidget)
+        self.frame.setObjectName(u"frame")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Maximum)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.frame.sizePolicy().hasHeightForWidth())
+        self.frame.setSizePolicy(sizePolicy1)
+        self.frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.gridLayout_6 = QGridLayout(self.frame)
+        self.gridLayout_6.setSpacing(0)
+        self.gridLayout_6.setObjectName(u"gridLayout_6")
+        self.gridLayout_6.setContentsMargins(0, 0, 0, 0)
         self.progress_layout = QVBoxLayout()
         self.progress_layout.setSpacing(0)
         self.progress_layout.setObjectName(u"progress_layout")
         self.progress_layout.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
 
-        self.verticalLayout.addLayout(self.progress_layout)
+        self.gridLayout_6.addLayout(self.progress_layout, 0, 0, 1, 1)
 
 
-        self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.frame, 1, 0, 1, 1)
 
         TaxationTool.setCentralWidget(self.centralwidget)
         self.toolBar_import = QToolBar(TaxationTool)
@@ -240,6 +302,7 @@ class Ui_TaxationTool(object):
         self.toolBar_replace_comma.addAction(self.action_replace_dot_comma_to_comma)
         self.toolBar_insert_orm.addAction(self.action_insert_taxation_list_orm)
         self.toolBar_insert_orm.addAction(self.action_insert_zone_objects)
+        self.toolBar_insert_orm.addAction(self.action_kmean_numeration)
 
         self.retranslateUi(TaxationTool)
 
@@ -262,7 +325,6 @@ class Ui_TaxationTool(object):
         self.action_get_count_tree.setToolTip(QCoreApplication.translate("TaxationTool", u"<html><head/><body><p align=\"center\"><span style=\" font-weight:700;\">\u041f\u043e\u0434\u0441\u0447\u0438\u0442\u0430\u0442\u044c \u043a\u043e\u043b\u0438\u0447\u0435\u0441\u0442\u0432\u043e \u0434\u0435\u0440\u0435\u0432\u044c\u0435\u0432 \u0432 \u0432\u044b\u0434\u0435\u043b\u0435\u043d\u043d\u043e\u0439 \u043a\u043e\u043b\u043e\u043d\u043a\u0435</span></p><p><br/></p><p>\u0412\u044b\u0434\u0435\u043b\u0438\u0442\u0435 \u0432 Excel \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u044f \u0438\u0437 \u043a\u043e\u043b\u043e\u043d\u043a\u0438 <span style=\" font-style:italic;\">\u041a\u043e\u043b\u0438\u0447\u0435\u0441\u0442\u0432\u043e</span> \u043d\u0430 \u043b\u0438\u0441\u0442\u0435 <span style=\" font-style:italic;\">\u0412\u0435\u0434\u043e\u043c\u043e\u0441\u0442\u044c</span>. \u041f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u0430 \u043f\u0440\u043e\u0438\u0437\u0432\u0435\u0434\u0435\u0442 \u0440\u0430\u0441\u0447\u0435\u0442 \u0438 \u0432\u044b\u0432\u0435\u0434\u0435\u0442 \u043e\u043a\u043d\u043e \u0441"
                         " \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u043e\u043c \u043f\u043e\u0434\u0441\u0447\u0435\u0442\u0430.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
-        self.action_species_and_types.setText(QCoreApplication.translate("TaxationTool", u"\u041f\u043e\u0440\u043e\u0434\u044b \u0438 \u0442\u0438\u043f\u044b \u041e\u0420\u041c", None))
         self.action_identification_shrub.setText(QCoreApplication.translate("TaxationTool", u"\u041e\u043f\u0440\u0435\u0434\u0435\u043b\u0438\u0442\u044c \u043a\u0443\u0441\u0442\u0430\u0440\u043d\u0438\u043a", None))
 #if QT_CONFIG(tooltip)
         self.action_identification_shrub.setToolTip(QCoreApplication.translate("TaxationTool", u"\u041e\u043f\u0440\u0435\u0434\u0435\u043b\u0438\u0442\u044c \u043a\u0443\u0441\u0442\u0430\u0440\u043d\u0438\u043a", None))
@@ -303,8 +365,14 @@ class Ui_TaxationTool(object):
 #if QT_CONFIG(tooltip)
         self.action_open_excel_template.setToolTip(QCoreApplication.translate("TaxationTool", u"\u041e\u0442\u043a\u0440\u044b\u0442\u044c \u0448\u0430\u0431\u043b\u043e\u043d Excel \u0444\u0430\u0439\u043b\u0430", None))
 #endif // QT_CONFIG(tooltip)
-        self.checkBox_skip_hidden_cells.setText(QCoreApplication.translate("TaxationTool", u"\u041d\u0435 \u043e\u0431\u0440\u0430\u0431\u0430\u0442\u044b\u0432\u0430\u0442\u044c \u0441\u043a\u0440\u044b\u0442\u044b\u0435 \u044f\u0447\u0435\u0439\u043a\u0438", None))
-        self.toolBox.setItemText(self.toolBox.indexOf(self.page), QCoreApplication.translate("TaxationTool", u"\u0412\u0432\u043e\u0434 \u0434\u0430\u043d\u043d\u044b\u0445", None))
+        self.action_kmean_numeration.setText(QCoreApplication.translate("TaxationTool", u"\u041d\u0443\u043c\u0435\u0440\u0430\u0446\u0438\u044f \u043f\u043e \u0431\u043b\u0438\u0436\u0430\u0439\u0448\u0438\u043c", None))
+#if QT_CONFIG(tooltip)
+        self.action_kmean_numeration.setToolTip(QCoreApplication.translate("TaxationTool", u"\u041d\u0443\u043c\u0435\u0440\u0430\u0446\u0438\u044f \u043f\u043e \u0431\u043b\u0438\u0436\u0430\u0439\u0448\u0438\u043c", None))
+#endif // QT_CONFIG(tooltip)
+        self.label.setText(QCoreApplication.translate("TaxationTool", u"\u041d\u0430\u0447\u0430\u043b\u044c\u043d\u044b\u0439 \u0438\u0441\u0445.\u043d\u043e\u043c\u0435\u0440", None))
+        self.label_2.setText(QCoreApplication.translate("TaxationTool", u"\u041d\u0430\u0447\u0430\u043b\u044c\u043d\u044b\u0439 \u043d\u043e\u043c\u0435\u0440", None))
+        self.checkBox_skip_hidden_cells.setText(QCoreApplication.translate("TaxationTool", u"\u041e\u0431\u0440\u0430\u0431\u0430\u0442\u044b\u0432\u0430\u0442\u044c \u0441\u043a\u0440\u044b\u0442\u044b\u0435 \u044f\u0447\u0435\u0439\u043a\u0438 (\u043c\u0435\u0434\u043b\u0435\u043d\u043d\u043e)", None))
+        self.toolBox.setItemText(self.toolBox.indexOf(self.page), QCoreApplication.translate("TaxationTool", u"\u041d\u0430\u0434\u0441\u0442\u0440\u043e\u0439\u043a\u0438", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("TaxationTool", u"\u0422\u0438\u043f\u044b, \u043f\u043e\u0440\u043e\u0434\u044b", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("TaxationTool", u"\u041f\u043b\u043e\u0442\u043d\u043e\u0441\u0442\u044c \u0434\u0440\u0435\u0432\u0438\u0441\u0438\u043d\u044b", None))
         self.btn_edit_db_2.setText(QCoreApplication.translate("TaxationTool", u"\u0420\u0435\u0434\u0430\u043a\u0442\u0438\u0440\u043e\u0432\u0430\u0442\u044c", None))

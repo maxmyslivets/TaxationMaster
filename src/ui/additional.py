@@ -63,9 +63,8 @@ class ProgressWidget(QWidget):
         Args:
             value (int): Значение от 0 до maximum.
         """
-        # assert 0 <= value <= self.progress.maximum(), (f"Ошибка ProgressBar, указанное значение {value}. "
-        #                                                f"Значение должно находиться между 0 и "
-        #                                                f"{self.progress.maximum()}.")
+        if not (0 <= value <= self.progress.maximum()):
+            print(f"Ошибка ProgressBar, указанное значение {value}. Допустимый диапазон 0-{self.progress.maximum()}.")
         self.progress.setValue(value)
         if self.progress.value() == self.progress.maximum():
             self.delete()

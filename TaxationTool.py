@@ -1,7 +1,10 @@
 import sys
 import traceback
 
+from PySide6.QtCore import QRegularExpression
+from PySide6.QtGui import QRegularExpressionValidator
 from PySide6.QtWidgets import QApplication, QMainWindow
+from win32api import ExitWindows
 
 from src.model import Model
 from src.ui.additional import ConsoleOutputRedirector, ProgressManager
@@ -17,8 +20,10 @@ class MainWindow(QMainWindow):
 
         self.setup_console()
         self.setup_toolbars()
+        self.setup_input_validators()
 
         self.progress_manager = ProgressManager(self.ui.progress_layout)
+
 
     def setup_toolbars(self) -> None:
         self.ui.action_open_excel_template.triggered.connect(lambda x: Model.open_excel_template(self))
@@ -34,6 +39,7 @@ class MainWindow(QMainWindow):
         self.ui.action_insert_zones.triggered.connect(lambda x: Model.insert_zones_from_autocad(self))
         self.ui.action_insert_protected_zones.triggered.connect(lambda x: Model.insert_protected_zones_from_autocad(self))
         self.ui.action_insert_zone_objects.triggered.connect(lambda x: Model.insert_zone_objects(self))
+        self.ui.action_kmean_numeration.triggered.connect(lambda x: Model.generate_numeration(self))
 
     def closeEvent(self, event) -> None:
         """
@@ -42,6 +48,7 @@ class MainWindow(QMainWindow):
         sys.stdout = sys.__stdout__
         sys.stderr = sys.__stderr__
         super().closeEvent(event)
+        raise KeyboardInterrupt("Закрыто пользователем")
 
     def setup_console(self):
         """
@@ -63,6 +70,14 @@ class MainWindow(QMainWindow):
         self.ui.textEdit.setTextColor("white")
         # Также отправляем исключение в стандартный вывод ошибок
         sys.__excepthook__(exctype, value, tb)
+
+    def setup_input_validators(self) -> None:
+        """
+        Задает правило ввода только цифр
+        """
+        rx = QRegularExpression("\d+")
+        self.ui.lineEdit_start_numeration.setValidator(QRegularExpressionValidator(rx))
+
 
 
 if __name__ == "__main__":

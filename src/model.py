@@ -101,6 +101,7 @@ class Model:
         for cell in selected_cells:
             if ',' in str(cell.value):
                 cell.value = str(cell.value).replace(',', '.')
+            print(cell.value)
             progress.next()
 
     @staticmethod
@@ -176,7 +177,7 @@ class Model:
     def insert_zones_from_autocad(app):
         """Вставить зоны из топографического плана в таблицу"""
         progress = app.progress_manager.new("Вставка зон из Autocad", 100)
-        zones = AutocadWorker.get_df_zones(['зоны'], wkt_convert=True, progress=progress)
+        zones = AutocadWorker.get_df_zones(['зоны'], wkt_convert=True, app=app)
         sheet = xw.sheets['Зоны']
         ExcelWorker.set_text_format(sheet, [1])
         sheet.range('A1').value = zones
@@ -187,7 +188,7 @@ class Model:
     def insert_protected_zones_from_autocad(app):
         """Вставить охранные зоны из топографического плана в таблицу"""
         progress = app.progress_manager.new("Вставка охранных зон из Autocad", 100)
-        zones = AutocadWorker.get_df_protection_zones(['охранные зоны'], wkt_convert=True, progress=progress)
+        zones = AutocadWorker.get_df_protection_zones(['охранные зоны'], wkt_convert=True, app=app)
         sheet = xw.sheets['Охранные зоны']
         ExcelWorker.set_text_format(sheet, [1])
         sheet.range('A1').value = zones
@@ -199,8 +200,17 @@ class Model:
         """Вставить объекты для зоны"""
         progress = app.progress_manager.new("Вставка ОРМ в лист зоны", 100)
         sheet = xw.sheets.active
-        objects_in_zone = ExcelWorker.get_objects_from_zone(sheet.name, wkt_convert=True, progress=progress)
+        objects_in_zone = ExcelWorker.get_objects_from_zone(sheet.name, wkt_convert=True, app=app)
         ExcelWorker.set_text_format(sheet, [1, 2, 3, 5, 6, 7])
         sheet.range('A1').value = objects_in_zone
         sheet["A1"].value = ['Индекс']
         progress.update(100)
+
+    @staticmethod
+    def generate_numeration(app):
+        """Нумерация по ближайшим"""
+        sheet = xw.sheets.active
+        objects_in_zone = ExcelWorker.generate_numeration_from_zone(wkt_convert=True, app=app)
+        ExcelWorker.set_text_format(sheet, [1, 2, 3, 5, 6, 7])
+        sheet.range('A1').value = objects_in_zone
+        sheet["A1"].value = ['Индекс']
