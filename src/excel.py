@@ -392,11 +392,10 @@ class ExcelWorker:
         Returns:
             pd.DataFrame
         """
-        # FIXME: Добавить колонку действия
         sheet = xw.sheets.active
         zone_df = sheet.range('A1').expand().options(pd.DataFrame, header=1, index=False).value
         zone_df['Позиция номера'] = zone_df['Позиция номера'].apply(loads)
-        zone_df = zone_df[['Номер', 'Позиция номера']]
+        zone_df = zone_df[['Номер', 'Позиция номера', 'Действие']]
 
         progress_1 = app.progress_manager.new("Объединение по позициям", len(zone_df))
 
@@ -440,7 +439,15 @@ class ExcelWorker:
 
         zip_numbers_text_for_df = [{'Номер': v, 'Позиция номера': k} for k, v in zip_numbers_text.items()]
 
-        return pd.DataFrame(zip_numbers_text_for_df)
+        zip_numbers_text_df = pd.DataFrame(zip_numbers_text_for_df)
+
+        actions = []
+        for _, series in zip_numbers_text_df.iterrows():
+            actions.append(zone_df['Действие'][zone_df['Позиция номера'] == series['Позиция номера']].iloc[0])
+
+        zip_numbers_text_df['Действие'] = actions
+
+        return zip_numbers_text_df
 
     @staticmethod
     def removable_or_transplantable(wkt_convert=False, app=None) -> pd.DataFrame:

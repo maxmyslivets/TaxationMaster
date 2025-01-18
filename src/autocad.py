@@ -326,7 +326,7 @@ class AutocadWorker:
         Returns:
 
         """
-
+        # TODO: Для полос и ?контуров? штриховка
         layer_name_taxation_removable = 'Таксация_деревья(удаляемые)'
         layer_name_taxation_transplantable = 'Таксация_деревья(пересаживаемые)'
         layer_name_leader_removable = 'Таксация_номера(удаляемые)'

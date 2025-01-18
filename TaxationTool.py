@@ -43,6 +43,7 @@ class MainWindow(QMainWindow):
         self.ui.action_removable_or_transplantable.triggered.connect(lambda x: Model.removable_or_transplantable(self))
         self.ui.action_calc_compensatory_landings.triggered.connect(lambda x: Model.insert_calculation_landings(self))
         self.ui.action_calc_compensatory_payments.triggered.connect(lambda x: Model.insert_calculation_payments(self))
+        self.ui.action_insert_numbers_to_dxf.triggered.connect(lambda x: Model.insert_numbers_to_autocad(self))
 
     def closeEvent(self, event) -> None:
         """
