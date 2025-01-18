@@ -14,6 +14,7 @@ from shapely.wkt import loads
 from win32com.universal import com_error
 
 from src.parsing import Splitter, Parser, Templates
+from data.rules import transplant
 
 
 class ExcelWorker:
@@ -29,7 +30,7 @@ class ExcelWorker:
             return xw.apps.active.selection
         else:
             selected_cells = xw.apps.active.selection
-            progress = app.progress_manager.new("Сбор выделенных ячеек", len(selected_cells))
+            progress = app.progress_manager.new("Фильтрация скрытых ячеек", len(selected_cells))
             not_hidden_cells = []
             for cell in selected_cells:
                 if not xw.sheets.active.api.Rows(cell.row).Hidden:
@@ -440,3 +441,52 @@ class ExcelWorker:
         zip_numbers_text_for_df = [{'Номер': v, 'Позиция номера': k} for k, v in zip_numbers_text.items()]
 
         return pd.DataFrame(zip_numbers_text_for_df)
+
+    @staticmethod
+    def removable_or_transplantable(wkt_convert=False, app=None) -> pd.DataFrame:
+        """
+        Дополняет датафрейм ведомости ОРМ колонкой действия пересадки или удаления
+        Args:
+            wkt_convert:
+            app:
+        Returns:
+            pd.DataFrame
+        """
+        sheet_autocad = xw.sheets['Ведомость ОРМ']
+        taxation_list_orm_df = sheet_autocad.range('A1').expand().options(pd.DataFrame, header=1, index=False).value
+        taxation_list_orm_df['Индекс'] = taxation_list_orm_df['Индекс'].apply(lambda x: int(float(x)))
+        taxation_list_orm_df.set_index('Индекс', inplace=True)
+        taxation_list_orm_df['Позиция номера'] = taxation_list_orm_df['Позиция номера'].apply(lambda x: loads(x))
+
+        if app.ui.checkBox_transplantable.isChecked():
+
+            transplant_list = []
+            for _, series in taxation_list_orm_df.iterrows():
+                # TODO: Добавить фильтр в rules.py
+                transplant_list.append(transplant(series['Наименование'], series['Высота']))
+            taxation_list_orm_df['Действие'] = transplant_list
+
+            visible = {}
+            for idx, series in taxation_list_orm_df.iterrows():
+                if series['Позиция номера'] not in visible:
+                    visible[series['Позиция номера']] = []
+                visible[series['Позиция номера']].append((idx, series['Действие']))
+
+            for k, v in visible.items():
+                idx = [i for i, _ in v]
+                actions = [a for _, a in v]
+                is_removable = 'Удаление' in actions and 'Пересадка' in actions
+                if is_removable:
+                    for i in idx:
+                        taxation_list_orm_df.loc[i, 'Действие'] = 'Удаление'
+
+        else:
+            taxation_list_orm_df['Действие'] = 'Удаление'
+
+        if not wkt_convert:
+            return taxation_list_orm_df
+        else:
+            taxation_list_orm_df.index = taxation_list_orm_df.index.astype(str)
+            taxation_list_orm_df['Позиция номера'] = taxation_list_orm_df['Позиция номера'].apply(
+                lambda geom: geom.wkt if geom else None)
+            return taxation_list_orm_df

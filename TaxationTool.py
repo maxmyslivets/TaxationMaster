@@ -40,6 +40,7 @@ class MainWindow(QMainWindow):
         self.ui.action_insert_protected_zones.triggered.connect(lambda x: Model.insert_protected_zones_from_autocad(self))
         self.ui.action_insert_zone_objects.triggered.connect(lambda x: Model.insert_zone_objects(self))
         self.ui.action_kmean_numeration.triggered.connect(lambda x: Model.generate_numeration(self))
+        self.ui.action_removable_or_transplantable.triggered.connect(lambda x: Model.removable_or_transplantable(self))
 
     def closeEvent(self, event) -> None:
         """

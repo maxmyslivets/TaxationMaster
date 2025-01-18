@@ -342,8 +342,6 @@ class AutocadWorker:
         dxf_new = ezdxf.new(dxfversion='R2013', setup=True, units=6)
         msp = dxf_new.modelspace()
 
-        print('Импорт блоков в создаваемый чертеж')
-
         importer = Importer(dxf_source, dxf_new)
         importer.import_block(block_name_removable)
         importer.import_block(block_name_transplantable)

@@ -33,12 +33,13 @@ class ProgressWidget(QWidget):
         """
         super().__init__()
         self.parent_layout = parent
+        self.info = info
         self.maximum = maximum
 
         self.progress_layout = QHBoxLayout()
         self.progress_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.progress_layout.addWidget(QLabel(info))
+        self.progress_layout.addWidget(QLabel(self.info))
 
         self.progress = QProgressBar()
         self.progress.setMaximum(self.maximum)
@@ -67,6 +68,7 @@ class ProgressWidget(QWidget):
             print(f"Ошибка ProgressBar, указанное значение {value}. Допустимый диапазон 0-{self.progress.maximum()}.")
         self.progress.setValue(value)
         if self.progress.value() == self.progress.maximum():
+            print(f"{self.info} - Готово")
             self.delete()
         QtGui.QGuiApplication.processEvents()
 
@@ -101,4 +103,5 @@ class ProgressManager:
         Returns:
             ProgressWidget: Виджет прогресса
         """
+        print(f"{info}...0/{maximum}")
         return ProgressWidget(self.parent_layout, info, maximum)

@@ -1,5 +1,8 @@
 import re
+import subprocess
+import tempfile
 from collections import Counter
+from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
@@ -94,23 +97,19 @@ class Model:
     @staticmethod
     def replace_comma_to_dot(app) -> None:
         """Замена запятой на точку"""
-        progress = app.progress_manager.new("Замена запятой на точку", 1)
         selected_cells = ExcelWorker.selected_cells(app)
-        progress.progress.setMaximum(len(selected_cells))
+        progress = app.progress_manager.new("Замена запятой на точку", len(selected_cells))
         print(f"Замена пунктуации в {len(selected_cells)} ячейках ...")
         for cell in selected_cells:
             if ',' in str(cell.value):
                 cell.value = str(cell.value).replace(',', '.')
-            print(cell.value)
             progress.next()
 
     @staticmethod
     def replace_dot_comma_to_comma(app) -> None:
         """Замена точки с запятой на запятую"""
-        progress = app.progress_manager.new("Замена запятой на точку", 1)
         selected_cells = ExcelWorker.selected_cells(app)
-        progress.progress.setMaximum(len(selected_cells))
-        print(f"Замена пунктуации в {len(selected_cells)} ячейках ...")
+        progress = app.progress_manager.new("Замена точки с запятой на запятую", len(selected_cells))
         for cell in selected_cells:
             if ';' in str(cell.value):
                 cell.value = str(cell.value).replace(';', ',')
@@ -119,10 +118,10 @@ class Model:
     @staticmethod
     def compare_numbers(app):
         """Сравнить наличие номеров в Excel и Autocad"""
-        progress = app.progress_manager.new("Сравнение номеров в Excel и Autocad", 100)
+        progress = app.progress_manager.new("Сравнение номеров в Excel и Autocad", 6)
         numbers_from_excel = ExcelWorker.get_numbers(xw.sheets['Ведомость'], 'Номер точки')
         numbers_from_acad = AutocadWorker.get_numbers('номера')
-        progress.set_value(75)
+        progress.set_value(1)
 
         split_numbers_from_excel = []
         for number_excel in numbers_from_excel:
@@ -130,25 +129,25 @@ class Model:
         split_numbers_from_acad = []
         for number_acad in numbers_from_acad:
             split_numbers_from_acad.extend(Splitter.number(str(number_acad)))
-        progress.set_value(80)
+        progress.set_value(2)
 
         counter_split_numbers_from_excel = Counter(split_numbers_from_excel)
         duplicates_split_numbers_from_excel = [key for key, value in counter_split_numbers_from_excel.items() if value > 1]
         print(f"Дубликаты Excel: {duplicates_split_numbers_from_excel}")
-        progress.set_value(85)
+        progress.set_value(3)
 
         counter_split_numbers_from_acad = Counter(split_numbers_from_acad)
         duplicates_split_numbers_from_acad = [key for key, value in counter_split_numbers_from_acad.items() if value > 1]
         print(f"Дубликаты Autocad: {duplicates_split_numbers_from_acad}")
-        progress.set_value(90)
+        progress.set_value(4)
 
         unique_in_excel = list(set(split_numbers_from_excel) - set(split_numbers_from_acad))
         print(f"Только в Excel: {unique_in_excel}")
-        progress.set_value(95)
+        progress.set_value(5)
 
         unique_in_acad = list(set(split_numbers_from_acad) - set(split_numbers_from_excel))
         print(f"Только в Autocad: {unique_in_acad}")
-        progress.set_value(100)
+        progress.set_value(6)
 
     @staticmethod
     def insert_taxation_data_from_autocad(app):
@@ -216,10 +215,20 @@ class Model:
         sheet["A1"].value = ['Индекс']
 
     @staticmethod
-    def insert_numbers_to_autocad(app):
-        """Нумерация по ближайшим"""
-        progress = app.progress_manager.new("Вставка номеров в Autocad", 2)
+    def removable_or_transplantable(app):
+        """Определение действия над деревьями и кустарниками. Удалять или пересаживать"""
         sheet = xw.sheets.active
-        numbers_in_zone = ExcelWorker.get_numbers_from_zone(sheet.name, wkt_convert=True, app=app)
-        AutocadWorker.insert_numbers_to_autocad(numbers_in_zone, app=app)
-        progress.update(100)
+        taxation_list_orm_df = ExcelWorker.removable_or_transplantable(wkt_convert=True, app=app)
+        ExcelWorker.set_text_format(sheet, [1, 2, 3, 5, 6, 7])
+        sheet.range('A1').value = taxation_list_orm_df
+        sheet["A1"].value = ['Индекс']
+
+    @staticmethod
+    def insert_numbers_to_autocad(app):
+        """Вставка номеров в Autocad"""
+        numbers_in_zone = ExcelWorker.get_zip_numbers(app=app)
+        dxf_template = str(Path(__file__).parent.parent/"data"/"template.dxf")
+        dt = datetime.now().strftime('%Y%m%d%H%M%S')
+        dxf_output = str(Path(tempfile.gettempdir()) / f"taxation_tool_{dt}.dxf")
+        AutocadWorker.insert_numbers_to_dxf(numbers_in_zone, dxf_template, dxf_output, app=app)
+        subprocess.Popen(f'explorer /select,"{dxf_output}"')
