@@ -147,6 +147,7 @@ class ExcelWorker:
                     })
                 return series_data
         else:
+            # FIXME: Что делать если у стволов одного дерева разные состояния
             series_dict = series.to_dict()
             series_dict['Позиция номера'] = numbers_positions[0]
             series_dict['Геометрия'] = geometries[0]
@@ -242,6 +243,7 @@ class ExcelWorker:
         Returns:
             pd.DataFrame: Датафрейм объектов, входящих в зону
         """
+        #
         progress_1 = app.progress_manager.new("Получение датафрейма", 100)
         sheet_autocad = xw.sheets['Ведомость ОРМ']
         taxation_list_orm_df = sheet_autocad.range('A1').expand().options(pd.DataFrame, header=1, index=False).value
@@ -284,7 +286,7 @@ class ExcelWorker:
         zone_shape = loads(zones_df[zones_df['Наименование'] == zone_result]['Геометрия'].tolist()[0])
 
         progress_1.set_value(60)
-        progress_2 = app.progress_manager.new("Поиск пересечений", len(zone_names))
+        progress_2 = app.progress_manager.new("Поиск пересечений", len(taxation_list_orm_df_not_used))
 
         intersections_shapes = []
         for _, series in taxation_list_orm_df_not_used.iterrows():

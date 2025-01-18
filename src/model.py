@@ -192,7 +192,7 @@ class Model:
         ExcelWorker.set_text_format(sheet, [1])
         sheet.range('A1').value = zones
         sheet["A1"].value = ['Индекс']
-        progress.update(100)
+        progress.set_value(100)
 
     @staticmethod
     def insert_zone_objects(app):
@@ -203,7 +203,7 @@ class Model:
         ExcelWorker.set_text_format(sheet, [1, 2, 4, 5, 6])
         sheet.range('A1').value = objects_in_zone
         sheet["A1"].value = ['Индекс']
-        progress.update(100)
+        progress.set_value(100)
 
     @staticmethod
     def generate_numeration(app):
