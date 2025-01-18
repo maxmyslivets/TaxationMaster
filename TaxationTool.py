@@ -41,6 +41,8 @@ class MainWindow(QMainWindow):
         self.ui.action_insert_zone_objects.triggered.connect(lambda x: Model.insert_zone_objects(self))
         self.ui.action_kmean_numeration.triggered.connect(lambda x: Model.generate_numeration(self))
         self.ui.action_removable_or_transplantable.triggered.connect(lambda x: Model.removable_or_transplantable(self))
+        self.ui.action_calc_compensatory_landings.triggered.connect(lambda x: Model.insert_calculation_landings(self))
+        self.ui.action_calc_compensatory_payments.triggered.connect(lambda x: Model.insert_calculation_payments(self))
 
     def closeEvent(self, event) -> None:
         """

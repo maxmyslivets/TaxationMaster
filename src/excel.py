@@ -14,7 +14,7 @@ from shapely.wkt import loads
 from win32com.universal import com_error
 
 from src.parsing import Splitter, Parser, Templates
-from data.rules import transplant
+from data.rules import transplant, calc_landings, calc_payments
 
 
 class ExcelWorker:
@@ -452,26 +452,31 @@ class ExcelWorker:
         Returns:
             pd.DataFrame
         """
-        sheet_autocad = xw.sheets['Ведомость ОРМ']
-        taxation_list_orm_df = sheet_autocad.range('A1').expand().options(pd.DataFrame, header=1, index=False).value
+        sheet = xw.sheets.active
+        taxation_list_orm_df = sheet.range('A1').expand().options(pd.DataFrame, header=1, index=False).value
         taxation_list_orm_df['Индекс'] = taxation_list_orm_df['Индекс'].apply(lambda x: int(float(x)))
         taxation_list_orm_df.set_index('Индекс', inplace=True)
         taxation_list_orm_df['Позиция номера'] = taxation_list_orm_df['Позиция номера'].apply(lambda x: loads(x))
 
         if app.ui.checkBox_transplantable.isChecked():
 
+            progress = app.progress_manager.new("Определение действия пересадки или удаления", len(taxation_list_orm_df))
             transplant_list = []
             for _, series in taxation_list_orm_df.iterrows():
                 # TODO: Добавить фильтр в rules.py
                 transplant_list.append(transplant(series['Наименование'], series['Высота']))
+                progress.next()
             taxation_list_orm_df['Действие'] = transplant_list
 
+            progress = app.progress_manager.new("Проверка действия для рядом растущих", len(taxation_list_orm_df))
             visible = {}
             for idx, series in taxation_list_orm_df.iterrows():
                 if series['Позиция номера'] not in visible:
                     visible[series['Позиция номера']] = []
                 visible[series['Позиция номера']].append((idx, series['Действие']))
+                progress.next()
 
+            progress = app.progress_manager.new("Обновление действия для рядом растущих", len(visible))
             for k, v in visible.items():
                 idx = [i for i, _ in v]
                 actions = [a for _, a in v]
@@ -479,6 +484,7 @@ class ExcelWorker:
                 if is_removable:
                     for i in idx:
                         taxation_list_orm_df.loc[i, 'Действие'] = 'Удаление'
+                progress.next()
 
         else:
             taxation_list_orm_df['Действие'] = 'Удаление'
@@ -490,3 +496,37 @@ class ExcelWorker:
             taxation_list_orm_df['Позиция номера'] = taxation_list_orm_df['Позиция номера'].apply(
                 lambda geom: geom.wkt if geom else None)
             return taxation_list_orm_df
+
+    @staticmethod
+    def calculation_landings_or_payments(payments=False, landings=False, app=None):
+        """
+        Выполняет расчет посадок или выплат
+        Args:
+            payments:
+            landings:
+            app:
+        Returns:
+            pd.DataFrame
+        """
+        sheet = xw.sheets.active
+        taxation_list_orm_df = sheet.range('A1').expand().options(pd.DataFrame, header=1, index=False).value
+        taxation_list_orm_df['Индекс'] = taxation_list_orm_df['Индекс'].apply(lambda x: int(float(x)))
+        taxation_list_orm_df.set_index('Индекс', inplace=True)
+
+        if landings:
+            landings_list = []
+            progress = app.progress_manager.new("Расчет компенсационных посадок", len(taxation_list_orm_df))
+            for _, series in taxation_list_orm_df.iterrows():
+                landings_list.append(calc_landings(series['Наименование'], series['Высота']))
+                progress.next()
+            taxation_list_orm_df['Компенсационные посадки'] = landings_list
+
+        if payments:
+            payments_list = []
+            progress = app.progress_manager.new("Расчет компенсационных выплат", len(taxation_list_orm_df))
+            for _, series in taxation_list_orm_df.iterrows():
+                payments_list.append(calc_payments(series['Наименование'], series['Высота']))
+                progress.next()
+            taxation_list_orm_df['Компенсационные выплаты'] = payments_list
+
+        return taxation_list_orm_df

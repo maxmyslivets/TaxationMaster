@@ -200,7 +200,7 @@ class Model:
         progress = app.progress_manager.new("Вставка ОРМ в лист зоны", 100)
         sheet = xw.sheets.active
         objects_in_zone = ExcelWorker.get_objects_from_zone(sheet.name, wkt_convert=True, app=app)
-        ExcelWorker.set_text_format(sheet, [1, 2, 3, 5, 6, 7])
+        ExcelWorker.set_text_format(sheet, [1, 2, 4, 5, 6])
         sheet.range('A1').value = objects_in_zone
         sheet["A1"].value = ['Индекс']
         progress.update(100)
@@ -210,7 +210,7 @@ class Model:
         """Нумерация по ближайшим"""
         sheet = xw.sheets.active
         objects_in_zone = ExcelWorker.generate_numeration_from_zone(wkt_convert=True, app=app)
-        ExcelWorker.set_text_format(sheet, [1, 2, 3, 5, 6, 7])
+        ExcelWorker.set_text_format(sheet, [1, 2, 4, 5, 6])
         sheet.range('A1').value = objects_in_zone
         sheet["A1"].value = ['Индекс']
 
@@ -219,7 +219,25 @@ class Model:
         """Определение действия над деревьями и кустарниками. Удалять или пересаживать"""
         sheet = xw.sheets.active
         taxation_list_orm_df = ExcelWorker.removable_or_transplantable(wkt_convert=True, app=app)
-        ExcelWorker.set_text_format(sheet, [1, 2, 3, 5, 6, 7])
+        ExcelWorker.set_text_format(sheet, [1, 2, 4, 5, 6])
+        sheet.range('A1').value = taxation_list_orm_df
+        sheet["A1"].value = ['Индекс']
+
+    @staticmethod
+    def insert_calculation_landings(app):
+        """Расчет компенсационных посадок"""
+        sheet = xw.sheets.active
+        taxation_list_orm_df = ExcelWorker.calculation_landings_or_payments(landings=True, app=app)
+        ExcelWorker.set_text_format(sheet, [1, 2, 4, 5, 6])
+        sheet.range('A1').value = taxation_list_orm_df
+        sheet["A1"].value = ['Индекс']
+
+    @staticmethod
+    def insert_calculation_payments(app):
+        """Расчет компенсационных выплат"""
+        sheet = xw.sheets.active
+        taxation_list_orm_df = ExcelWorker.calculation_landings_or_payments(payments=True, app=app)
+        ExcelWorker.set_text_format(sheet, [1, 2, 4, 5, 6])
         sheet.range('A1').value = taxation_list_orm_df
         sheet["A1"].value = ['Индекс']
 
