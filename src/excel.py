@@ -381,3 +381,62 @@ class ExcelWorker:
             zone_df['Геометрия'] = zone_df['Геометрия'].apply(
                 lambda geom: geom.wkt if geom else None)
             return zone_df
+
+    @staticmethod
+    def get_zip_numbers(app=None) -> pd.DataFrame:
+        """
+        Получает датафрейм с связанными номерами и их позициями
+        Args:
+            app:
+        Returns:
+            pd.DataFrame
+        """
+        # FIXME: Добавить колонку действия
+        sheet = xw.sheets.active
+        zone_df = sheet.range('A1').expand().options(pd.DataFrame, header=1, index=False).value
+        zone_df['Позиция номера'] = zone_df['Позиция номера'].apply(loads)
+        zone_df = zone_df[['Номер', 'Позиция номера']]
+
+        progress_1 = app.progress_manager.new("Объединение по позициям", len(zone_df))
+
+        zip_numbers = {}
+        for _, series in zone_df.iterrows():
+            if series['Позиция номера'] not in zip_numbers:
+                zip_numbers[series['Позиция номера']] = [series['Номер']]
+            else:
+                zip_numbers[series['Позиция номера']].append(series['Номер'])
+            progress_1.next()
+
+        progress_2 = app.progress_manager.new("Сжатие номеров", len(zip_numbers))
+
+        def compress_ranges(numbers):
+            numbers = sorted(map(int, numbers))
+            result = []
+            start = numbers[0]
+            end = start
+
+            for i in range(1, len(numbers)):
+                if numbers[i] == end + 1:
+                    end = numbers[i]
+                else:
+                    if end - start == 1:
+                        result.append(f"{start},{end}")
+                    else:
+                        result.append(f"{start}-{end}" if start != end else str(start))
+                    start = end = numbers[i]
+
+            if end - start == 1:
+                result.append(f"{start},{end}")
+            else:
+                result.append(f"{start}-{end}" if start != end else str(start))
+
+            return ",".join(result)
+
+        zip_numbers_text = {}
+        for k, v in zip_numbers.items():
+            zip_numbers_text[k] = compress_ranges(v)
+            progress_2.next()
+
+        zip_numbers_text_for_df = [{'Номер': v, 'Позиция номера': k} for k, v in zip_numbers_text.items()]
+
+        return pd.DataFrame(zip_numbers_text_for_df)

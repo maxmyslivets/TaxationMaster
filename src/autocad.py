@@ -1,4 +1,7 @@
+import ezdxf
 import pandas as pd
+from ezdxf.addons import Importer
+from ezdxf.math import Vec2
 from pyautocad import Autocad
 from pyautocad.utils import mtext_to_string
 from shapely import Point, LineString, Polygon
@@ -309,3 +312,65 @@ class AutocadWorker:
         else:
             zones_df['Геометрия'] = zones_df['Геометрия'].apply(lambda geom: geom.wkt if geom else None)
             return zones_df
+
+    @staticmethod
+    def insert_numbers_to_dxf(data: pd.DataFrame, dxf_template_path: str, dxf_output_path: str, app=None) -> None:
+        """
+        Вставить номера в чертеж DXF
+        Args:
+            data:
+            dxf_template_path:
+            dxf_output_path:
+            app:
+
+        Returns:
+
+        """
+
+        layer_name_taxation_removable = 'Таксация_деревья(удаляемые)'
+        layer_name_taxation_transplantable = 'Таксация_деревья(пересаживаемые)'
+        layer_name_leader_removable = 'Таксация_номера(удаляемые)'
+        layer_name_leader_transplantable = 'Таксация_номера(пересаживаемые)'
+        block_scale = 0.004
+        dxfattribs_block = {'xscale': block_scale,
+                            'yscale': block_scale}
+        mtext_segment = Vec2.from_deg_angle(45, 3)
+        block_name_removable = 'taxation_removable'
+        block_name_transplantable = 'taxation_transplantable'
+
+        dxf_source = ezdxf.readfile(dxf_template_path)
+        dxf_new = ezdxf.new(dxfversion='R2013', setup=True, units=6)
+        msp = dxf_new.modelspace()
+
+        print('Импорт блоков в создаваемый чертеж')
+
+        importer = Importer(dxf_source, dxf_new)
+        importer.import_block(block_name_removable)
+        importer.import_block(block_name_transplantable)
+        importer.finalize()
+
+        progress = app.progress_manager.new("Вставка номеров в DXF", len(data))
+
+        for _, series in data.iterrows():
+            insert_point = Vec2(series['Позиция номера'].x, series['Позиция номера'].y)
+            text_number = series['Номер']
+
+            action = series['Действие']
+            if action == 'Удаление':
+                dxfattribs_block['layer'] = layer_name_taxation_removable
+                layer = layer_name_leader_removable
+                block_name = block_name_removable
+            elif action == 'Пересадка':
+                dxfattribs_block['layer'] = layer_name_taxation_transplantable
+                layer = layer_name_leader_transplantable
+                block_name = block_name_transplantable
+            else:
+                raise ValueError(f"Номер {text_number} - неизвестное действие '{action}'")
+
+            msp.add_blockref(block_name, insert_point, dxfattribs=dxfattribs_block)
+            ml_builder = msp.add_multileader_mtext(style='Standard', dxfattribs={'layer': layer})
+            ml_builder.quick_leader(text_number, insert_point, mtext_segment)
+
+            progress.next()
+
+        dxf_new.saveas(dxf_output_path)

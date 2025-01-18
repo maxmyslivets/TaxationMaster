@@ -214,3 +214,12 @@ class Model:
         ExcelWorker.set_text_format(sheet, [1, 2, 3, 5, 6, 7])
         sheet.range('A1').value = objects_in_zone
         sheet["A1"].value = ['Индекс']
+
+    @staticmethod
+    def insert_numbers_to_autocad(app):
+        """Нумерация по ближайшим"""
+        progress = app.progress_manager.new("Вставка номеров в Autocad", 2)
+        sheet = xw.sheets.active
+        numbers_in_zone = ExcelWorker.get_numbers_from_zone(sheet.name, wkt_convert=True, app=app)
+        AutocadWorker.insert_numbers_to_autocad(numbers_in_zone, app=app)
+        progress.update(100)
