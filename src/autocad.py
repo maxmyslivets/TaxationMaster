@@ -94,6 +94,7 @@ class AutocadWorker:
                 })
             elif obj.ObjectName == 'AcDbPolyline' and obj.Layer in contours_layers:
                 acad_polygon_vertexes = [vertex for vertex in obj.Coordinates]
+                print(acad_polygon_vertexes)
                 shape = Polygon(
                     [(acad_polygon_vertexes[i], acad_polygon_vertexes[i + 1])
                      for i in range(0, len(acad_polygon_vertexes), 2)])
@@ -138,7 +139,10 @@ class AutocadWorker:
         progress_1.set_value(45)
 
         # Сбор деревьев (точечных объектов)
-        unassigned_numbers = numbers_df.index.difference(numbers_shapes_df['number_id'])
+        if len(numbers_shapes_df) > 0:
+            unassigned_numbers = numbers_df.index.difference(numbers_shapes_df['number_id'])
+        else:
+            unassigned_numbers = numbers_df.index
 
         trees_data = []
         for number_id in unassigned_numbers:

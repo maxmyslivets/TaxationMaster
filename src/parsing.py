@@ -58,7 +58,7 @@ class Templates:
     DIGIT_X_DIGIT = re.compile(r'^\d+x\d+$')
     FLOAT_X_DIGIT = re.compile(r'^\d+\.\d+x\d+$')
     TRUNKS = re.compile(r'(\d+)\s*ствол', re.IGNORECASE)
-    CONTOUR = re.compile(r'^\d+\.?\d+\s*м\s*(2|кв\.?)$', re.IGNORECASE)
+    CONTOUR = re.compile(r'^\d+\.?\d*\s*м\.?\s*(2|кв\.?)\.?$', re.IGNORECASE)
     LINE = re.compile(r'^\d+\s*м\.?\s*п\.?$', re.IGNORECASE)
 
 

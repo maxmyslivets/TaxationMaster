@@ -106,48 +106,43 @@ class ExcelWorker:
             split_diameter = Splitter.size(series['Толщина'])
             split_quality = Splitter.quality(series['Состояние'])
             is_stump = Parser.identification_stump(series['Высота'], series['Толщина'], bool(series['Кустарник']))
-            if len(split_numbers) == 1:
-                if (not is_stump or "пень" in series['Наименование'].lower()) and len(split_quality) == 1 and len(
-                        numbers_positions) == 1 and len(geometries) == 1:
-                    series_dict = series.to_dict()
-                    series_dict['Позиция номера'] = numbers_positions[0]
-                    series_dict['Геометрия'] = geometries[0]
-                    return [series_dict]
-            else:
-                if (not is_stump or "пень" in series['Наименование'].lower()) and len(split_quality) == 1 and len(
-                        numbers_positions) == 1 and len(geometries) == 1:
-                    series_dict = series.to_dict()
-                    series_dict['Позиция номера'] = numbers_positions[0]
-                    series_dict['Геометрия'] = geometries[0]
-                    return [series_dict]
-                if len(split_height) == 1:
-                    split_height = split_height * int(series['Количество'])
-                if len(split_diameter) == 1:
-                    split_diameter = split_diameter * int(series['Количество'])
-                if len(split_quality) == 1:
-                    split_quality = split_quality * int(series['Количество'])
-                series_data = []
-                for idx in range(len(split_numbers)):
-                    if "пень" not in series['Наименование'].lower():
-                        is_stump = Parser.identification_stump(split_height[idx], split_diameter[idx],
-                                                               bool(series['Кустарник']))
-                        name = series['Наименование'] + " (пень)" if is_stump else series['Наименование']
-                    else:
-                        name = series['Наименование']
-                    series_data.append({
-                        'Номер точки': split_numbers[idx],
-                        'Наименование': name,
-                        'Количество': 1,
-                        'Высота': split_height[idx],
-                        'Толщина': split_diameter[idx],
-                        'Состояние': split_quality[idx],
-                        'Кустарник': series['Кустарник'],
-                        'Позиция номера': numbers_positions[idx],
-                        'Геометрия': geometries[idx]
-                    })
-                return series_data
+            if (not is_stump or "пень" in series['Наименование'].lower()) and len(split_quality) == 1 and len(
+                    numbers_positions) == 1 and len(geometries) == 1:
+                series_dict = series.to_dict()
+                series_dict['Позиция номера'] = numbers_positions[0]
+                series_dict['Геометрия'] = geometries[0]
+                return [series_dict]
+            if len(split_height) == 1:
+                split_height = split_height * int(series['Количество'])
+            if len(split_diameter) == 1:
+                split_diameter = split_diameter * int(series['Количество'])
+            if len(split_quality) == 1:
+                split_quality = split_quality * int(series['Количество'])
+            series_data = []
+            for idx in range(len(split_numbers)):
+                if "пень" not in series['Наименование'].lower():
+                    is_stump = Parser.identification_stump(split_height[idx], split_diameter[idx],
+                                                           bool(series['Кустарник']))
+                    name = series['Наименование'] + " (пень)" if is_stump else series['Наименование']
+                else:
+                    name = series['Наименование']
+                series_data.append({
+                    'Номер точки': split_numbers[idx],
+                    'Наименование': name,
+                    'Количество': 1,
+                    'Высота': split_height[idx],
+                    'Толщина': split_diameter[idx],
+                    'Состояние': split_quality[idx],
+                    'Кустарник': series['Кустарник'],
+                    'Позиция номера': numbers_positions[idx],
+                    'Геометрия': geometries[idx]
+                })
+            return series_data
         else:
             # FIXME: Что делать если у стволов одного дерева разные состояния
+            # FIXME: Если многоствольное дерево:
+            #  некоторые из сволов пни - все как стволы
+            #  все пни - все пни
             series_dict = series.to_dict()
             series_dict['Позиция номера'] = numbers_positions[0]
             series_dict['Геометрия'] = geometries[0]
