@@ -138,11 +138,23 @@ class ExcelWorker:
                     'Геометрия': geometries[idx]
                 })
             return series_data
+        elif match_trunk:
+            split_height = Splitter.size(series['Высота'])
+            split_diameter = Splitter.size(series['Толщина'])
+            max_count = max(len(split_height), len(split_diameter))
+            split_height = split_height * max_count if len(split_height) == 1 else split_height
+            split_diameter = split_diameter * max_count if len(split_diameter) == 1 else split_diameter
+            is_stump = True
+            for i in range(max_count):
+                if not Parser.identification_stump(split_height[i], split_diameter[i], bool(series['Кустарник'])):
+                    is_stump = False
+                    break
+            series_dict = series.to_dict()
+            series_dict['Наименование'] = series['Наименование'] + " (пень)" if is_stump else series['Наименование']
+            series_dict['Позиция номера'] = numbers_positions[0]
+            series_dict['Геометрия'] = geometries[0]
+            return [series_dict]
         else:
-            # FIXME: Что делать если у стволов одного дерева разные состояния
-            # FIXME: Если многоствольное дерево:
-            #  некоторые из сволов пни - все как стволы
-            #  все пни - все пни
             series_dict = series.to_dict()
             series_dict['Позиция номера'] = numbers_positions[0]
             series_dict['Геометрия'] = geometries[0]

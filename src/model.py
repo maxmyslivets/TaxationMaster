@@ -18,11 +18,17 @@ class Model:
 
     @staticmethod
     def open_excel_template(app) -> None:
-        """Открытие шаблона"""
+        """Открытие шаблона XLSX"""
         progress = app.progress_manager.new("Открытие шаблона", 1)
         app = xw.App(visible=True, add_book=False)
         app.books.open(Path(__file__).parent.parent/"data"/"template_excel.xlsx")
         progress.next()
+
+    @staticmethod
+    def open_autocad_template() -> None:
+        """Открытие шаблона DWG"""
+        dwg_path = Path(__file__).parent.parent/"data"/"template.dwg"
+        subprocess.Popen(f'explorer /select,"{str(dwg_path)}"')
 
     @staticmethod
     def insert_word_taxation_list(app) -> None:

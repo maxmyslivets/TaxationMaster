@@ -328,6 +328,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <bool>false</bool>
    </attribute>
    <addaction name="action_open_excel_template"/>
+   <addaction name="action_open_autocad_template"/>
    <addaction name="action_import_taxation_list"/>
    <addaction name="action_import_topographic_plan"/>
    <addaction name="action_insert_zones"/>
@@ -650,6 +651,17 @@ li.checked::marker { content: &quot;\2612&quot;; }
    </property>
    <property name="toolTip">
     <string>Экспорт в DXF таблиц существующих деревьев и кустарников</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="action_open_autocad_template">
+   <property name="text">
+    <string>Новый Autocad</string>
+   </property>
+   <property name="toolTip">
+    <string>Открыть шаблон Autocad файла</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

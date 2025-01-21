@@ -27,6 +27,7 @@ class MainWindow(QMainWindow):
 
     def setup_toolbars(self) -> None:
         self.ui.action_open_excel_template.triggered.connect(lambda x: Model.open_excel_template(self))
+        self.ui.action_open_autocad_template.triggered.connect(lambda x: Model.open_autocad_template())
         self.ui.action_import_taxation_list.triggered.connect(lambda x: Model.insert_word_taxation_list(self))
         self.ui.action_import_topographic_plan.triggered.connect(lambda x: Model.insert_taxation_data_from_autocad(self))
         self.ui.action_get_count_tree.triggered.connect(lambda x: Model.get_count_tree(self))
