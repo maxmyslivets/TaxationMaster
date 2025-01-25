@@ -546,3 +546,69 @@ class ExcelWorker:
             taxation_list_orm_df['Компенсационные выплаты'] = payments_list
 
         return taxation_list_orm_df
+
+    @staticmethod
+    def transform_unit(sizes: str | float, m2cm: bool = False, cm2m: bool = False) -> str:
+        """
+        Преобразует диаметры стволов в сантиметры
+        Args:
+            diameters (str): серия диаметров стволов в метрах
+
+        Returns:
+            str: серия диаметров стволов в сантиметрах
+        """
+        if sizes == '-':
+            return sizes
+        if m2cm:
+            k = 100
+        elif cm2m:
+            k = 0.01
+        else:
+            raise ValueError("m2cm или cm2m должен быть True")
+        sizes_cm = [str(size * k) for size in Splitter.size(str(sizes))]
+        sizes = ','.join(sizes_cm) if len(sizes_cm) > 1 else sizes_cm[0]
+        return ExcelWorker.compress_size(sizes)
+
+    @staticmethod
+    def compress_size(sizes: str) -> str:
+        if sizes == '-':
+            return sizes
+        sizes = Splitter.size(str(sizes))
+        compressed_sizes = []
+        i = 0
+        while i < len(sizes):
+            count = 1
+            while i + 1 < len(sizes) and sizes[i] == sizes[i + 1]:
+                count += 1
+                i += 1
+            value = int(float(sizes[i])) if float(sizes[i]) % 1 == 0 else float(sizes[i])
+            if count > 1:
+                compressed_sizes.append(f"{value}x{count}")
+            else:
+                compressed_sizes.append(str(value))
+            i += 1
+        return ','.join(compressed_sizes) if len(compressed_sizes) > 1 else compressed_sizes[0]
+
+    @staticmethod
+    def get_zone_df_exists(sheet):
+        """
+        Получает датафрейм зоны
+        Returns:
+            pd.DataFrame
+        """
+        df = sheet.range('A1').expand().options(pd.DataFrame, header=1, index=False).value
+        df['Номер'] = df['Номер'].apply(lambda x: str(int(float(x))))
+
+        def int_format(x: str | float | int) -> str:
+            try:
+                mod = float(x) % 1
+                if round(mod, 2) == 0:
+                    return str(int(float(x)))
+                return str(x)
+            except ValueError:
+                return str(x)
+
+        df['Высота'] = df['Высота'].apply(lambda x: int_format(x))
+        df['Толщина'] = df['Толщина'].apply(lambda x: int_format(x))
+        df = df[['Номер', 'Наименование', 'Количество', 'Высота', 'Толщина', 'Состояние', 'Действие']]
+        return df

@@ -8,6 +8,7 @@ from pathlib import Path
 import pandas as pd
 import xlwings as xw
 
+from data.rules import TableStyleExists, TableStyleRemovable
 from src.autocad import AutocadWorker
 from src.excel import ExcelWorker
 from src.parsing import Templates, Parser, Splitter
@@ -256,3 +257,38 @@ class Model:
         dxf_output = str(Path(tempfile.gettempdir()) / f"taxation_tool_{dt}.dxf")
         AutocadWorker.insert_numbers_to_dxf(numbers_in_zone, dxf_template, dxf_output, app=app)
         subprocess.Popen(f'explorer /select,"{dxf_output}"')
+
+    @staticmethod
+    def transform_unit(app, m2cm: bool = False, cm2m: bool = False) -> None:
+        """Конвертация единиц измерения"""
+        selected_cells = ExcelWorker.selected_cells(app)
+        progress = app.progress_manager.new("Конвертация единиц измерения", len(selected_cells))
+        for cell in selected_cells:
+            cell.value = ExcelWorker.transform_unit(cell.value, m2cm=m2cm, cm2m=cm2m)
+            progress.next()
+
+    @staticmethod
+    def compress_size(app) -> None:
+        """Конвертация единиц измерения"""
+        selected_cells = ExcelWorker.selected_cells(app)
+        progress = app.progress_manager.new("Конвертация единиц измерения", len(selected_cells))
+        for cell in selected_cells:
+            cell.value = ExcelWorker.compress_size(cell.value)
+            progress.next()
+
+    @staticmethod
+    def insert_table_exists_to_autocad(app):
+        """Вставка таблицы существующих в Autocad"""
+        sheet = xw.sheets.active
+        df_zone = ExcelWorker.get_zone_df_exists(sheet)
+        AutocadWorker.insert_table_exists_to_autocad(TableStyleExists(), sheet.name, df_zone, app)
+
+    @staticmethod
+    def insert_table_removable_to_autocad(app):
+        """Вставка таблицы удаляемых в Autocad"""
+        sheet = xw.sheets.active
+        df_zone = ExcelWorker.get_zone_df_exists(sheet)
+        AutocadWorker.insert_table_exists_to_autocad(TableStyleRemovable(), sheet.name, df_zone, app)
+
+    # TODO: Добавить функцию для замены м.кв. на м^2 в Autocad.
+    #  Пример: '13.4 м.кв.' -> r'\A1;13.4 м{\H0.7x;\S2^;}'

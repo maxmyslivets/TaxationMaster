@@ -2,13 +2,85 @@ import ezdxf
 import pandas as pd
 from ezdxf.addons import Importer
 from ezdxf.math import Vec2
-from pyautocad import Autocad
-from pyautocad.utils import mtext_to_string
+from pyautocad import Autocad, APoint, ACAD
+from pyautocad.utils import mtext_to_string, string_to_mtext
 from shapely import Point, LineString, Polygon
 from shapely.geometry.multipolygon import MultiPolygon
 
-
+from data.rules import TableStyleExists, TableStyleRemovable
 from src.parsing import Splitter
+
+
+class Table:
+    def __init__(self, style: TableStyleExists | TableStyleRemovable, zone_name: str, data: pd.DataFrame) -> None:
+        self._style = style
+        self._zone_name = zone_name
+        self._data = data
+        self._connection_point: tuple[float, float] = (0.0, 0.0)
+        self.model = Autocad().model
+
+    def _add_line(self, p1: tuple[float, float], p2: tuple[float, float]) -> None:
+        return self.model.addLine(APoint(*p1), APoint(*p2))
+
+    def _draw_column_titles(self) -> None:
+        cell_height = self._style.TableSize.Row.column_name
+        full_width = self._style.TableSize.Column.full_width
+        self._add_line((0, 0), (full_width, 0))
+        self._add_line((0, -cell_height), (full_width, -cell_height))
+        x = 0
+        self._add_line((0, 0), (0, -cell_height))
+        for name, step in self._style.TableSize.Column.spacings:
+            x += step
+            self._add_line((x, 0), (x, -cell_height))
+            text_user_width = step
+            insert_point = APoint(x - step, 0)
+            text_obj = self.model.AddMText(insert_point, text_user_width, string_to_mtext(name))
+            text_obj.Height = TableStyleExists.TextColumnName.height
+            text_obj.AttachmentPoint = ACAD.acAttachmentPointMiddleCenter
+        self._connection_point = (self._connection_point[0], self._connection_point[1] - cell_height)
+
+    def _draw_zone_title(self) -> None:
+        cell_height = self._style.TableSize.Row.zone
+        full_width = self._style.TableSize.Column.full_width
+        y = self._connection_point[1] - cell_height
+        self._add_line((0, y), (full_width, y))
+        self._add_line(self._connection_point, (0, y))
+        self._add_line((full_width, self._connection_point[1]), (full_width, y))
+        insert_point = APoint(*self._connection_point)
+        text_obj = self.model.AddMText(insert_point, full_width, string_to_mtext(self._zone_name))
+        text_obj.Height = TableStyleExists.TextZone.height
+        text_obj.AttachmentPoint = ACAD.acAttachmentPointMiddleCenter
+        self._connection_point = (self._connection_point[0], self._connection_point[1] - cell_height)
+
+    def _draw_orm_row(self, values: list[str]) -> None:
+        assert len(values) == len(
+            self._style.TableSize.Column.spacings), "Количество значений строки не равно количеству столбцов таблицы"
+        cell_height = self._style.TableSize.Row.orm
+        full_width = self._style.TableSize.Column.full_width
+        y = self._connection_point[1] - cell_height
+        self._add_line((0, y), (full_width, y))
+        margin = 100
+        x = 0
+        i = -1
+        self._add_line(self._connection_point, (0, y))
+        for name, step in self._style.TableSize.Column.spacings:
+            x += step
+            self._add_line((x, y), (x, self._connection_point[1]))
+            text_user_width = step - margin
+            insert_point = APoint(x - step + margin, self._connection_point[1] - margin)
+            i += 1
+            text_obj = self.model.AddMText(insert_point, text_user_width, string_to_mtext(str(values[i])))
+            text_obj.Height = TableStyleExists.TextORM.height
+            text_obj.LineSpacingFactor = 0.7
+        self._connection_point = (self._connection_point[0], self._connection_point[1] - cell_height)
+
+    def draw_table(self, app) -> None:
+        progress = app.progress_manager.new(f"Вставка таблицы существующих '{self._zone_name}'", len(self._data))
+        self._draw_column_titles()
+        self._draw_zone_title()
+        for _, series in self._data.iterrows():
+            self._draw_orm_row(series.tolist())
+            progress.next()
 
 
 class AutocadWorker:
@@ -376,3 +448,9 @@ class AutocadWorker:
             progress.next()
 
         dxf_new.saveas(dxf_output_path)
+
+    @staticmethod
+    def insert_table_exists_to_autocad(table_style: TableStyleExists | TableStyleRemovable, zone_name: str,
+                                       data: pd.DataFrame, app=None) -> None:
+        table = Table(table_style, zone_name, data)
+        table.draw_table(app)
