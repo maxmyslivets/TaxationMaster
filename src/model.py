@@ -29,6 +29,7 @@ class Model:
     def open_autocad_template() -> None:
         """Открытие шаблона DWG"""
         dwg_path = Path(__file__).parent.parent/"data"/"template.dwg"
+        assert dwg_path.exists(), f"Шаблон {dwg_path} не найден"
         subprocess.Popen(f'explorer /select,"{str(dwg_path)}"')
 
     @staticmethod
@@ -292,3 +293,5 @@ class Model:
 
     # TODO: Добавить функцию для замены м.кв. на м^2 в Autocad.
     #  Пример: '13.4 м.кв.' -> r'\A1;13.4 м{\H0.7x;\S2^;}'
+
+    # TODO: Добавить функцию для добавления текста примечания к действию

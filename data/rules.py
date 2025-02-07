@@ -11,7 +11,7 @@ def transplant(x, y) -> str:
     """
     # TODO: Добавить фильтр
     # return 'Удаление\nСм.Прим.#'
-    return 'Пересадка\nСм.Прим.#'
+    return 'Пересадка'
 
 
 def calc_landings(x, y) -> str:

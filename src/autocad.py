@@ -166,7 +166,6 @@ class AutocadWorker:
                 })
             elif obj.ObjectName == 'AcDbPolyline' and obj.Layer in contours_layers:
                 acad_polygon_vertexes = [vertex for vertex in obj.Coordinates]
-                print(acad_polygon_vertexes)
                 shape = Polygon(
                     [(acad_polygon_vertexes[i], acad_polygon_vertexes[i + 1])
                      for i in range(0, len(acad_polygon_vertexes), 2)])
