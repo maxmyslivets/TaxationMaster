@@ -291,7 +291,4 @@ class Model:
         df_zone = ExcelWorker.get_zone_df_exists(sheet)
         AutocadWorker.insert_table_exists_to_autocad(TableStyleRemovable(), sheet.name, df_zone, app)
 
-    # TODO: Добавить функцию для замены м.кв. на м^2 в Autocad.
-    #  Пример: '13.4 м.кв.' -> r'\A1;13.4 м{\H0.7x;\S2^;}'
-
     # TODO: Добавить функцию для добавления текста примечания к действию

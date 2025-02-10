@@ -11,6 +11,12 @@ from data.rules import TableStyleExists, TableStyleRemovable
 from src.parsing import Splitter
 
 
+class MTextFormatting:
+    @staticmethod
+    def replace_squared(x: str) -> str:
+        return x.replace('.кв.', r'\U+00B2')
+
+
 class Table:
     def __init__(self, style: TableStyleExists | TableStyleRemovable, zone_name: str, data: pd.DataFrame) -> None:
         self._style = style
@@ -78,6 +84,8 @@ class Table:
         progress = app.progress_manager.new(f"Вставка таблицы существующих '{self._zone_name}'", len(self._data))
         self._draw_column_titles()
         self._draw_zone_title()
+        self._data['Количество'] = self._data['Количество'].apply(
+            lambda x: MTextFormatting.replace_squared(str(x)) if '.кв.' in str(x) else x)
         for _, series in self._data.iterrows():
             self._draw_orm_row(series.tolist())
             progress.next()
